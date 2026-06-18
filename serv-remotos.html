@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Servicios Remotos - ServiciosGF</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --orange: #ff8800;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; }
+  .nav-links { display: flex; list-style: none; gap: 4px; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 4px; text-transform: uppercase; transition: all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--cyan); background: var(--cyan-glow); }
+  .btn-primary { background: var(--cyan); color: var(--dark); padding: 8px 20px; border: 1px solid var(--cyan); border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-primary:hover { background: var(--cyan-dim); box-shadow: 0 0 16px rgba(0,229,255,0.3); }
+
+  /* HERO */
+  .hero { padding: 80px 40px 40px; text-align: center; }
+  .hero h1 { font-family: 'Orbitron', monospace; font-size: clamp(28px, 5vw, 42px); font-weight: 900; margin-bottom: 12px; }
+  .hero h1 .hl { color: var(--cyan); }
+  .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+
+  /* MAIN CONTAINER */
+  .remote-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  /* SERVICE CARD */
+  .service-info-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .service-info-card h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--cyan);
+    margin-bottom: 20px;
+  }
+
+  .service-detail {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--cyan-border);
+  }
+
+  .service-detail:last-child {
+    border-bottom: none;
+  }
+
+  .service-detail h3 {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .service-detail .value {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .service-detail .value.price {
+    color: var(--green);
+    font-size: 24px;
+  }
+
+  /* TOOLS DOWNLOAD SECTION */
+  .tools-section {
+    background: var(--dark3);
+    border: 2px solid var(--cyan-border);
+    border-radius: 10px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+
+  .tools-section h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tool-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--dark2);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--cyan);
+  }
+
+  .tool-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .tool-info {
+    flex: 1;
+  }
+
+  .tool-name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .tool-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .tool-download {
+    background: var(--cyan);
+    color: var(--dark);
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .tool-download:hover {
+    background: var(--cyan-dim);
+    transform: translateY(-2px);
+  }
+
+  /* FORM */
+  .remote-form {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+
+  .remote-form h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--cyan);
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .form-group label .required {
+    color: var(--orange);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--cyan);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    background: linear-gradient(135deg, var(--cyan), var(--green));
+    border: none;
+    color: var(--dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 229, 255, 0.4);
+  }
+
+  /* PING EU SECTION */
+  .ping-section {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 229, 255, 0.1));
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .ping-section h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .ping-link {
+    display: inline-block;
+    background: var(--green);
+    color: var(--dark);
+    padding: 10px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+
+  .ping-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 255, 136, 0.4);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .remote-container {
+      grid-template-columns: 1fr;
+      padding: 20px;
+    }
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="ServiciosGF" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="hero">
+  <h1>Servicios <span class="hl">Remotos</span></h1>
+  <p>Sesiones remotas profesionales con técnicos expertos</p>
+</div>
+
+<div class="remote-container">
+  <!-- LEFT: Service Info & Tools -->
+  <div>
+    <div class="service-info-card">
+      <h2>📋 Detalles del Servicio</h2>
+      
+      <div class="service-detail">
+        <h3>Servicio Seleccionado</h3>
+        <div class="value" id="serviceName">Cargando...</div>
+      </div>
+
+      <div class="service-detail">
+        <h3>Precio</h3>
+        <div class="value price" id="servicePrice">$0.00</div>
+      </div>
+
+      <div class="service-detail">
+        <h3>Tiempo Estimado</h3>
+        <div class="value" id="serviceTime">-</div>
+      </div>
+
+      <div class="service-detail">
+        <h3>Descripción</h3>
+        <div class="value" style="font-size: 14px; line-height: 1.6;" id="serviceDesc">-</div>
+      </div>
+    </div>
+
+    <!-- TOOLS DOWNLOAD -->
+    <div class="tools-section" id="toolsSection" style="display: none;">
+      <h3>⬇️ Herramientas a Descargar</h3>
+      <div id="toolsList">
+        <!-- Tools will be loaded here -->
+      </div>
+    </div>
+
+    <!-- PING EU -->
+    <div class="ping-section">
+      <h3>🌐 Verifica tu Conexión</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+        Antes de iniciar, verifica tu conexión y velocidad
+      </p>
+      <a href="https://ping.eu" target="_blank" class="ping-link">
+        Ir a Ping.eu
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Form -->
+  <div class="remote-form">
+    <h2>📝 Información Requerida</h2>
+    
+    <form id="remoteServiceForm">
+      <!-- Service Selection -->
+      <div class="form-group">
+        <label>Selecciona el Servicio <span class="required">*</span></label>
+        <select id="serviceSelect" required onchange="loadServiceDetails()">
+          <option value="">-- Seleccionar --</option>
+          <option value="1" data-price="15.00" data-time="30-60 min" data-needs="imei,ip,model,serial">TeamViewer - Desbloqueo Completo</option>
+          <option value="2" data-price="10.00" data-time="15-30 min" data-needs="ip">AnyDesk - Soporte Básico</option>
+          <option value="3" data-price="20.00" data-time="60-90 min" data-needs="imei,model">Desbloqueo Avanzado + Configuración</option>
+          <option value="4" data-price="5.00" data-time="5-10 min" data-needs="ip">Consulta Rápida</option>
+        </select>
+      </div>
+
+      <!-- Dynamic Fields Container -->
+      <div id="dynamicFields">
+        <!-- Fields will be shown/hidden based on service selection -->
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn-submit">
+        ✅ Solicitar Servicio Remoto
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+// Service configurations
+const serviceConfigs = {
+  '1': {
+    name: 'TeamViewer - Desbloqueo Completo',
+    price: 15.00,
+    time: '30-60 min',
+    desc: 'Desbloqueo completo de dispositivo con TeamViewer. Requiere IMEI, IP, modelo y serial.',
+    tools: [
+      { name: 'TeamViewer', url: 'https://www.teamviewer.com/download', desc: 'Software de acceso remoto' },
+      { name: 'UnlockTool', url: '#', desc: 'Herramienta de desbloqueo' }
+    ]
+  },
+  '2': {
+    name: 'AnyDesk - Soporte Básico',
+    price: 10.00,
+    time: '15-30 min',
+    desc: 'Soporte técnico básico remoto. Solo requiere tu dirección IP.',
+    tools: [
+      { name: 'AnyDesk', url: 'https://anydesk.com/download', desc: 'Software de acceso remoto' }
+    ]
+  },
+  '3': {
+    name: 'Desbloqueo Avanzado + Configuración',
+    price: 20.00,
+    time: '60-90 min',
+    desc: 'Desbloqueo avanzado con configuración completa. Requiere IMEI y modelo del dispositivo.',
+    tools: [
+      { name: 'TeamViewer', url: 'https://www.teamviewer.com/download', desc: 'Software de acceso remoto' },
+      { name: 'UnlockTool', url: '#', desc: 'Herramienta de desbloqueo' },
+      { name: 'DC-Unlocker', url: '#', desc: 'Software de desbloqueo' }
+    ]
+  },
+  '4': {
+    name: 'Consulta Rápida',
+    price: 5.00,
+    time: '5-10 min',
+    desc: 'Consulta técnica rápida. Solo requiere tu IP para conexión.',
+    tools: [
+      { name: 'AnyDesk', url: 'https://anydesk.com/download', desc: 'Software de acceso remoto' }
+    ]
+  }
+};
+
+// Load service details when selected
+function loadServiceDetails() {
+  const select = document.getElementById('serviceSelect');
+  const selectedOption = select.options[select.selectedIndex];
+  const serviceId = select.value;
+  
+  if (!serviceId) {
+    document.getElementById('serviceName').textContent = 'Cargando...';
+    document.getElementById('servicePrice').textContent = '$0.00';
+    document.getElementById('serviceTime').textContent = '-';
+    document.getElementById('serviceDesc').textContent = '-';
+    document.getElementById('toolsSection').style.display = 'none';
+    document.getElementById('dynamicFields').innerHTML = '';
+    return;
+  }
+
+  const config = serviceConfigs[serviceId];
+  const needs = selectedOption.dataset.needs.split(',');
+
+  // Update service info
+  document.getElementById('serviceName').textContent = config.name;
+  document.getElementById('servicePrice').textContent = `$${config.price.toFixed(2)}`;
+  document.getElementById('serviceTime').textContent = config.time;
+  document.getElementById('serviceDesc').textContent = config.desc;
+
+  // Show tools
+  const toolsList = document.getElementById('toolsList');
+  toolsList.innerHTML = '';
+  config.tools.forEach(tool => {
+    const toolItem = document.createElement('div');
+    toolItem.className = 'tool-item';
+    toolItem.innerHTML = `
+      <div class="tool-info">
+        <div class="tool-name">${tool.name}</div>
+        <div class="tool-desc">${tool.desc}</div>
+      </div>
+      <a href="${tool.url}" target="_blank" class="tool-download">Descargar</a>
+    `;
+    toolsList.appendChild(toolItem);
+  });
+  document.getElementById('toolsSection').style.display = 'block';
+
+  // Generate dynamic fields
+  generateDynamicFields(needs);
+}
+
+// Generate form fields based on service requirements
+function generateDynamicFields(needs) {
+  const container = document.getElementById('dynamicFields');
+  container.innerHTML = '';
+
+  if (needs.includes('imei')) {
+    container.innerHTML += `
+      <div class="form-group">
+        <label>IMEI del Dispositivo <span class="required">*</span></label>
+        <input type="text" id="imei" name="imei" placeholder="123456789012345" required>
+        <div class="form-hint">Ingresa los 15 dígitos del IMEI</div>
+      </div>
+    `;
+  }
+
+  if (needs.includes('ip')) {
+    container.innerHTML += `
+      <div class="form-group">
+        <label>Tu Dirección IP <span class="required">*</span></label>
+        <input type="text" id="clientIp" name="clientIp" placeholder="Ej: 192.168.1.100" required>
+        <div class="form-hint">Tu IP pública o local para la conexión remota</div>
+      </div>
+    `;
+  }
+
+  if (needs.includes('model')) {
+    container.innerHTML += `
+      <div class="form-group">
+        <label>Modelo del Dispositivo <span class="required">*</span></label>
+        <input type="text" id="model" name="model" placeholder="Ej: Samsung Galaxy S21" required>
+        <div class="form-hint">Marca y modelo exacto del dispositivo</div>
+      </div>
+    `;
+  }
+
+  if (needs.includes('serial')) {
+    container.innerHTML += `
+      <div class="form-group">
+        <label>Número de Serial <span class="required">*</span></label>
+        <input type="text" id="serial" name="serial" placeholder="Ej: ABC123456" required>
+        <div class="form-hint">Número de serie del dispositivo</div>
+      </div>
+    `;
+  }
+
+  // Additional notes (always shown)
+  container.innerHTML += `
+    <div class="form-group">
+      <label>Notas Adicionales</label>
+      <textarea id="notes" name="notes" placeholder="Describe cualquier información adicional relevante..."></textarea>
+    </div>
+  `;
+}
+
+// Form submission
+document.getElementById('remoteServiceForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const serviceId = document.getElementById('serviceSelect').value;
+  if (!serviceId) {
+    alert('Por favor selecciona un servicio');
+    return;
+  }
+
+  const formData = {
+    serviceId: serviceId,
+    serviceName: document.getElementById('serviceName').textContent,
+    price: parseFloat(document.getElementById('servicePrice').textContent.replace('$', '')),
+    imei: document.getElementById('imei')?.value || '',
+    clientIp: document.getElementById('clientIp')?.value || '',
+    model: document.getElementById('model')?.value || '',
+    serial: document.getElementById('serial')?.value || '',
+    notes: document.getElementById('notes')?.value || '',
+    timestamp: new Date().toISOString()
+  };
+
+  console.log('Submitting remote service request:', formData);
+  
+  // Here you would send to your backend
+  // await fetch('YOUR_API_ENDPOINT', { method: 'POST', body: JSON.stringify(formData) });
+  
+  alert('✅ Solicitud enviada correctamente. Nos conectaremos contigo pronto.');
+});
+</script>
+
+</body>
+</html>

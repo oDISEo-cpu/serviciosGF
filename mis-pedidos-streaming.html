@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Pedidos de Streaming - ServiciosGF</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+    --purple: #8a2be2;
+    --purple-glow: rgba(138,43,226,0.15);
+    --purple-border: rgba(138,43,226,0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; overflow-x: hidden; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .btn-primary { background: var(--cyan); border: 1px solid var(--cyan); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: var(--cyan-dim); box-shadow: 0 0 16px rgba(0,229,255,0.3); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(138,43,226,0.08) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .page-hero h1 .hl { color: var(--purple); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-bottom: 30px;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 13px;
+  }
+  .back-btn:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+
+  .order-card {
+    background: var(--surface);
+    border: 1px solid var(--purple-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .order-card:hover {
+    border-color: var(--purple);
+    box-shadow: 0 8px 24px rgba(138,43,226,0.2);
+  }
+
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--purple-border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .service-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--purple);
+    font-weight: 700;
+  }
+
+  .order-date {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .status {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .status.completed {
+    background: rgba(0,255,136,0.15);
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+  .status.pending {
+    background: rgba(255,204,0,0.15);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+  }
+  .status.processing {
+    background: rgba(0,229,255,0.15);
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+  }
+  .status.cancelled {
+    background: rgba(255,68,85,0.15);
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+
+  .credentials-box {
+    background: var(--purple-glow);
+    border: 1px solid var(--purple-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+
+  .credentials-title {
+    color: var(--purple);
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .credential-item {
+    margin: 10px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .credential-label {
+    color: var(--cyan);
+    font-weight: 600;
+    min-width: 140px;
+  }
+
+  .credential-value {
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    word-break: break-all;
+  }
+
+  .copy-btn {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 8px;
+  }
+  .copy-btn:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+
+  .warning-box {
+    background: rgba(255,68,85,0.1);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .warning-box h4 {
+    color: var(--red);
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .warning-box p {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .notes-box {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+  .notes-box h4 {
+    color: var(--cyan);
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .notes-box p {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+  .empty-state-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+  }
+  .empty-state h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .empty-state p {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+  }
+  .empty-state-btn {
+    display: inline-block;
+    padding: 12px 32px;
+    background: var(--purple);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .empty-state-btn:hover {
+    background: #7b27c7;
+    box-shadow: 0 0 20px rgba(138,43,226,0.4);
+  }
+
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlideIn 0.3s ease;
+    min-width: 300px;
+  }
+  .toast.success { border-left: 4px solid var(--green); }
+  .toast.error { border-left: 4px solid var(--red); }
+  @keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+    margin-top: 60px;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .container { padding: 20px; }
+    .credential-item { flex-direction: column; align-items: flex-start; }
+    .credential-label { min-width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="ServiciosGF" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="mis-pedidos.html">Todos los Pedidos</a></li>
+    <li><a href="mis-pedidos-streaming.html" class="active">📺 Pedidos Streaming</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>📺 Mis Pedidos de <span class="hl">Streaming</span></h1>
+  <p>Historial de cuentas de streaming compradas y sus credenciales de acceso</p>
+</div>
+
+<div class="container">
+  <a href="mis-pedidos.html" class="back-btn">
+    ← Volver a Todos los Pedidos
+  </a>
+  
+  <div id="streamingOrders">
+    <div class="empty-state">
+      <div class="empty-state-icon">📺</div>
+      <h3>Cargando pedidos...</h3>
+      <p>Por favor espera un momento</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let userProfile = null;
+
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+    
+    currentUser = user;
+    const profileDoc = await db.collection('profiles').doc(user.uid).get();
+    if (profileDoc.exists) {
+      userProfile = profileDoc.data();
+    }
+    
+    updateNav();
+    await loadStreamingOrders(user.uid);
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser && userProfile) {
+      const name = userProfile.name || 'Usuario';
+      const initial = name.charAt(0).toUpperCase();
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${initial}</div>
+          <span class="user-name">${name}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  async function loadStreamingOrders(userId) {
+    try {
+      const snapshot = await db.collection('streamingOrders')
+        .where('userId', '==', userId)
+        .orderBy('createdAt', 'desc')
+        .get();
+      
+      const container = document.getElementById('streamingOrders');
+      
+      if (snapshot.empty) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📺</div>
+            <h3>No tienes pedidos de streaming</h3>
+            <p>Aún no has comprado servicios de streaming. ¡Explora nuestro catálogo!</p>
+            <a href="servicios-streaming.html" class="empty-state-btn">
+              📺 Ver Servicios de Streaming
+            </a>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = snapshot.docs.map(doc => {
+        const order = doc.data();
+        const date = order.createdAt ? order.createdAt.toDate().toLocaleString('es-ES') : 'Fecha desconocida';
+        
+        const statusLabels = {
+          'pending': '⏳ Pendiente',
+          'processing': '🔄 En Proceso',
+          'completed': '✅ Completado',
+          'cancelled': '❌ Cancelado'
+        };
+        
+        const statusClass = order.status || 'pending';
+        
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <div class="service-name">${order.serviceName}</div>
+                <div class="order-date">📅 ${date}</div>
+              </div>
+              <div class="status ${statusClass}">
+                ${statusLabels[order.status] || order.status}
+              </div>
+            </div>
+            
+            ${order.deliveryAccount ? `
+              <div class="credentials-box">
+                <div class="credentials-title">
+                  📧 Credenciales de Acceso
+                </div>
+                
+                <div class="credential-item">
+                  <span class="credential-label">👤 Cuenta:</span>
+                  <span class="credential-value">${order.deliveryAccount}</span>
+                  <button class="copy-btn" onclick="copyToClipboard('${order.deliveryAccount}', this)">📋 Copiar</button>
+                </div>
+                
+                <div class="credential-item">
+                  <span class="credential-label">🔑 Contraseña:</span>
+                  <span class="credential-value">${order.deliveryPassword}</span>
+                  <button class="copy-btn" onclick="copyToClipboard('${order.deliveryPassword}', this)">📋 Copiar</button>
+                </div>
+                
+                ${order.deliveryEmailAccount ? `
+                <div class="credential-item">
+                  <span class="credential-label">📧 Correo:</span>
+                  <span class="credential-value">${order.deliveryEmailAccount}</span>
+                  <button class="copy-btn" onclick="copyToClipboard('${order.deliveryEmailAccount}', this)">📋 Copiar</button>
+                </div>
+                ` : ''}
+                
+                ${order.deliveryProfile ? `
+                <div class="credential-item">
+                  <span class="credential-label">👤 Perfil:</span>
+                  <span class="credential-value">${order.deliveryProfile}</span>
+                </div>
+                ` : ''}
+                
+                ${order.deliveryPin ? `
+                <div class="credential-item">
+                  <span class="credential-label">🔢 PIN:</span>
+                  <span class="credential-value">${order.deliveryPin}</span>
+                  <button class="copy-btn" onclick="copyToClipboard('${order.deliveryPin}', this)">📋 Copiar</button>
+                </div>
+                ` : ''}
+                
+                ${order.deliveryCutDate ? `
+                <div class="credential-item">
+                  <span class="credential-label">📅 Fecha de Corte:</span>
+                  <span class="credential-value">${order.deliveryCutDate}</span>
+                </div>
+                ` : ''}
+              </div>
+              
+              ${order.deliveryNotes ? `
+                <div class="notes-box">
+                  <h4>📝 Mensaje del Admin</h4>
+                  <p>${order.deliveryNotes}</p>
+                </div>
+              ` : ''}
+            ` : `
+              <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+                <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+                <p style="font-size: 16px; margin-bottom: 8px;">
+                  ${order.status === 'pending' ? 'Tu pedido está siendo procesado' : 
+                    order.status === 'processing' ? 'Estamos preparando tu cuenta' : 
+                    'Pedido en proceso'}
+                </p>
+                <p style="font-size: 14px;">
+                  Recibirás las credenciales de acceso en las próximas 24-48 horas
+                </p>
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+      
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('streamingOrders').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">❌</div>
+          <h3>Error al cargar pedidos</h3>
+          <p>${error.message}</p>
+          <button onclick="loadStreamingOrders('${currentUser.uid}')" class="empty-state-btn">
+            🔄 Reintentar
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ Copiado';
+      btn.style.background = 'rgba(0,255,136,0.2)';
+      btn.style.borderColor = 'var(--green)';
+      btn.style.color = 'var(--green)';
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2000);
+      
+      showToast('✅ Copiado al portapapeles', 'success');
+    }).catch(() => {
+      showToast('❌ Error al copiar', 'error');
+    });
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? '✅' : '⚠️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>

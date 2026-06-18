@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descargas - ServiciosGF</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .downloads-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .download-categories {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .category-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    border-radius: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .category-btn:hover, .category-btn.active {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,229,255,0.3);
+  }
+
+  .category-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .breadcrumb {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb-item {
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .breadcrumb-item:hover {
+    color: var(--cyan);
+  }
+
+  .breadcrumb-item.active {
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .breadcrumb-separator {
+    color: var(--text-dim);
+  }
+
+  .subfolder-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .subfolder-tab {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .subfolder-tab:hover, .subfolder-tab.active {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .subfolder-tab .count {
+    background: var(--cyan);
+    color: var(--dark);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+
+  .downloads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .download-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .download-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+  }
+
+  .download-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .download-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 8px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.4;
+  }
+
+  .download-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  .download-meta {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .download-tag {
+    padding: 4px 8px;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .download-size {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--yellow);
+    margin-bottom: 16px;
+    word-break: break-word;
+  }
+
+  .btn-download {
+    width: 100%;
+    background: var(--cyan);
+    border: 1px solid var(--cyan);
+    color: var(--dark);
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .btn-download:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 20px rgba(0,229,255,0.4);
+  }
+
+  .btn-download:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+    grid-column: 1 / -1;
+  }
+
+  .empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 80px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+    grid-column: 1 / -1;
+  }
+
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlideIn 0.3s ease;
+    min-width: 300px;
+  }
+  .toast.success { border-left: 4px solid var(--green); }
+  .toast.error { border-left: 4px solid var(--red); }
+  .toast.warning { border-left: 4px solid var(--yellow); }
+  @keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+    margin-top: 60px;
+  }
+
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .downloads-container { padding: 20px; }
+    .downloads-grid { grid-template-columns: 1fr; }
+    .breadcrumb { flex-direction: column; align-items: flex-start; }
+    .category-btn { padding: 10px 16px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="ServiciosGF" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="registros-imei.html">Servicios</a></li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="descargas.html" class="active">Descargas</a></li>
+    <li><a href="mis-pedidos.html">Tus pedidos</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>Centro de <span class="hl">Descargas</span></h1>
+  <p>Herramientas, drivers y firmware para técnicos GSM</p>
+</div>
+
+<div class="downloads-container">
+  <div class="download-categories">
+    <button class="category-btn active" onclick="filterDownloads('recentes')" data-brand="recentes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      Recientes
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('samsung')" data-brand="samsung">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+      </svg>
+      Samsung
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('xiaomi')" data-brand="xiaomi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+        <path d="M9 9h6v6H9z"></path>
+      </svg>
+      Xiaomi
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('huawei')" data-brand="huawei">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+        <path d="M2 17l10 5 10-5"></path>
+        <path d="M2 12l10 5 10-5"></path>
+      </svg>
+      Huawei
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('honor')" data-brand="honor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M8 12h8"></path>
+        <path d="M12 8v8"></path>
+      </svg>
+      Honor
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('oppo')" data-brand="oppo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <circle cx="12" cy="12" r="4"></circle>
+      </svg>
+      Oppo
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('tecno')" data-brand="tecno">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L4 6v12l8 4 8-4V6l-8-4z"></path>
+      </svg>
+      Tecno & Infinix
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('programas')" data-brand="programas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      Programas
+    </button>
+    
+    <button class="category-btn" onclick="filterDownloads('videos')" data-brand="videos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+      </svg>
+      Videos
+    </button>
+  </div>
+
+  <div class="breadcrumb" id="breadcrumb" style="display:none;">
+    <span class="breadcrumb-item" onclick="navigateTo('recentes', null)">📁 Inicio</span>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-item active" id="breadcrumbCategory">Recientes</span>
+    <span id="breadcrumbSubfolderContainer" style="display:none;">
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-item active" id="breadcrumbSubfolder">Subcarpeta</span>
+    </span>
+  </div>
+
+  <div class="subfolder-tabs" id="subfolderTabs"></div>
+
+  <div class="downloads-grid" id="downloadsGrid">
+    <div class="loading">Cargando descargas...</div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let allDownloads = [];
+  let currentFilter = 'recentes';
+  let currentSubfolder = null;
+  let currentUser = null;
+  let userProfile = null;
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        userProfile = profileDoc.data();
+      }
+    }
+    await loadDownloads();
+    updateNav();
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser && userProfile) {
+      const name = userProfile.name || 'Usuario';
+      const initial = name.charAt(0).toUpperCase();
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${initial}</div>
+          <span class="user-name">${name}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    } else if (currentUser) {
+      navAuth.innerHTML = `<button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>`;
+    } else {
+      navAuth.innerHTML = `<a href="index.html" class="btn-ghost">Iniciar Sesión</a>`;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  async function loadDownloads() {
+    try {
+      const snapshot = await db.collection('downloads').get();
+      allDownloads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderDownloads();
+    } catch (error) {
+      console.error('Error cargando descargas:', error);
+      document.getElementById('downloadsGrid').innerHTML = `
+        <div class="empty-state">
+          <p style="color:var(--red);">Error al cargar descargas</p>
+        </div>
+      `;
+    }
+  }
+
+  function filterDownloads(category) {
+    currentFilter = category;
+    currentSubfolder = null;
+    
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-brand') === category) {
+        btn.classList.add('active');
+      }
+    });
+    
+    renderDownloads();
+    updateBreadcrumb();
+  }
+
+  function filterBySubfolder(subfolder) {
+    currentSubfolder = subfolder;
+    renderDownloads();
+    updateBreadcrumb();
+    
+    document.querySelectorAll('.subfolder-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if ((subfolder === null && tab.textContent.includes('Todos')) || 
+          tab.textContent.includes(subfolder)) {
+        tab.classList.add('active');
+      }
+    });
+  }
+
+  function navigateTo(category, subfolder) {
+    currentFilter = category;
+    currentSubfolder = subfolder;
+    
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-brand') === category) {
+        btn.classList.add('active');
+      }
+    });
+    
+    renderDownloads();
+    updateBreadcrumb();
+  }
+
+  function updateBreadcrumb() {
+    const breadcrumb = document.getElementById('breadcrumb');
+    const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+    const breadcrumbSubfolderContainer = document.getElementById('breadcrumbSubfolderContainer');
+    const breadcrumbSubfolder = document.getElementById('breadcrumbSubfolder');
+    
+    breadcrumb.style.display = 'flex';
+    
+    const categoryNames = {
+      'recentes': '🕐 Recientes',
+      'samsung': 'Samsung',
+      'xiaomi': 'Xiaomi',
+      'huawei': 'Huawei',
+      'honor': 'Honor',
+      'oppo': 'Oppo',
+      'tecno': 'Tecno & Infinix',
+      'programas': 'Programas',
+      'videos': 'Videos'
+    };
+    
+    breadcrumbCategory.textContent = categoryNames[currentFilter] || currentFilter;
+    
+    if (currentSubfolder) {
+      breadcrumbSubfolderContainer.style.display = 'inline';
+      breadcrumbSubfolder.textContent = currentSubfolder;
+    } else {
+      breadcrumbSubfolderContainer.style.display = 'none';
+    }
+  }
+
+  // ✅ FUNCIÓN PARA REGISTRAR DESCARGA EN FIRESTORE
+  async function handleDownload(downloadId, downloadUrl, downloadName) {
+    // Verificar si el usuario está autenticado
+    if (!currentUser) {
+      showToast('⚠️ Debes iniciar sesión para descargar', 'warning');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+      return;
+    }
+
+    try {
+      // 1️⃣ Registrar la descarga en Firestore
+      await db.collection('userDownloads').add({
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile?.name || 'Usuario',
+        downloadId: downloadId,
+        fileName: downloadName,
+        downloadUrl: downloadUrl,
+        category: allDownloads.find(d => d.id === downloadId)?.category || 'general',
+        fileSize: allDownloads.find(d => d.id === downloadId)?.size || 'N/A',
+        description: allDownloads.find(d => d.id === downloadId)?.description || '',
+        downloadedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 2️⃣ Actualizar contador de descargas en el documento original
+      await db.collection('downloads').doc(downloadId).update({
+        downloadCount: firebase.firestore.FieldValue.increment(1)
+      }).catch(err => console.log('No se pudo actualizar contador:', err));
+
+      // 3️⃣ Abrir el enlace de descarga
+      window.open(downloadUrl, '_blank');
+
+      showToast('✅ Descarga iniciada y registrada', 'success');
+
+    } catch (error) {
+      console.error('Error registrando descarga:', error);
+      showToast('❌ Error al registrar descarga', 'error');
+      // Aún así permitir la descarga
+      window.open(downloadUrl, '_blank');
+    }
+  }
+
+  function renderDownloads() {
+    const grid = document.getElementById('downloadsGrid');
+    const subfolderTabs = document.getElementById('subfolderTabs');
+    
+    let filtered = allDownloads;
+    if (currentFilter === 'recentes') {
+      const sorted = [...allDownloads].sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+        return dateB - dateA;
+      });
+      filtered = sorted.slice(0, 12);
+    } else {
+      filtered = filtered.filter(d => d.category === currentFilter);
+    }
+    
+    if (currentSubfolder) {
+      filtered = filtered.filter(d => d.subfolder === currentSubfolder);
+    }
+    
+    const baseFiltered = currentFilter === 'recentes' 
+      ? allDownloads 
+      : allDownloads.filter(d => d.category === currentFilter);
+    const subfolders = [...new Set(baseFiltered.map(d => d.subfolder).filter(Boolean))];
+    
+    if (subfolders.length > 0 && currentFilter !== 'recentes') {
+      let tabsHTML = `<button class="subfolder-tab ${currentSubfolder === null ? 'active' : ''}" onclick="filterBySubfolder(null)"> Todos <span class="count">${baseFiltered.length}</span></button>`;
+      
+      subfolders.forEach(subfolder => {
+        const count = baseFiltered.filter(d => d.subfolder === subfolder).length;
+        tabsHTML += `<button class="subfolder-tab ${currentSubfolder === subfolder ? 'active' : ''}" onclick="filterBySubfolder('${subfolder}')">📂 ${subfolder} <span class="count">${count}</span></button>`;
+      });
+      
+      subfolderTabs.innerHTML = tabsHTML;
+      subfolderTabs.style.display = 'flex';
+    } else {
+      subfolderTabs.style.display = 'none';
+    }
+    
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+          </svg>
+          <p>No hay descargas disponibles ${currentSubfolder ? `en "${currentSubfolder}"` : 'en esta categoría'}</p>
+        </div>
+      `;
+      return;
+    }
+    
+    const icons = {
+      'samsung': '📱',
+      'xiaomi': '📱',
+      'huawei': '📱',
+      'honor': '📱',
+      'oppo': '📱',
+      'tecno': '📱',
+      'programas': '🛠️',
+      'videos': ''
+    };
+    
+    grid.innerHTML = filtered.map(download => {
+      const icon = icons[download.category] || '📦';
+      const size = download.size || 'N/A';
+      const driveUrl = download.url || '#';
+      
+      return `
+        <div class="download-card">
+          <div class="download-icon">${icon}</div>
+          <h3>${download.name}</h3>
+          <p>${download.description || 'Sin descripción'}</p>
+          <div class="download-meta">
+            <span class="download-tag">${download.category || 'general'}</span>
+            ${download.subfolder ? `<span class="download-tag">📁 ${download.subfolder}</span>` : ''}
+          </div>
+          <div class="download-size">📦 Tamaño: ${size}</div>
+          <button onclick="handleDownload('${download.id}', '${driveUrl}', '${download.name.replace(/'/g, "\\'")}')" class="btn-download">
+            ⬇️ Descargar desde Drive
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>

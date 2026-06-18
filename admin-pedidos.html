@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administrar Pedidos - ServiciosGF</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --surface2: #132336;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --binance: #F0B90B;
+    --red: #ff4455;
+    --purple: #8a2be2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .admin-tabs {
+    display: flex;
+    gap: 12px;
+    max-width: 1400px;
+    margin: 40px auto 0;
+    padding: 0 40px;
+    flex-wrap: wrap;
+  }
+  .admin-tab {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .admin-tab:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .admin-tab.active {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: var(--dark);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 40px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .stat-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+  }
+  .stat-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  .stat-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stat-card.pending .stat-number { color: var(--yellow); }
+  .stat-card.approved .stat-number { color: var(--green); }
+  .stat-card.rejected .stat-number { color: var(--red); }
+  .stat-card.total .stat-number { color: var(--cyan); }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .filters-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px 20px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-box {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+  }
+  .search-box input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 20px 12px 48px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .search-box input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  }
+  .search-box::before {
+    content: '🔍';
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+  }
+  .filter-select {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    min-width: 200px;
+  }
+  .filter-select:focus {
+    border-color: var(--cyan);
+  }
+
+  .table-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 40px 60px;
+  }
+  .orders-table {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .table-header {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 1fr;
+    gap: 0;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--cyan-border);
+    padding: 16px 20px;
+  }
+  .table-header span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+  .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 1fr;
+    gap: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0,229,255,0.08);
+    align-items: center;
+    transition: background 0.2s;
+  }
+  .table-row:hover {
+    background: rgba(0,229,255,0.03);
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .order-id-cell {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    font-weight: 600;
+  }
+  .order-user-cell {
+    font-size: 14px;
+    color: var(--text);
+  }
+  .order-user-cell small {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .order-items-cell {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .order-total-cell {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--yellow);
+    font-weight: 700;
+  }
+  .order-total-cell.positive {
+    color: var(--green);
+  }
+  .order-total-cell.negative {
+    color: var(--red);
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .status-badge.pending { background: rgba(255,204,0,0.15); color: var(--yellow); border: 1px solid var(--yellow); }
+  .status-badge.approved { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid var(--green); }
+  .status-badge.rejected { background: rgba(255,68,85,0.15); color: var(--red); border: 1px solid var(--red); }
+  .status-badge.processing { background: rgba(0,229,255,0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+  .status-badge.completed { background: rgba(138,43,226,0.15); color: #8a2be2; border: 1px solid #8a2be2; }
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .btn-view, .btn-approve, .btn-reject {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .btn-view {
+    background: transparent;
+    border-color: var(--cyan-border);
+    color: var(--cyan);
+  }
+  .btn-view:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+  .btn-approve {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--dark);
+  }
+  .btn-approve:hover {
+    background: #00cc6a;
+    box-shadow: 0 0 16px rgba(0,255,136,0.4);
+  }
+  .btn-reject {
+    background: transparent;
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .btn-reject:hover {
+    background: var(--red);
+    color: white;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+  .empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+  .loading {
+    text-align: center;
+    padding: 80px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .loading::after {
+    content: ' Cargando';
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+  @keyframes dots {
+    0% { content: ' Cargando'; }
+    33% { content: ' Cargando.'; }
+    66% { content: ' Cargando..'; }
+    100% { content: ' Cargando...'; }
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(4,10,18,0.9);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 700px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+  @keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .modal-close:hover {
+    color: var(--cyan);
+  }
+  .modal h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .modal-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .detail-section {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .detail-section h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,229,255,0.08);
+  }
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+  .detail-label {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .detail-value {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .modal-actions .btn-approve,
+  .modal-actions .btn-reject {
+    flex: 1;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlideIn 0.3s ease;
+    min-width: 300px;
+  }
+  .toast.success { border-left: 4px solid var(--green); }
+  .toast.error { border-left: 4px solid var(--red); }
+  @keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 1200px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .table-header, .table-row { grid-template-columns: 1.5fr 1.5fr 1fr 1fr; }
+    .table-header span:nth-child(3), .table-row > *:nth-child(3) { display: none; }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .admin-tabs { padding: 0 20px; flex-direction: column; }
+    .stats-grid { grid-template-columns: 1fr; padding: 20px; }
+    .filters-section { padding: 0 20px 20px; }
+    .table-section { padding: 20px; }
+    .table-header, .table-row { grid-template-columns: 1fr 1fr; }
+    .table-header span:nth-child(3), .table-row > *:nth-child(3),
+    .table-header span:nth-child(4), .table-row > *:nth-child(4) { display: none; }
+    .actions-cell { justify-content: flex-start; }
+    .modal { width: 95vw; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="ServiciosGF" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="registros-imei.html">Servicios</a></li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="admin-pedidos.html" class="active">Admin Pedidos</a></li>
+    <li><a href="admin-streaming.html">Admin Streaming</a></li>
+    <li><a href="admin-recargas.html">Admin Recargas</a></li>
+    <li><a href="admin-dhru.html">Admin DHru</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>Panel de <span class="hl">Administración</span></h1>
+  <p>Gestiona pedidos, paquetes vendidos y transacciones</p>
+</div>
+
+<div class="admin-tabs">
+  <button class="admin-tab active" onclick="switchTab('orders')">📦 Pedidos</button>
+  <button class="admin-tab" onclick="switchTab('packages')">🎁 Paquetes Vendidos</button>
+  <button class="admin-tab" onclick="switchTab('transactions')">💰 Transacciones</button>
+  <button class="admin-tab" onclick="window.location.href='admin-streaming.html'">📺 Entrega de Cuentas</button>
+</div>
+
+<!-- SECCIÓN PEDIDOS -->
+<div id="ordersSection">
+  <div class="stats-grid">
+    <div class="stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-number" id="statPending">0</div>
+      <div class="stat-label">Pendientes</div>
+    </div>
+    <div class="stat-card approved">
+      <div class="stat-icon">✅</div>
+      <div class="stat-number" id="statApproved">0</div>
+      <div class="stat-label">Aprobados</div>
+    </div>
+    <div class="stat-card rejected">
+      <div class="stat-icon">❌</div>
+      <div class="stat-number" id="statRejected">0</div>
+      <div class="stat-label">Rechazados</div>
+    </div>
+    <div class="stat-card total">
+      <div class="stat-icon">📊</div>
+      <div class="stat-number" id="statTotal">0</div>
+      <div class="stat-label">Total Pedidos</div>
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Buscar por Order ID, Email, TXID..." oninput="filterOrders()">
+    </div>
+    <select class="filter-select" id="statusFilter" onchange="filterOrders()">
+      <option value="all">Todos los estados</option>
+      <option value="pending">⏳ Pendientes</option>
+      <option value="approved">✅ Aprobados</option>
+      <option value="rejected">❌ Rechazados</option>
+    </select>
+  </div>
+
+  <div class="table-section">
+    <div class="orders-table" id="ordersTable">
+      <div class="loading"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ SECCIÓN PAQUETES VENDIDOS -->
+<div id="packagesSection" style="display: none;">
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-icon">📦</div>
+      <div class="stat-number" id="statTotalPackages">0</div>
+      <div class="stat-label">Total Vendidos</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-number" id="statPendingPackages">0</div>
+      <div class="stat-label">Pendientes</div>
+    </div>
+    <div class="stat-card approved">
+      <div class="stat-icon">💰</div>
+      <div class="stat-number" id="statPackageRevenue">$0</div>
+      <div class="stat-label">Ingresos del Mes</div>
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text" id="packageSearchInput" placeholder="Buscar por usuario, email o paquete..." oninput="filterPackages()">
+    </div>
+    <select class="filter-select" id="packageStatusFilter" onchange="filterPackages()">
+      <option value="all">Todos los estados</option>
+      <option value="pending">⏳ Pendientes</option>
+      <option value="approved">✅ Aprobados</option>
+      <option value="rejected">❌ Rechazados</option>
+    </select>
+  </div>
+
+  <div class="table-section">
+    <div class="orders-table" id="packagesTable">
+      <div class="loading"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ SECCIÓN TRANSACCIONES (SOLO RECARGAS) -->
+<div id="transactionsSection" style="display: none;">
+  <div class="stats-grid">
+    <div class="stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-number" id="statPendingTx">0</div>
+      <div class="stat-label">Pendientes</div>
+    </div>
+    <div class="stat-card approved">
+      <div class="stat-icon">✅</div>
+      <div class="stat-number" id="statApprovedTx">0</div>
+      <div class="stat-label">Aprobadas</div>
+    </div>
+    <div class="stat-card rejected">
+      <div class="stat-icon">❌</div>
+      <div class="stat-number" id="statRejectedTx">0</div>
+      <div class="stat-label">Rechazadas</div>
+    </div>
+    <div class="stat-card total">
+      <div class="stat-icon">💵</div>
+      <div class="stat-number" id="statTotalTx">$0</div>
+      <div class="stat-label">Total Recargado</div>
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-box">
+      <input type="text" id="txSearchInput" placeholder="Buscar por TXID, Email, Usuario..." oninput="filterTransactions()">
+    </div>
+    <select class="filter-select" id="txStatusFilter" onchange="filterTransactions()">
+      <option value="all">Todos los estados</option>
+      <option value="pending">⏳ Pendientes</option>
+      <option value="approved">✅ Aprobadas</option>
+      <option value="rejected">❌ Rechazadas</option>
+    </select>
+  </div>
+
+  <div class="table-section">
+    <div class="orders-table" id="transactionsTable">
+      <div class="loading"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<!-- MODAL PEDIDO -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOrderModal()">✕</button>
+    <h2>📦 Detalles del Pedido</h2>
+    <p class="modal-sub" id="modalOrderId">Pedido #XXXXXXXX</p>
+    
+    <div class="detail-section">
+      <h3>Información General</h3>
+      <div class="detail-row">
+        <span class="detail-label">Estado:</span>
+        <span class="detail-value" id="modalStatus">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Fecha:</span>
+        <span class="detail-value" id="modalDate">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Método de Pago:</span>
+        <span class="detail-value" id="modalPaymentMethod">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Total:</span>
+        <span class="detail-value" id="modalTotal" style="color:var(--yellow);font-weight:700;">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3>Información del Usuario</h3>
+      <div class="detail-row">
+        <span class="detail-label">Email:</span>
+        <span class="detail-value" id="modalEmail">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Nombre:</span>
+        <span class="detail-value" id="modalUserName">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">User ID:</span>
+        <span class="detail-value" id="modalUserId" style="font-family:'Share Tech Mono',monospace;font-size:11px;">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3>Servicios</h3>
+      <div id="modalItems"></div>
+    </div>
+    
+    <div class="detail-section" id="paymentDetailsSection">
+      <h3>Detalles de Pago</h3>
+      <div class="detail-row">
+        <span class="detail-label">TXID:</span>
+        <span class="detail-value" id="modalTXID" style="font-family:'Share Tech Mono',monospace;font-size:11px;">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Dirección:</span>
+        <span class="detail-value" id="modalWalletAddress" style="font-family:'Share Tech Mono',monospace;font-size:11px;">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Red:</span>
+        <span class="detail-value" id="modalNetwork">-</span>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-approve" id="btnApprove" onclick="approveOrder()">✅ Aprobar Pedido</button>
+      <button class="btn-reject" id="btnReject" onclick="rejectOrder()">❌ Rechazar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ MODAL PAQUETE VENDIDO -->
+<div class="modal-overlay" id="packageModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePackageModal()">✕</button>
+    <h2>🎁 Detalles de Compra de Paquete</h2>
+    <p class="modal-sub" id="packageModalId">Pedido #XXXXXXXX</p>
+    
+    <div class="detail-section">
+      <h3>Información General</h3>
+      <div class="detail-row">
+        <span class="detail-label">Estado:</span>
+        <span class="detail-value" id="packageModalStatus">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Fecha de Compra:</span>
+        <span class="detail-value" id="packageModalDate">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Método de Pago:</span>
+        <span class="detail-value" id="packageModalPaymentMethod">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Precio Pagado:</span>
+        <span class="detail-value" id="packageModalPrice" style="color:var(--yellow);font-weight:700;">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3>Información del Comprador</h3>
+      <div class="detail-row">
+        <span class="detail-label">Email:</span>
+        <span class="detail-value" id="packageModalEmail">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Nombre:</span>
+        <span class="detail-value" id="packageModalUserName">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">User ID:</span>
+        <span class="detail-value" id="packageModalUserId" style="font-family:'Share Tech Mono',monospace;font-size:11px;">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3>Detalles del Paquete</h3>
+      <div class="detail-row">
+        <span class="detail-label">Paquete:</span>
+        <span class="detail-value" id="packageModalName">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Descripción:</span>
+        <span class="detail-value" id="packageModalDesc" style="font-size:12px;">-</span>
+      </div>
+      <div id="packageModalFeaturesContainer"></div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-approve" id="btnApprovePackage" onclick="approvePackage()">✅ Aprobar Compra</button>
+      <button class="btn-reject" id="btnRejectPackage" onclick="rejectPackage()">❌ Rechazar Compra</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ MODAL TRANSACCIÓN (SOLO RECARGAS) -->
+<div class="modal-overlay" id="txModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTxModal()">✕</button>
+    <h2>💰 Detalles de Recarga</h2>
+    <p class="modal-sub" id="txModalId">Recarga #XXXXXXXX</p>
+    
+    <div class="detail-section">
+      <h3>Información General</h3>
+      <div class="detail-row">
+        <span class="detail-label">Estado:</span>
+        <span class="detail-value" id="txModalStatus">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Fecha:</span>
+        <span class="detail-value" id="txModalDate">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Monto a Recargar:</span>
+        <span class="detail-value" id="txModalAmount" style="color:var(--green);font-weight:700;font-size:18px;">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Método:</span>
+        <span class="detail-value" id="txModalMethod">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section">
+      <h3>Información del Usuario</h3>
+      <div class="detail-row">
+        <span class="detail-label">Email:</span>
+        <span class="detail-value" id="txModalEmail">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Nombre:</span>
+        <span class="detail-value" id="txModalUserName">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">User ID:</span>
+        <span class="detail-value" id="txModalUserId" style="font-family:'Share Tech Mono',monospace;font-size:11px;">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section" id="txPaymentDetails">
+      <h3>Detalles de Pago</h3>
+      <div class="detail-row">
+        <span class="detail-label">TXID:</span>
+        <span class="detail-value" id="txModalTXID" style="font-family:'Share Tech Mono',monospace;font-size:11px;word-break:break-all;">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Dirección:</span>
+        <span class="detail-value" id="txModalWallet" style="font-family:'Share Tech Mono',monospace;font-size:11px;word-break:break-all;">-</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Red:</span>
+        <span class="detail-value" id="txModalNetwork">-</span>
+      </div>
+    </div>
+    
+    <div class="detail-section" id="txNotesSection" style="display:none;">
+      <h3>Notas</h3>
+      <p id="txModalNotes" style="color:var(--text-muted);font-size:14px;line-height:1.6;">-</p>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-approve" id="btnApproveTx" onclick="approveTransaction()">✅ Aprobar y Acreditar Saldo</button>
+      <button class="btn-reject" id="btnRejectTx" onclick="rejectTransaction()">❌ Rechazar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let allOrders = [];
+  let allPackageOrders = [];
+  let allTransactions = [];
+  let currentOrderId = null;
+  let currentPackageOrderId = null;
+  let currentTxId = null;
+  let currentTab = 'orders';
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        const role = profileDoc.data().role;
+        if (role !== 'admin' && role !== 'client') {
+          alert('Acceso denegado. Solo administradores pueden ver esta página.');
+          window.location.href = 'index.html';
+          return;
+        }
+      }
+      await loadOrders();
+      await loadPackageOrders();
+      await loadTransactions();
+      updateNav();
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    navAuth.innerHTML = `
+      <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+    `;
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.getElementById('ordersSection').style.display = tab === 'orders' ? 'block' : 'none';
+    document.getElementById('packagesSection').style.display = tab === 'packages' ? 'block' : 'none';
+    document.getElementById('transactionsSection').style.display = tab === 'transactions' ? 'block' : 'none';
+  }
+
+  // ===== PEDIDOS DE SERVICIOS =====
+  async function loadOrders() {
+    try {
+      const ordersSnap = await db.collection('orders').get();
+      allOrders = ordersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      allOrders.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+      
+      updateStats();
+      renderOrders();
+    } catch (error) {
+      console.error('Error cargando pedidos:', error);
+    }
+  }
+
+  function updateStats() {
+    const serviceOrders = allOrders.filter(o => !o.packageId);
+    
+    const pending = serviceOrders.filter(o => (o.status || '').toLowerCase() === 'pending').length;
+    const approved = serviceOrders.filter(o => (o.status || '').toLowerCase() === 'approved').length;
+    const rejected = serviceOrders.filter(o => (o.status || '').toLowerCase() === 'rejected').length;
+    
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statApproved').textContent = approved;
+    document.getElementById('statRejected').textContent = rejected;
+    document.getElementById('statTotal').textContent = serviceOrders.length;
+  }
+
+  function filterOrders() {
+    renderOrders();
+  }
+
+  function renderOrders() {
+    const table = document.getElementById('ordersTable');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    let filtered = allOrders.filter(order => {
+      if (order.packageId) return false;
+      
+      const matchesSearch = 
+        order.id.toLowerCase().includes(searchTerm) ||
+        (order.userEmail && order.userEmail.toLowerCase().includes(searchTerm)) ||
+        (order.paymentDetails?.txid && order.paymentDetails.txid.toLowerCase().includes(searchTerm));
+      
+      const orderStatus = (order.status || 'pending').toLowerCase();
+      const matchesStatus = statusFilter === 'all' || orderStatus === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
+    
+    if (filtered.length === 0) {
+      table.innerHTML = '<div class="empty-state"><p>No se encontraron pedidos</p></div>';
+      return;
+    }
+    
+    const statusLabels = {
+      'pending': '⏳ Pendiente',
+      'approved': '✅ Aprobado',
+      'rejected': '❌ Rechazado'
+    };
+    
+    table.innerHTML = `
+      <div class="table-header">
+        <span>Pedido / Usuario</span>
+        <span>Fecha</span>
+        <span>Servicios</span>
+        <span>Total</span>
+        <span>Estado</span>
+        <span>Acciones</span>
+      </div>
+      ${filtered.map(order => {
+        const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+        const itemCount = order.items ? order.items.length : 0;
+        const statusClass = (order.status || 'pending').toLowerCase();
+        
+        return `
+          <div class="table-row">
+            <div>
+              <div class="order-id-cell">#${order.id.substring(0, 8).toUpperCase()}</div>
+              <div class="order-user-cell">
+                ${order.userName || 'Usuario'}
+                <small>${order.userEmail || 'N/A'}</small>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--text-muted);">
+              ${date.toLocaleDateString('es-ES')}<br>
+              <small>${date.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</small>
+            </div>
+            <div class="order-items-cell">${itemCount} servicio${itemCount !== 1 ? 's' : ''}</div>
+            <div class="order-total-cell">$${(order.totalCredits || order.servicePrice || 0).toFixed(2)}</div>
+            <div><span class="status-badge ${statusClass}">${statusLabels[statusClass] || 'Pendiente'}</span></div>
+            <div class="actions-cell">
+              <button class="btn-view" onclick="viewOrder('${order.id}')">👁️ Ver</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function viewOrder(orderId) {
+    const order = allOrders.find(o => o.id === orderId);
+    if (!order) return;
+    
+    currentOrderId = orderId;
+    const status = (order.status || 'pending').toLowerCase();
+    
+    document.getElementById('modalOrderId').textContent = `Pedido #${orderId.substring(0, 8).toUpperCase()}`;
+    document.getElementById('modalStatus').innerHTML = `<span class="status-badge ${status}">${status}</span>`;
+    
+    const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+    document.getElementById('modalDate').textContent = date.toLocaleString('es-ES');
+    document.getElementById('modalPaymentMethod').textContent = order.paymentMethod === 'binance' ? '💰 Binance' : order.paymentMethod === 'balance' ? '💳 Saldo' : '💳 Otro';
+    document.getElementById('modalTotal').textContent = `$${(order.totalCredits || order.servicePrice || 0).toFixed(2)}`;
+    
+    document.getElementById('modalEmail').textContent = order.userEmail || 'N/A';
+    document.getElementById('modalUserName').textContent = order.userName || 'N/A';
+    document.getElementById('modalUserId').textContent = order.userId || 'N/A';
+    
+    const itemsContainer = document.getElementById('modalItems');
+    if (order.items && order.items.length > 0) {
+      itemsContainer.innerHTML = order.items.map(item => `
+        <div class="detail-row">
+          <span class="detail-label">${item.name} ${item.inputValue ? `(${item.inputValue})` : ''}</span>
+          <span class="detail-value" style="color:var(--yellow);">${item.credits} créditos x${item.quantity}</span>
+        </div>
+      `).join('');
+    } else {
+      itemsContainer.innerHTML = `<p style="color:var(--text-dim);font-size:13px;">Servicio: ${order.serviceName || 'N/A'}</p>`;
+    }
+    
+    if (order.paymentDetails) {
+      document.getElementById('paymentDetailsSection').style.display = 'block';
+      document.getElementById('modalTXID').textContent = order.paymentDetails.txid || 'N/A';
+      document.getElementById('modalWalletAddress').textContent = order.paymentDetails.walletAddress || 'N/A';
+      document.getElementById('modalNetwork').textContent = order.paymentDetails.network || 'N/A';
+    } else {
+      document.getElementById('paymentDetailsSection').style.display = 'none';
+    }
+    
+    const btnApprove = document.getElementById('btnApprove');
+    const btnReject = document.getElementById('btnReject');
+    
+    if (status === 'pending') {
+      btnApprove.style.display = 'block';
+      btnReject.style.display = 'block';
+    } else {
+      btnApprove.style.display = 'none';
+      btnReject.style.display = 'none';
+    }
+    
+    document.getElementById('orderModal').classList.add('open');
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    currentOrderId = null;
+  }
+
+  async function approveOrder() {
+    if (!currentOrderId) return;
+    if (!confirm('¿Aprobar este pedido?')) return;
+    
+    try {
+      await db.collection('orders').doc(currentOrderId).update({
+        status: 'approved',
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy: auth.currentUser.uid
+      });
+      
+      showToast('✅ Pedido aprobado', 'success');
+      closeOrderModal();
+      await loadOrders();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  async function rejectOrder() {
+    if (!currentOrderId) return;
+    const reason = prompt('Motivo del rechazo (opcional):');
+    if (reason === null) return;
+    
+    try {
+      const orderDoc = await db.collection('orders').doc(currentOrderId).get();
+      const orderData = orderDoc.data();
+      
+      const refundAmount = orderData.totalCredits || orderData.servicePrice || 0;
+      
+      if (refundAmount > 0) {
+        const userRef = db.collection('profiles').doc(orderData.userId);
+        await db.runTransaction(async (transaction) => {
+          const userDoc = await transaction.get(userRef);
+          if (!userDoc.exists) throw new Error('Usuario no encontrado');
+          
+          const currentBalance = userDoc.data().balance || 0;
+          transaction.update(userRef, {
+            balance: currentBalance + refundAmount
+          });
+        });
+        
+        await db.collection('transactions').add({
+          userId: orderData.userId,
+          userEmail: orderData.userEmail,
+          userName: orderData.userName,
+          type: 'refund',
+          amount: refundAmount,
+          description: `Reembolso por pedido rechazado: ${reason || 'Sin motivo'}`,
+          orderId: currentOrderId,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+      
+      await db.collection('orders').doc(currentOrderId).update({
+        status: 'rejected',
+        rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        rejectedBy: auth.currentUser.uid,
+        rejectionReason: reason || 'No especificado'
+      });
+      
+      showToast(`❌ Pedido rechazado. $${refundAmount.toFixed(2)} créditos devueltos al usuario.`, 'success');
+      closeOrderModal();
+      await loadOrders();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  // ===== PAQUETES VENDIDOS =====
+  async function loadPackageOrders() {
+    try {
+      const ordersSnap = await db.collection('orders').get();
+      allPackageOrders = ordersSnap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(order => order.packageId);
+      
+      allPackageOrders.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+      
+      updatePackageStats();
+      renderPackages();
+    } catch (error) {
+      console.error('Error cargando paquetes vendidos:', error);
+    }
+  }
+
+  function updatePackageStats() {
+    const pending = allPackageOrders.filter(o => (o.status || '').toLowerCase() === 'pending').length;
+    const approved = allPackageOrders.filter(o => (o.status || '').toLowerCase() === 'approved');
+    
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    const monthRevenue = approved
+      .filter(order => {
+        const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+        return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+      })
+      .reduce((sum, order) => sum + (order.packagePrice || 0), 0);
+    
+    document.getElementById('statTotalPackages').textContent = allPackageOrders.length;
+    document.getElementById('statPendingPackages').textContent = pending;
+    document.getElementById('statPackageRevenue').textContent = `$${monthRevenue.toFixed(2)}`;
+  }
+
+  function filterPackages() {
+    renderPackages();
+  }
+
+  function renderPackages() {
+    const table = document.getElementById('packagesTable');
+    const searchTerm = document.getElementById('packageSearchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('packageStatusFilter').value;
+    
+    let filtered = allPackageOrders.filter(order => {
+      const matchesSearch = 
+        order.id.toLowerCase().includes(searchTerm) ||
+        (order.userEmail && order.userEmail.toLowerCase().includes(searchTerm)) ||
+        (order.userName && order.userName.toLowerCase().includes(searchTerm)) ||
+        (order.packageName && order.packageName.toLowerCase().includes(searchTerm));
+      
+      const orderStatus = (order.status || 'pending').toLowerCase();
+      const matchesStatus = statusFilter === 'all' || orderStatus === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
+    
+    if (filtered.length === 0) {
+      table.innerHTML = '<div class="empty-state"><p>No se encontraron compras de paquetes</p></div>';
+      return;
+    }
+    
+    const statusLabels = {
+      'pending': '⏳ Pendiente',
+      'approved': '✅ Aprobado',
+      'rejected': '❌ Rechazado'
+    };
+    
+    table.innerHTML = `
+      <div class="table-header">
+        <span>Compra / Usuario</span>
+        <span>Paquete</span>
+        <span>Fecha</span>
+        <span>Precio</span>
+        <span>Estado</span>
+        <span>Acciones</span>
+      </div>
+      ${filtered.map(order => {
+        const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+        const statusClass = (order.status || 'pending').toLowerCase();
+        
+        return `
+          <div class="table-row">
+            <div>
+              <div class="order-id-cell">#${order.id.substring(0, 8).toUpperCase()}</div>
+              <div class="order-user-cell">
+                ${order.userName || 'Usuario'}
+                <small>${order.userEmail || 'N/A'}</small>
+              </div>
+            </div>
+            <div class="order-items-cell">
+              <div style="font-weight:600;color:var(--text);">${order.packageName || 'Paquete'}</div>
+              <small style="color:var(--text-dim);font-size:11px;">${order.packageDescription ? order.packageDescription.substring(0, 50) + '...' : ''}</small>
+            </div>
+            <div style="font-size:13px;color:var(--text-muted);">
+              ${date.toLocaleDateString('es-ES')}<br>
+              <small>${date.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</small>
+            </div>
+            <div class="order-total-cell">$${(order.packagePrice || 0).toFixed(2)}</div>
+            <div><span class="status-badge ${statusClass}">${statusLabels[statusClass] || 'Pendiente'}</span></div>
+            <div class="actions-cell">
+              <button class="btn-view" onclick="viewPackageOrder('${order.id}')">👁️ Ver</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function viewPackageOrder(orderId) {
+    const order = allPackageOrders.find(o => o.id === orderId);
+    if (!order) return;
+    
+    currentPackageOrderId = orderId;
+    const status = (order.status || 'pending').toLowerCase();
+    
+    document.getElementById('packageModalId').textContent = `Pedido #${orderId.substring(0, 8).toUpperCase()}`;
+    document.getElementById('packageModalStatus').innerHTML = `<span class="status-badge ${status}">${status}</span>`;
+    
+    const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+    document.getElementById('packageModalDate').textContent = date.toLocaleString('es-ES');
+    document.getElementById('packageModalPaymentMethod').textContent = order.paymentMethod === 'binance' ? '💰 Binance' : order.paymentMethod === 'balance' ? '💳 Saldo' : '💳 Otro';
+    document.getElementById('packageModalPrice').textContent = `$${(order.packagePrice || 0).toFixed(2)}`;
+    
+    document.getElementById('packageModalEmail').textContent = order.userEmail || 'N/A';
+    document.getElementById('packageModalUserName').textContent = order.userName || 'N/A';
+    document.getElementById('packageModalUserId').textContent = order.userId || 'N/A';
+    
+    document.getElementById('packageModalName').textContent = order.packageName || 'Paquete';
+    document.getElementById('packageModalDesc').textContent = order.packageDescription || 'Sin descripción';
+    
+    const featuresContainer = document.getElementById('packageModalFeaturesContainer');
+    if (order.packageFeatures && order.packageFeatures.length > 0) {
+      featuresContainer.innerHTML = `
+        <div style="margin-top:12px;">
+          <div class="detail-label" style="margin-bottom:8px;">Características:</div>
+          ${order.packageFeatures.map(f => `
+            <div class="detail-row">
+              <span class="detail-label">✓</span>
+              <span class="detail-value">${f}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      featuresContainer.innerHTML = '';
+    }
+    
+    const btnApprove = document.getElementById('btnApprovePackage');
+    const btnReject = document.getElementById('btnRejectPackage');
+    
+    if (status === 'pending') {
+      btnApprove.style.display = 'block';
+      btnReject.style.display = 'block';
+    } else {
+      btnApprove.style.display = 'none';
+      btnReject.style.display = 'none';
+    }
+    
+    document.getElementById('packageModal').classList.add('open');
+  }
+
+  function closePackageModal() {
+    document.getElementById('packageModal').classList.remove('open');
+    currentPackageOrderId = null;
+  }
+
+  async function approvePackage() {
+    if (!currentPackageOrderId) return;
+    if (!confirm('¿Aprobar esta compra de paquete?')) return;
+    
+    try {
+      await db.collection('orders').doc(currentPackageOrderId).update({
+        status: 'approved',
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy: auth.currentUser.uid
+      });
+      
+      showToast('✅ Compra de paquete aprobada', 'success');
+      closePackageModal();
+      await loadPackageOrders();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  async function rejectPackage() {
+    if (!currentPackageOrderId) return;
+    const reason = prompt('Motivo del rechazo (opcional):');
+    if (reason === null) return;
+    
+    try {
+      const orderDoc = await db.collection('orders').doc(currentPackageOrderId).get();
+      const orderData = orderDoc.data();
+      
+      if (orderData.packagePrice > 0) {
+        const userRef = db.collection('profiles').doc(orderData.userId);
+        await db.runTransaction(async (transaction) => {
+          const userDoc = await transaction.get(userRef);
+          if (!userDoc.exists) throw new Error('Usuario no encontrado');
+          
+          const currentBalance = userDoc.data().balance || 0;
+          transaction.update(userRef, {
+            balance: currentBalance + orderData.packagePrice
+          });
+        });
+        
+        await db.collection('transactions').add({
+          userId: orderData.userId,
+          userEmail: orderData.userEmail,
+          userName: orderData.userName,
+          type: 'refund',
+          amount: orderData.packagePrice,
+          description: `Reembolso por paquete rechazado: ${reason || 'Sin motivo'}`,
+          orderId: currentPackageOrderId,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+      
+      await db.collection('orders').doc(currentPackageOrderId).update({
+        status: 'rejected',
+        rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        rejectedBy: auth.currentUser.uid,
+        rejectionReason: reason || 'No especificado'
+      });
+      
+      showToast(`❌ Compra rechazada. $${orderData.packagePrice.toFixed(2)} créditos devueltos al usuario.`, 'success');
+      closePackageModal();
+      await loadPackageOrders();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  // ===== ✅ TRANSACCIONES (SOLO RECARGAS - DEPOSIT) =====
+  async function loadTransactions() {
+    try {
+      const txSnap = await db.collection('transactions').get();
+      
+      allTransactions = txSnap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(tx => tx.type === 'deposit');
+      
+      allTransactions.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+      
+      updateTxStats();
+      renderTransactions();
+    } catch (error) {
+      console.error('Error cargando transacciones:', error);
+    }
+  }
+
+  function updateTxStats() {
+    const pending = allTransactions.filter(t => (t.status || '').toLowerCase() === 'pending').length;
+    const approved = allTransactions.filter(t => (t.status || '').toLowerCase() === 'approved').length;
+    const rejected = allTransactions.filter(t => (t.status || '').toLowerCase() === 'rejected').length;
+    
+    const total = allTransactions
+      .filter(t => (t.status || '').toLowerCase() === 'approved')
+      .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+    
+    document.getElementById('statPendingTx').textContent = pending;
+    document.getElementById('statApprovedTx').textContent = approved;
+    document.getElementById('statRejectedTx').textContent = rejected;
+    document.getElementById('statTotalTx').textContent = '$' + total.toFixed(2);
+  }
+
+  function filterTransactions() {
+    renderTransactions();
+  }
+
+  function renderTransactions() {
+    const table = document.getElementById('transactionsTable');
+    const searchTerm = (document.getElementById('txSearchInput').value || '').toLowerCase();
+    const statusFilter = document.getElementById('txStatusFilter').value;
+    
+    let filtered = allTransactions.filter(tx => {
+      const matchesSearch = 
+        tx.id.toLowerCase().includes(searchTerm) ||
+        (tx.txid && tx.txid.toLowerCase().includes(searchTerm)) ||
+        (tx.userEmail && tx.userEmail.toLowerCase().includes(searchTerm)) ||
+        (tx.userName && tx.userName.toLowerCase().includes(searchTerm));
+      
+      const txStatus = (tx.status || 'pending').toLowerCase();
+      const matchesStatus = statusFilter === 'all' || txStatus === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
+    
+    if (filtered.length === 0) {
+      table.innerHTML = '<div class="empty-state"><p>No se encontraron recargas</p></div>';
+      return;
+    }
+    
+    const statusLabels = {
+      'pending': '⏳ Pendiente',
+      'approved': '✅ Aprobado',
+      'rejected': '❌ Rechazado'
+    };
+    
+    table.innerHTML = `
+      <div class="table-header">
+        <span>ID / Usuario</span>
+        <span>Monto</span>
+        <span>Método</span>
+        <span>TXID</span>
+        <span>Estado</span>
+        <span>Acciones</span>
+      </div>
+      ${filtered.map(tx => {
+        const date = tx.createdAt?.toDate ? tx.createdAt.toDate() : new Date(tx.createdAt);
+        const statusClass = (tx.status || 'pending').toLowerCase();
+        const amount = Math.abs(tx.amount || 0);
+        
+        return `
+          <div class="table-row">
+            <div>
+              <div class="order-id-cell">#${tx.id.substring(0, 8).toUpperCase()}</div>
+              <div class="order-user-cell">
+                ${tx.userName || 'Usuario'}
+                <small>${tx.userEmail || 'N/A'}</small>
+              </div>
+            </div>
+            <div class="order-total-cell positive">+$${amount.toFixed(2)}</div>
+            <div class="order-items-cell">${tx.method === 'binance' ? '💰 Binance' : tx.method === 'manual' ? '👤 Manual' : '💳 Otro'}</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);">
+              ${tx.txid ? tx.txid.substring(0, 15) + '...' : '-'}
+            </div>
+            <div><span class="status-badge ${statusClass}">${statusLabels[statusClass] || 'Pendiente'}</span></div>
+            <div class="actions-cell">
+              <button class="btn-view" onclick="viewTransaction('${tx.id}')">👁️ Ver</button>
+              ${statusClass === 'pending' ? `
+                <button class="btn-approve" onclick="quickApproveTx('${tx.id}')">✅</button>
+                <button class="btn-reject" onclick="quickRejectTx('${tx.id}')">❌</button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function viewTransaction(txId) {
+    const tx = allTransactions.find(t => t.id === txId);
+    if (!tx) return;
+    
+    currentTxId = txId;
+    const status = (tx.status || 'pending').toLowerCase();
+    const amount = Math.abs(tx.amount || 0);
+    
+    document.getElementById('txModalId').textContent = `Recarga #${txId.substring(0, 8).toUpperCase()}`;
+    document.getElementById('txModalStatus').innerHTML = `<span class="status-badge ${status}">${status}</span>`;
+    
+    const date = tx.createdAt?.toDate ? tx.createdAt.toDate() : new Date(tx.createdAt);
+    document.getElementById('txModalDate').textContent = date.toLocaleString('es-ES');
+    document.getElementById('txModalAmount').textContent = `+$${amount.toFixed(2)}`;
+    document.getElementById('txModalMethod').textContent = tx.method === 'binance' ? '💰 Binance' : tx.method === 'manual' ? '👤 Manual' : '💳 Otro';
+    
+    document.getElementById('txModalEmail').textContent = tx.userEmail || 'N/A';
+    document.getElementById('txModalUserName').textContent = tx.userName || 'N/A';
+    document.getElementById('txModalUserId').textContent = tx.userId || 'N/A';
+    
+    if (tx.txid) {
+      document.getElementById('txPaymentDetails').style.display = 'block';
+      document.getElementById('txModalTXID').textContent = tx.txid;
+      document.getElementById('txModalWallet').textContent = tx.walletAddress || 'N/A';
+      document.getElementById('txModalNetwork').textContent = tx.network || 'N/A';
+    } else {
+      document.getElementById('txPaymentDetails').style.display = 'none';
+    }
+    
+    if (tx.notes) {
+      document.getElementById('txNotesSection').style.display = 'block';
+      document.getElementById('txModalNotes').textContent = tx.notes;
+    } else {
+      document.getElementById('txNotesSection').style.display = 'none';
+    }
+    
+    const btnApprove = document.getElementById('btnApproveTx');
+    const btnReject = document.getElementById('btnRejectTx');
+    
+    if (status === 'pending') {
+      btnApprove.style.display = 'block';
+      btnReject.style.display = 'block';
+    } else {
+      btnApprove.style.display = 'none';
+      btnReject.style.display = 'none';
+    }
+    
+    document.getElementById('txModal').classList.add('open');
+  }
+
+  function closeTxModal() {
+    document.getElementById('txModal').classList.remove('open');
+    currentTxId = null;
+  }
+
+  async function approveTransaction() {
+    if (!currentTxId) return;
+    if (!confirm('¿Aprobar esta recarga? Se acreditará el saldo al usuario.')) return;
+    
+    try {
+      const txDoc = await db.collection('transactions').doc(currentTxId).get();
+      const txData = txDoc.data();
+      
+      await db.collection('transactions').doc(currentTxId).update({
+        status: 'approved',
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy: auth.currentUser.uid
+      });
+      
+      const amount = Math.abs(txData.amount || 0);
+      
+      const userRef = db.collection('profiles').doc(txData.userId);
+      await db.runTransaction(async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        if (!userDoc.exists) throw new Error('Usuario no encontrado');
+        
+        const currentBalance = userDoc.data().balance || 0;
+        transaction.update(userRef, {
+          balance: currentBalance + amount
+        });
+      });
+      
+      showToast('✅ Recarga aprobada y saldo acreditado', 'success');
+      closeTxModal();
+      await loadTransactions();
+    } catch (error) {
+      console.error('Error:', error);
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  async function rejectTransaction() {
+    if (!currentTxId) return;
+    const reason = prompt('Motivo del rechazo (opcional):');
+    
+    try {
+      await db.collection('transactions').doc(currentTxId).update({
+        status: 'rejected',
+        rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        rejectedBy: auth.currentUser.uid,
+        rejectionReason: reason || 'No especificado'
+      });
+      
+      showToast('❌ Recarga rechazada', 'success');
+      closeTxModal();
+      await loadTransactions();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  async function quickApproveTx(txId) {
+    currentTxId = txId;
+    await approveTransaction();
+  }
+
+  async function quickRejectTx(txId) {
+    currentTxId = txId;
+    await rejectTransaction();
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? '✅' : '⚠️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  document.getElementById('orderModal').addEventListener('click', (e) => {
+    if (e.target.id === 'orderModal') closeOrderModal();
+  });
+  
+  document.getElementById('packageModal').addEventListener('click', (e) => {
+    if (e.target.id === 'packageModal') closePackageModal();
+  });
+
+  document.getElementById('txModal').addEventListener('click', (e) => {
+    if (e.target.id === 'txModal') closeTxModal();
+  });
+</script>
+
+</body>
+</html>

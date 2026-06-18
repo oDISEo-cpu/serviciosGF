@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ServiciosGF — Unlock, Flash & Remotos | Servidor GSM #1 en Latinoamérica</title>
+<meta name="description" content="NexaGSM - Servidor GSM líder en Latinoamérica.">
+<meta name="keywords" content="GSM, unlock, desbloqueo, IMEI, FRP, bypass, flash auth, Xiaomi, Samsung, Honor, iPhone">
+
+<!-- ✅ FAVICON -->
+<link rel="icon" type="image/png" href="logo.png">
+
+<!-- ✅ FUENTES -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<!-- ✅ CSS EXTERNO -->
+<link rel="stylesheet" href="styles.css">
+
+<!-- ✅ EMAILJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function() {
+      emailjs.init("pfm1i63Sw50cnzCoP");
+   })();
+</script>
+
+<!-- ✅ FIREBASE SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-track">
+    <span>🔓 UNLOCK</span> Samsung FRP via IMEI/SN &nbsp;•&nbsp;
+    <span>⚡ FLASH</span> Xiaomi Auth Qcom V5/V6 FDL &nbsp;•&nbsp;
+    <span>🛠️ REMOTE</span> UnlockTool – HydraTool – Licencias &nbsp;•&nbsp;
+    <span>📱 BYPASS</span> iRemoval Pro – Hello iPhone &nbsp;•&nbsp;
+    <span>🔑 KEYS</span> Honor FRP Key – All Models &nbsp;•&nbsp;
+    <span>🌎 GLOBAL</span> Xiaomi Mi Account – All Countries &nbsp;•&nbsp;
+    <span>⚙️ REPAIR</span> Motorola – Tecno – Infinix – Realme &nbsp;•&nbsp;
+    <span>💳 CREDITOS</span> Octoplus – Créditos Servidor &nbsp;•&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <span>🔓 UNLOCK</span> Samsung FRP via IMEI/SN &nbsp;•&nbsp;
+    <span>⚡ FLASH</span> Xiaomi Auth Qcom V5/V6 FDL &nbsp;•&nbsp;
+    <span>🛠️ REMOTE</span> UnlockTool – HydraTool – Licencias &nbsp;•&nbsp;
+    <span>📱 BYPASS</span> iRemoval Pro – Hello iPhone &nbsp;•&nbsp;
+    <span>🔑 KEYS</span> Honor FRP Key – All Models &nbsp;•&nbsp;
+    <span>🌎 GLOBAL</span> Xiaomi Mi Account – All Countries &nbsp;•&nbsp;
+    <span>⚙️ REPAIR</span> Motorola – Tecno – Infinix – Realme &nbsp;•&nbsp;
+    <span>💳 CREDITOS</span> Octoplus – Créditos Servidor
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="Servicios GF" class="logo-img">
+  </a>
+  <ul class="nav-links hidden-nav" id="navLinks">
+    <li class="nav-dropdown">
+      <a href="#">Servicios</a>
+      <div class="dropdown-menu">
+        <a href="registros-imei.html">Registros IMEI / SN</a>
+        <a href="licencias-creditos.html">Licencias & Créditos</a>
+        <a href="remotos-rent-tools.html">Remotos & Rent Tools</a>
+        <a href="servicios-streaming.html">Servicios de Streaming</a>
+      </div>
+    </li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="descargas.html">Descargas</a></li>
+    <li><a href="mis-pedidos.html">Tus pedidos</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </button>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer-overlay" id="drawerOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="mobile-nav-actions" id="mobileNavAuth"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-image" id="heroBgImage"></div>
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-tag">SERVIDOR ONLINE — LATAM &amp; GLOBAL</div>
+      <h1>
+        <span class="line-dim">El Mejor</span>
+        <span class="line-glow">Servidor GSM</span>
+        de Latinoamérica
+      </h1>
+      <p class="hero-sub">
+        <strong>Unlock · Flash Auth · FRP · Bypass · Licencias · Remotos.</strong><br>
+        Tecnología avanzada, precios competitivos y soporte 24/7 para técnicos en todo el mundo.
+      </p>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-logo-container">
+        <div class="hero-logo-ring"></div>
+        <div class="hero-logo-ring-2"></div>
+        <div class="hero-particle"></div>
+        <div class="hero-particle"></div>
+        <div class="hero-particle"></div>
+        <div class="hero-particle"></div>
+        <img src="logo.png" alt="Servicios GF" class="hero-logo">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARRUSEL DE MARCAS -->
+<div class="brands-carousel-section">
+  <div class="brands-carousel-title">
+    <h2>Marcas que <span class="hl">Soportamos</span></h2>
+    <p>Compatibilidad garantizada con las principales marcas del mercado</p>
+  </div>
+  
+  <div class="brands-carousel">
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Samsung -->
+        <div class="carousel-slide">
+          <img src="images/samsung.jpg" alt="Samsung Galaxy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%2300e5ff%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ESamsung%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Samsung</div>
+        </div>
+        
+        <!-- Xiaomi -->
+        <div class="carousel-slide">
+          <img src="images/xiaomi.jpg" alt="Xiaomi" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%23ff6900%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3EXiaomi%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Xiaomi</div>
+        </div>
+        
+        <!-- Apple -->
+        <div class="carousel-slide">
+          <img src="images/apple.jpg" alt="Apple iPhone" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%23ffffff%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3EApple%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Apple</div>
+        </div>
+        
+        <!-- Motorola -->
+        <div class="carousel-slide">
+          <img src="images/motorola.jpg" alt="Motorola" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%2300e5ff%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3EMotorola%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Motorola</div>
+        </div>
+        
+        <!-- Honor -->
+        <div class="carousel-slide">
+          <img src="images/honor.jpg" alt="Honor" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%2300ff88%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3EHonor%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Honor</div>
+        </div>
+        
+        <!-- Realme -->
+        <div class="carousel-slide">
+          <img src="images/realme.jpg" alt="Realme" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%23ffcc00%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ERealme%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Realme</div>
+        </div>
+        
+        <!-- Oppo -->
+        <div class="carousel-slide">
+          <img src="images/oppo.jpg" alt="Oppo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%2300ff88%27 font-family=%27Arial%27 font-size=%2724%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3EOppo%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Oppo</div>
+        </div>
+        
+        <!-- Tecno/Infinix -->
+        <div class="carousel-slide">
+          <img src="images/tecno.jpg" alt="Tecno Infinix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27400%27 height=%27300%27%3E%3Crect fill=%27%231e3a5f%27 width=%27400%27 height=%27300%27/%3E%3Ctext fill=%27%2300e5ff%27 font-family=%27Arial%27 font-size=%2720%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dy=%27.3em%27%3ETecno/Infinix%3C/text%3E%3C/svg%3E'">
+          <div class="carousel-label">Tecno / Infinix</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="carousel-dots" id="carouselDots"></div>
+    
+    <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
+    <button class="carousel-btn next" onclick="moveCarousel(1)">❯</button>
+  </div>
+</div>
+
+<!-- BRANDS BADGES -->
+<div class="brands-section">
+  <div class="brands-label">Compatibilidad garantizada con las principales marcas</div>
+  <div class="brands-grid">
+    <div class="brand-badge">Samsung</div>
+    <div class="brand-badge">Xiaomi</div>
+    <div class="brand-badge">Apple</div>
+    <div class="brand-badge">Motorola</div>
+    <div class="brand-badge">Honor</div>
+    <div class="brand-badge">Realme</div>
+    <div class="brand-badge">Oppo</div>
+    <div class="brand-badge">Tecno / Infinix</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-num">500+</span><span class="stat-label">Servicios Disponibles</span></div>
+  <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Soporte Activo</span></div>
+  <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Garantía Reembolso</span></div>
+  <div class="stat-item"><span class="stat-num">150+</span><span class="stat-label">Países Cubiertos</span></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>SAMSUNG TOOL</strong> Bypass KG</span>
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>XIAOMI</strong> Flash Auth Qcom</span>
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>IREMOVAL PRO</strong> Bypass Hello</span>
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>HONOR FRP KEY</strong> All Models</span>
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>OCTOPLUS</strong> Créditos</span>
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>SAMSUNG TOOL</strong> Bypass KG</span>
+    <span class="ticker-item"><span class="ticker-dot"></span><strong>XIAOMI</strong> Flash Auth Qcom</span>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section>
+  <div class="section-header">
+    <span class="section-tag">// Catálogo de Servicios</span>
+    <h2 class="section-title">Todo lo que <span class="hl">necesitas</span><br>en un solo servidor</h2>
+    <p class="section-desc">Soluciones completas para técnicos GSM: unlock, flash, bypass, licencias y soporte remoto.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+      <h3>Registros IMEI / SN</h3>
+      <p>Desbloqueo oficial vía IMEI y número de serie para las principales marcas del mercado global.</p>
+      <div class="service-tags"><span class="tag">Samsung</span><span class="tag">Xiaomi</span><span class="tag">Honor</span><span class="tag">FRP</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+      <h3>Flash Auth</h3>
+      <p>Autenticación Qualcomm V5/V6 para flash y reparación de firmware en dispositivos Xiaomi y más.</p>
+      <div class="service-tags"><span class="tag">Qcom</span><span class="tag">V5/V6</span><span class="tag">FDL</span><span class="tag">EDL</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
+      <h3>Licencias & Créditos</h3>
+      <p>Activación y recarga de licencias oficiales: UnlockTool, HydraTool, Octoplus y más.</p>
+      <div class="service-tags"><span class="tag">UnlockTool</span><span class="tag">Hydra</span><span class="tag">Octoplus</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
+      <h3>Bypass & FRP</h3>
+      <p>Bypass de cuenta Mi, Google FRP, KG lock Samsung y pantalla Hello iPhone con soporte completo.</p>
+      <div class="service-tags"><span class="tag">Mi Account</span><span class="tag">KG Bypass</span><span class="tag">iRemoval</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
+      <h3>Remotos & Rent Tools</h3>
+      <p>Sesiones remotas y alquiler mensual de herramientas para reparación sin compra de licencia completa.</p>
+      <div class="service-tags"><span class="tag">Remoto</span><span class="tag">3 meses</span><span class="tag">6 meses</span><span class="tag">12 meses</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+      <h3>Repair & Schematics</h3>
+      <p>Acceso a esquemas PCB, repair tools y soluciones para Motorola, Tecno, Infinix, Realme y más.</p>
+      <div class="service-tags"><span class="tag">Borneo</span><span class="tag">Orion</span><span class="tag">DZKJ</span><span class="tag">PCB</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ✅ PRECIOS ACCESIBLES CON ROTACIÓN -->
+<section style="padding-top: 0;" id="precios">
+  <div class="section-header">
+    <span class="section-tag">// Precios Reseller</span>
+    <h2 class="section-title">Precios <span class="hl">Competitivos</span></h2>
+    <p class="section-desc">Tarifas actualizadas para revendedores y técnicos independientes.</p>
+  </div>
+  
+  <!-- ✅ NUEVO: PRECIOS MÁS ACCESIBLES CON ROTACIÓN -->
+  <div id="accessiblePrices" class="accessible-prices-container">
+    <div class="prices-header">
+      <div class="price-icon">💎</div>
+      <h3>Precios Más Accesibles</h3>
+      <p>Los mejores precios del mercado actualizados en tiempo real</p>
+    </div>
+    
+    <div class="prices-rotating-container">
+      <div class="price-card active" data-index="0">
+        <div class="price-badge">🔥 MÁS POPULAR</div>
+        <div class="price-service">Samsung FRP via IMEI</div>
+        <div class="price-amount">$2.50</div>
+        <div class="price-time">⏱️ 1-5 min</div>
+        <div class="price-status dot-green">● Activo</div>
+      </div>
+      
+      <div class="price-card" data-index="1">
+        <div class="price-badge">⚡ RÁPIDO</div>
+        <div class="price-service">Xiaomi Mi Account</div>
+        <div class="price-amount">$4.00</div>
+        <div class="price-time">⏱️ 5-30 min</div>
+        <div class="price-status dot-green">● Activo</div>
+      </div>
+      
+      <div class="price-card" data-index="2">
+        <div class="price-badge">🎯 INSTANT</div>
+        <div class="price-service">Honor FRP Key</div>
+        <div class="price-amount">$3.50</div>
+        <div class="price-time">⏱️ Instant</div>
+        <div class="price-status dot-green">● Activo</div>
+      </div>
+      
+      <div class="price-card" data-index="3">
+        <div class="price-badge">💰 ECONÓMICO</div>
+        <div class="price-service">iPhone Bypass</div>
+        <div class="price-amount">$5.00</div>
+        <div class="price-time">⏱️ 10-20 min</div>
+        <div class="price-status dot-green">● Activo</div>
+      </div>
+      
+      <div class="price-card" data-index="4">
+        <div class="price-badge">🌟 PREMIUM</div>
+        <div class="price-service">UnlockTool License</div>
+        <div class="price-amount">$15.00</div>
+        <div class="price-time">⏱️ 1 mes</div>
+        <div class="price-status dot-green">● Activo</div>
+      </div>
+    </div>
+    
+    <div class="price-dots" id="priceDots">
+      <div class="price-dot active" onclick="goToPrice(0)"></div>
+      <div class="price-dot" onclick="goToPrice(1)"></div>
+      <div class="price-dot" onclick="goToPrice(2)"></div>
+      <div class="price-dot" onclick="goToPrice(3)"></div>
+      <div class="price-dot" onclick="goToPrice(4)"></div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- ✅ CSS ADICIONAL PARA PRECIOS ROTATIVOS -->
+<style>
+  .accessible-prices-container {
+    background: linear-gradient(135deg, var(--dark3) 0%, var(--surface) 100%);
+    border: 2px solid var(--cyan-border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .accessible-prices-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+  }
+  
+  .prices-header {
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .price-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    animation: bounce 2s ease infinite;
+  }
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .prices-header h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 24px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  
+  .prices-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  
+  .prices-rotating-container {
+    position: relative;
+    height: 280px;
+    margin-bottom: 24px;
+  }
+  
+  .price-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    background: var(--dark2);
+    border: 2px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  
+  .price-card.active {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    z-index: 10;
+  }
+  
+  .price-card.prev {
+    opacity: 0.3;
+    transform: translateX(-150%) scale(0.7);
+  }
+  
+  .price-card.next {
+    opacity: 0.3;
+    transform: translateX(50%) scale(0.7);
+  }
+  
+  .price-badge {
+    background: linear-gradient(135deg, var(--cyan), var(--green));
+    color: var(--dark);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  
+  .price-service {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  
+  .price-amount {
+    font-family: 'Orbitron', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--cyan), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  
+  .price-time {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  
+  .price-status {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .dot-green {
+    color: var(--green);
+  }
+  
+  .price-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  
+  .price-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cyan-border);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .price-dot.active {
+    background: var(--cyan);
+    width: 30px;
+    border-radius: 5px;
+  }
+  
+  .price-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .price-btn {
+    background: var(--dark2);
+    border: 2px solid var(--cyan-border);
+    color: var(--cyan);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .price-btn:hover {
+    background: var(--cyan);
+    color: var(--dark);
+    border-color: var(--cyan);
+    transform: scale(1.1);
+  }
+  
+  .price-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  
+  @media (max-width: 600px) {
+    .accessible-prices-container {
+      padding: 24px;
+    }
+    
+    .price-card {
+      padding: 24px;
+    }
+    
+    .price-amount {
+      font-size: 36px;
+    }
+    
+    .price-cta {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<!-- ✅ JAVASCRIPT PARA ROTACIÓN DE PRECIOS -->
+<script>
+  let currentPriceIndex = 0;
+  let priceInterval;
+  let allPrices = [];
+
+  // Inicializar rotación de precios
+  function initPriceRotation() {
+    loadAccessiblePrices();
+    startPriceRotation();
+  }
+
+  // Cargar precios desde la API o Firebase
+  async function loadAccessiblePrices() {
+    try {
+      // Intentar cargar desde la API de DHru si está disponible
+      const response = await fetch('/.netlify/functions/dhru-services');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.SUCCESS && data.SUCCESS[0] && data.SUCCESS[0].services) {
+          allPrices = data.SUCCESS[0].services
+            .filter(service => service.price && parseFloat(service.price) > 0)
+            .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+            .slice(0, 5)
+            .map(service => ({
+              name: service.name || 'Servicio',
+              price: `$${parseFloat(service.price).toFixed(2)}`,
+              time: service.time || 'N/A',
+              badge: getBadgeForPrice(parseFloat(service.price))
+            }));
+          
+          updatePriceCards();
+        }
+      } else {
+        // Usar precios de ejemplo si la API no está disponible
+        loadExamplePrices();
+      }
+    } catch (error) {
+      console.error('Error cargando precios:', error);
+      loadExamplePrices();
+    }
+  }
+
+  // Cargar precios de ejemplo
+  function loadExamplePrices() {
+    allPrices = [
+      { name: 'Samsung FRP via IMEI', price: '$2.50', time: '1-5 min', badge: '🔥 MÁS POPULAR' },
+      { name: 'Xiaomi Mi Account', price: '$4.00', time: '5-30 min', badge: '⚡ RÁPIDO' },
+      { name: 'Honor FRP Key', price: '$3.50', time: 'Instant', badge: '🎯 INSTANT' },
+      { name: 'iPhone Bypass', price: '$5.00', time: '10-20 min', badge: '💰 ECONÓMICO' },
+      { name: 'UnlockTool License', price: '$15.00', time: '1 mes', badge: '🌟 PREMIUM' }
+    ];
+    updatePriceCards();
+  }
+
+  // Obtener badge según el precio
+  function getBadgeForPrice(price) {
+    if (price < 3) return '🔥 MÁS POPULAR';
+    if (price < 5) return '⚡ RÁPIDO';
+    if (price < 10) return '💰 ECONÓMICO';
+    return '🌟 PREMIUM';
+  }
+
+  // Actualizar tarjetas de precios
+  function updatePriceCards() {
+    const container = document.querySelector('.prices-rotating-container');
+    const dotsContainer = document.getElementById('priceDots');
+    
+    if (!container || !dotsContainer) return;
+    
+    // Limpiar contenido actual
+    container.innerHTML = '';
+    dotsContainer.innerHTML = '';
+    
+    // Crear tarjetas
+    allPrices.forEach((price, index) => {
+      const card = document.createElement('div');
+      card.className = `price-card ${index === 0 ? 'active' : ''}`;
+      card.dataset.index = index;
+      card.innerHTML = `
+        <div class="price-badge">${price.badge}</div>
+        <div class="price-service">${price.name}</div>
+        <div class="price-amount">${price.price}</div>
+        <div class="price-time">⏱️ ${price.time}</div>
+        <div class="price-status dot-green">● Activo</div>
+      `;
+      container.appendChild(card);
+      
+      // Crear dot
+      const dot = document.createElement('div');
+      dot.className = `price-dot ${index === 0 ? 'active' : ''}`;
+      dot.onclick = () => goToPrice(index);
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  // Cambiar precio
+  function changePrice(direction) {
+    const cards = document.querySelectorAll('.price-card');
+    const dots = document.querySelectorAll('.price-dot');
+    
+    if (cards.length === 0) return;
+    
+    // Remover clases activas
+    cards[currentPriceIndex].classList.remove('active');
+    dots[currentPriceIndex].classList.remove('active');
+    
+    // Calcular nuevo índice
+    currentPriceIndex = (currentPriceIndex + direction + allPrices.length) % allPrices.length;
+    
+    // Agregar clases activas
+    cards[currentPriceIndex].classList.add('active');
+    dots[currentPriceIndex].classList.add('active');
+    
+    // Resetear intervalo
+    resetPriceInterval();
+  }
+
+  // Ir a precio específico
+  function goToPrice(index) {
+    const cards = document.querySelectorAll('.price-card');
+    const dots = document.querySelectorAll('.price-dot');
+    
+    if (cards.length === 0) return;
+    
+    cards[currentPriceIndex].classList.remove('active');
+    dots[currentPriceIndex].classList.remove('active');
+    
+    currentPriceIndex = index;
+    
+    cards[currentPriceIndex].classList.add('active');
+    dots[currentPriceIndex].classList.add('active');
+    
+    resetPriceInterval();
+  }
+
+  // Iniciar rotación automática
+  function startPriceRotation() {
+    priceInterval = setInterval(() => {
+      changePrice(1);
+    }, 5000); // Cambiar cada 5 segundos
+  }
+
+  // Resetear intervalo
+  function resetPriceInterval() {
+    clearInterval(priceInterval);
+    startPriceRotation();
+  }
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', initPriceRotation);
+</script>
+
+<!-- ✅ BANNER GARANTÍA -->
+<div class="banner-section">
+  <div class="banner-inner">
+    <h2 class="banner-title">Garantía de <span>Devolución del 100%</span><br>del Dinero</h2>
+    <p class="banner-sub">Confiamos plenamente en nuestros servicios. Si tu pedido o solicitud falla, recibirás un reembolso completo.</p>
+    <div class="banner-btns">
+      <a href="terminos.html" target="_blank" class="btn-primary btn-large">Ver Términos & Condiciones</a>
+      <a href="reseller.html" target="_blank" class="btn-ghost btn-large">Planes Reseller</a>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section>
+  <div class="section-header">
+    <span class="section-tag">// Por qué elegirnos</span>
+    <h2 class="section-title">Tu <span class="hl">partner</span> de unlock global</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+      <div><h4>Soporte 24/7</h4><p>Asistencia experta disponible en cualquier momento vía WhatsApp y Telegram.</p></div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div>
+      <div><h4>Compatibilidad Global</h4><p>Accede a todos los servicios desde cualquier dispositivo, en más de 150 países.</p></div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+      <div><h4>Pagos Seguros</h4><p>Cifrado de alto nivel y múltiples métodos de pago.</p></div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon-wrap"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+      <div><h4>Garantía de Reembolso</h4><p>Si el pedido falla, el reembolso es automático y completo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMUNIDAD -->
+<section style="padding-top: 0;">
+  <div class="section-header">
+    <span class="section-tag">// Comunidad</span>
+    <h2 class="section-title">Únete a nuestra <span class="hl">comunidad</span></h2>
+    <p class="section-desc">Mantente actualizado con las últimas novedades y soporte técnico en tiempo real.</p>
+  </div>
+  <div class="social-grid">
+    <a href="https://wa.me/5213221938917" class="social-card wa">
+      <div class="social-icon">💬</div>
+      <div>
+        <h3>Soporte Via WhatsApp</h3>
+        <p>📱 Soporte directo por WhatsApp</p>
+        <span class="social-btn">Unirse al Canal</span>
+      </div>
+    </a>
+    <a href="https://chat.whatsapp.com/LZe47JFjyUWE9OqB6MeAIX" class="social-card tg">
+      <div class="social-icon">🌎</div>
+      <div>
+        <h3>Canal de WhatsApp</h3>
+        <p>Comunidad activa de técnicos GSM. Noticias, tutoriales y soporte 24/7.</p>
+        <span class="social-btn">Unirse al Canal</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <img src="logo.png" alt="Servicios GF" class="logo-img">
+      </a>
+      <p>Distribuimos Licencias, Créditos, Renta de Tools y todos los Servicios Digitales para Técnicos en Todo el Mundo.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-link" title="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+        <a href="#" class="social-link" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></a>
+        <a href="#" class="social-link" title="Telegram"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="registros-imei.html">Registros IMEI / SN</a></li>
+        <li><a href="licencias-creditos.html">Licencias & Créditos</a></li>
+        <li><a href="remotos-rent-tools.html">Remotos & Rent Tools</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="#">Descargas de Tools</a></li>
+        <li><a href="#">Checkers Free</a></li>
+        <li><a href="#">Generador IMEI</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="terminos.html" target="_blank">Términos y Condiciones</a></li>
+        <li><a href="reseller.html" target="_blank">Planes Reseller</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 <strong>Servicios GF</strong>. Todos los derechos reservados.</p>
+    <p style="font-family:'Share Tech Mono',monospace;font-size:12px;">Your Unlock Partner · Worldwide</p>
+  </div>
+</footer>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" id="btnCloseModal">✕</button>
+    <div id="loginForm">
+      <h2>Iniciar Sesión</h2>
+      <p class="modal-sub">Accede a tu panel de control</p>
+      <form id="formLogin">
+        <div class="form-group">
+          <label>Correo Electrónico</label>
+          <input type="email" id="loginEmail" required placeholder="usuario@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary btn-full">Ingresar</button>
+      </form>
+      <p class="form-toggle">¿No tienes cuenta? <a id="linkToRegister">Regístrate gratis</a></p>
+    </div>
+    <div id="registerForm" class="hidden">
+      <h2>Crear Cuenta</h2>
+      <p class="modal-sub">Únete a la comunidad de técnicos GSM</p>
+      
+      <!-- Barra de progreso -->
+      <div style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Paso <span id="currentStep">1</span> de 3</span>
+          <span style="font-size: 11px; color: var(--text-dim);" id="stepPercentage">33%</span>
+        </div>
+        <div style="height: 4px; background: var(--dark3); border-radius: 2px; overflow: hidden;">
+          <div id="progressBar" style="height: 100%; width: 33%; background: linear-gradient(90deg, var(--cyan), var(--green)); transition: width 0.3s;"></div>
+        </div>
+      </div>
+      
+      <form id="formRegister">
+        <!-- PASO 1: Datos de Facturación -->
+        <div id="step1" class="register-step">
+          <h3 style="font-size: 16px; color: var(--cyan); margin-bottom: 16px;">📋 Datos de Facturación</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="regFirstName" required placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" id="regLastName" required placeholder="Tu apellido">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Dirección Principal</label>
+            <input type="text" id="regAddress1" required placeholder="Calle, número, edificio">
+          </div>
+          
+          <div class="form-group">
+            <label>Dirección Secundaria (opcional)</label>
+            <input type="text" id="regAddress2" placeholder="Apartamento, suite, etc.">
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>País</label>
+              <select id="regCountry" required>
+                <option value="">Seleccionar País</option>
+                <option value="VE">Venezuela</option>
+                <option value="CO">Colombia</option>
+                <option value="MX">México</option>
+                <option value="AR">Argentina</option>
+                <option value="CL">Chile</option>
+                <option value="PE">Perú</option>
+                <option value="EC">Ecuador</option>
+                <option value="BO">Bolivia</option>
+                <option value="UY">Uruguay</option>
+                <option value="PY">Paraguay</option>
+                <option value="US">Estados Unidos</option>
+                <option value="ES">España</option>
+                <option value="BR">Brasil</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Departamento/Estado</label>
+              <input type="text" id="regState" required placeholder="Estado o Departamento">
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label>Ciudad</label>
+              <input type="text" id="regCity" required placeholder="Tu ciudad">
+            </div>
+            <div class="form-group">
+              <label>Código Postal</label>
+              <input type="text" id="regZipCode" required placeholder="1000">
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button type="button" class="btn-primary btn-full" onclick="NexaGSM.nextStep(1)">Siguiente →</button>
+          </div>
+        </div>
+        
+        <!-- PASO 2: Datos de Contacto -->
+        <div id="step2" class="register-step" style="display: none;">
+          <h3 style="font-size: 16px; color: var(--cyan); margin-bottom: 16px;">📱 Datos de Contacto</h3>
+          
+          <div class="form-group">
+            <label>Número de Teléfono Móvil</label>
+            <input type="tel" id="regPhone" required placeholder="+58 412 1234567">
+            <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+              Formato: Código de país + número (Ej: +584123456789)
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="regEmail" required placeholder="usuario@ejemplo.com">
+          </div>
+          
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres" minlength="6">
+            <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">
+              Usa al menos 6 caracteres con letras y números
+            </small>
+          </div>
+          
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button type="button" class="btn-ghost" onclick="NexaGSM.prevStep(2)">← Anterior</button>
+            <button type="button" class="btn-primary btn-full" onclick="NexaGSM.nextStep(2)">Siguiente →</button>
+          </div>
+        </div>
+        
+        <!-- PASO 3: Términos y Condiciones -->
+        <div id="step3" class="register-step" style="display: none;">
+          <h3 style="font-size: 16px; color: var(--cyan); margin-bottom: 16px;">✅ Términos y Condiciones</h3>
+          
+          <div style="background: var(--dark3); border: 1px solid var(--cyan-border); border-radius: 6px; padding: 16px; margin-bottom: 20px; max-height: 200px; overflow-y: auto;">
+            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin: 0;">
+              <strong>Términos y Condiciones de ServiciosGF</strong><br><br>
+              1. Al registrarte, aceptas nuestros términos de servicio y política de privacidad.<br>
+              2. Los servicios se pagan con créditos que no vencen.<br>
+              3. Los reembolsos se realizan en créditos, no en dinero real.<br>
+              4. No nos hacemos responsables por información incorrecta proporcionada por el usuario.<br>
+              5. El uso de nuestros servicios es bajo tu propia responsabilidad.<br>
+              6. Nos reservamos el derecho de suspender cuentas por uso indebido.<br>
+              7. Los precios pueden cambiar sin previo aviso.<br>
+              8. El soporte técnico está disponible 24/7 vía WhatsApp y Telegram.<br>
+              9. Al completar el registro, confirmas que tienes al menos 18 años de edad.<br>
+              10. Aceptas recibir notificaciones sobre nuevos servicios y ofertas.<br><br>
+              <strong>Política de Reembolso:</strong><br>
+              Si un servicio falla por causas ajenas al usuario, se reembolsará el 100% en créditos. No se realizan devoluciones de dinero real.
+            </p>
+          </div>
+          
+          <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+              <input type="checkbox" id="regTerms" required style="width: 18px; height: 18px; accent-color: var(--cyan);">
+              <span style="font-size: 13px; color: var(--text);">
+                He leído y acepto los <a href="terminos.html" target="_blank" style="color: var(--cyan);">Términos y Condiciones</a>
+              </span>
+            </label>
+          </div>
+          
+          <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+              <input type="checkbox" id="regNewsletter" style="width: 18px; height: 18px; accent-color: var(--cyan);">
+              <span style="font-size: 13px; color: var(--text);">
+                Deseo recibir noticias y ofertas por correo electrónico
+              </span>
+            </label>
+          </div>
+          
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button type="button" class="btn-ghost" onclick="NexaGSM.prevStep(3)">← Anterior</button>
+            <button type="submit" class="btn-primary btn-full">✅ Crear Cuenta</button>
+          </div>
+        </div>
+      </form>
+      
+      <p class="form-toggle">¿Ya tienes cuenta? <a id="linkToLogin">Inicia sesión</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="adminModal">
+  <div class="modal" style="width:600px;">
+    <button class="modal-close" id="btnCloseAdmin">✕</button>
+    <h2 style="color:#ff6b35;">🔧 Panel de Administración</h2>
+    <p class="modal-sub">Gestión de usuarios registrados</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:6px;padding:16px;text-align:center;">
+        <div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--cyan);" id="adminTotalUsers">0</div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Total Usuarios</div>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:6px;padding:16px;text-align:center;">
+        <div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--green);">1</div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Admin</div>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:6px;padding:16px;text-align:center;">
+        <div style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--yellow);">Activo</div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Sistema</div>
+      </div>
+    </div>
+    <div style="max-height:400px;overflow-y:auto;">
+      <h3 style="font-family:'Orbitron',monospace;font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;text-transform:uppercase;">Usuarios Registrados</h3>
+      <div id="adminUsersList"><p style="text-align:center;color:var(--text-dim);padding:20px;">Cargando usuarios...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ NUEVO: PANEL DE ESTADÍSTICAS PERSONALES -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal" style="width:900px;max-width:95vw;">
+    <button class="modal-close" id="btnCloseClient">✕</button>
+    <h2 style="color:#00ff88;">📊 Mis Estadísticas</h2>
+    <p class="modal-sub">Resumen de tu actividad y gastos</p>
+    
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">💰 Saldo</div>
+        <div id="statsBalance" style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--green);">$0.00</div>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">📦 Total Pedidos</div>
+        <div id="statsTotalOrders" style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--cyan);">0</div>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">💸 Total Gastado</div>
+        <div id="statsTotalSpent" style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--yellow);">$0.00</div>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">✅ Aprobados</div>
+        <div id="statsApproved" style="font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--green);">0</div>
+      </div>
+    </div>
+    
+    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;margin-bottom:24px;">
+      <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-bottom:16px;">🏆 Servicios Más Usados</h3>
+      <div id="statsTopServices" style="display:grid;gap:12px;">
+        <p style="text-align:center;color:var(--text-dim);padding:20px;">Cargando estadísticas...</p>
+      </div>
+    </div>
+    
+    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;">
+      <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-bottom:16px;">📜 Historial Reciente</h3>
+      <div id="statsRecentOrders" style="max-height:300px;overflow-y:auto;">
+        <p style="text-align:center;color:var(--text-dim);padding:20px;">Cargando historial...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ MI PERFIL -->
+<div class="modal-overlay" id="dashboardModal">
+  <div class="modal" style="width:800px;max-width:95vw;">
+    <button class="modal-close" id="btnCloseDashboard">✕</button>
+    <h2 style="color:var(--cyan);">👤 Mi Perfil</h2>
+    <p class="modal-sub">Resumen de tu cuenta y actividad</p>
+    
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Saldo Actual</div>
+        <div id="userBalance" style="font-family:'Orbitron',monospace;font-size:32px;font-weight:700;color:var(--green);">$0.00</div>
+        <button class="btn-primary" style="margin-top:12px;padding:6px 16px;font-size:11px;" onclick="NexaGSM.openAddBalance()">+ Añadir Saldo</button>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Pedidos Activos</div>
+        <div id="userActiveOrders" style="font-family:'Orbitron',monospace;font-size:32px;font-weight:700;color:var(--cyan);">0</div>
+        <a href="mis-pedidos.html" class="btn-primary" style="margin-top:12px;padding:6px 16px;font-size:11px;display:inline-block;text-decoration:none;">+ Ingresar Pedido</a>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;text-align:center;">
+        <div style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Total Pedidos</div>
+        <div id="userTotalOrders" style="font-family:'Orbitron',monospace;font-size:32px;font-weight:700;color:var(--yellow);">0</div>
+        <a href="mis-pedidos.html" style="display:inline-block;margin-top:12px;padding:6px 16px;font-size:11px;background:transparent;border:1px solid var(--cyan-border);color:var(--cyan);border-radius:4px;text-decoration:none;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Ver Historial</a>
+      </div>
+    </div>
+    
+    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;margin-bottom:24px;">
+      <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-bottom:16px;">👤 Perfil Técnico</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">Nombre</div>
+          <div id="profileName" style="color:var(--text);font-weight:600;margin-top:4px;">-</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">Email</div>
+          <div id="profileEmail" style="color:var(--text);font-weight:600;margin-top:4px;">-</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">Dirección IP</div>
+          <div id="profileIP" style="color:var(--cyan);font-weight:600;margin-top:4px;font-family:'Share Tech Mono',monospace;">Cargando...</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;">Último Acceso</div>
+          <div id="profileLastLogin" style="color:var(--text);font-weight:600;margin-top:4px;">-</div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;">
+      <h3 style="font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-bottom:16px;">📰 Noticias y Actualizaciones</h3>
+      <div id="newsContainer" style="max-height:300px;overflow-y:auto;">
+        <p style="text-align:center;color:var(--text-dim);padding:20px;">Cargando noticias...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ MODAL AÑADIR SALDO -->
+<div class="modal-overlay" id="addBalanceModal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('addBalanceModal').classList.remove('open')">✕</button>
+    <h2>💰 Añadir Saldo</h2>
+    <p class="modal-sub">Selecciona el monto que deseas agregar</p>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
+      <button class="btn-ghost" onclick="selectAmount(10)" style="padding:16px;">$10</button>
+      <button class="btn-ghost" onclick="selectAmount(25)" style="padding:16px;">$25</button>
+      <button class="btn-ghost" onclick="selectAmount(50)" style="padding:16px;">$50</button>
+      <button class="btn-ghost" onclick="selectAmount(100)" style="padding:16px;">$100</button>
+    </div>
+    <div class="form-group">
+      <label>O ingresa un monto personalizado</label>
+      <input type="number" id="customAmount" min="1" step="0.01" placeholder="Ej: 40.00">
+    </div>
+    <button class="btn-primary btn-full" onclick="processAddBalance()">Continuar con el Pago</button>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<a href="https://wa.me/5213221938917" class="whatsapp-float" title="Contactar por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<!-- ✅ FIREBASE CONFIG -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+
+<!-- ✅ APP.JS -->
+<script src="app.js" defer></script>
+
+<!-- ✅ EFECTO FADE AL SCROLL -->
+<script>
+  window.addEventListener('scroll', () => {
+    const heroBg = document.getElementById('heroBgImage');
+    const heroSection = document.querySelector('.hero');
+    
+    if (heroBg && heroSection) {
+      const scrolled = window.pageYOffset;
+      const heroHeight = heroSection.offsetHeight;
+      const fadeDistance = heroHeight * 0.5;
+      
+      if (scrolled < fadeDistance) {
+        const opacity = 0.15 - (scrolled / fadeDistance) * 0.1;
+        heroBg.style.opacity = Math.max(0.05, opacity);
+        heroBg.classList.add('faded');
+      } else {
+        heroBg.style.opacity = 0.05;
+      }
+    }
+  });
+</script>
+
+<script src="telegram-notifications.js"></script>
+</body>
+</html>

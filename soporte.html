@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soporte - NexaGSM</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --surface2: #132336;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --whatsapp: #25d366;
+    --telegram: #0088cc;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.3)); }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .btn-primary { background: var(--cyan); border: 1px solid var(--cyan); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: var(--cyan-dim); box-shadow: 0 0 16px rgba(0,229,255,0.3); }
+  
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  /* HERO */
+  .support-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .support-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .support-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .support-hero h1 .hl { color: var(--cyan); }
+  .support-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* SECTIONS */
+  section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  /* WHATSAPP BUTTONS */
+  .whatsapp-support-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+  }
+
+  .whatsapp-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .whatsapp-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .whatsapp-btn:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .whatsapp-btn:hover {
+    transform: translateY(-3px);
+  }
+
+  .whatsapp-group {
+    background: rgba(37, 211, 102, 0.1);
+    border-color: #25D366;
+    color: #25D366;
+  }
+
+  .whatsapp-group:hover {
+    background: #25D366;
+    color: white;
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+  }
+
+  .whatsapp-support {
+    background: rgba(0, 229, 255, 0.1);
+    border-color: #00e5ff;
+    color: #00e5ff;
+  }
+
+  .whatsapp-support:hover {
+    background: #00e5ff;
+    color: var(--dark);
+    box-shadow: 0 8px 24px rgba(0, 229, 255, 0.4);
+  }
+
+  .whatsapp-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .whatsapp-btn span {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* CONTACT CARDS */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+  .contact-card {
+    border-radius: 12px;
+    padding: 40px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+  .contact-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cyan-border);
+  }
+  .contact-card.wa {
+    background: linear-gradient(135deg, rgba(37,211,102,0.1) 0%, rgba(37,211,102,0.05) 100%);
+    border-color: rgba(37,211,102,0.3);
+  }
+  .contact-card.wa:hover {
+    box-shadow: 0 10px 40px rgba(37,211,102,0.2);
+  }
+  .contact-card.tg {
+    background: linear-gradient(135deg, rgba(0,136,204,0.1) 0%, rgba(0,136,204,0.05) 100%);
+    border-color: rgba(0,136,204,0.3);
+  }
+  .contact-card.tg:hover {
+    box-shadow: 0 10px 40px rgba(0,136,204,0.2);
+  }
+  .contact-icon {
+    font-size: 48px;
+    flex-shrink: 0;
+  }
+  .contact-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .contact-card.wa h3 { color: var(--whatsapp); }
+  .contact-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .contact-btn {
+    margin-top: 16px;
+    display: inline-block;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .contact-card.wa .contact-btn {
+    background: var(--whatsapp);
+    color: white;
+  }
+  .contact-card.tg .contact-btn {
+    background: var(--telegram);
+    color: white;
+  }
+
+  /* FAQ */
+  .faq-section {
+    margin-top: 60px;
+  }
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .section-title .hl { color: var(--cyan); }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .faq-question {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .faq-question:hover {
+    background: var(--cyan-glow);
+  }
+  .faq-question h4 {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .faq-icon {
+    font-size: 20px;
+    color: var(--cyan);
+    transition: transform 0.3s;
+  }
+  .faq-item.active .faq-icon {
+    transform: rotate(180deg);
+  }
+  .faq-answer {
+    padding: 0 24px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .faq-item.active .faq-answer {
+    padding: 0 24px 20px;
+    max-height: 500px;
+  }
+  .faq-answer p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 32px;
+    margin-top: 40px;
+  }
+  .info-box h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--cyan);
+    margin-bottom: 16px;
+  }
+  .info-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .info-box li {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+  .info-box li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--cyan);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .support-hero { padding: 60px 20px 30px; }
+    section { padding: 40px 20px; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .contact-card { padding: 28px 24px; }
+    .whatsapp-support-buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .whatsapp-btn {
+      justify-content: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="Servicios GF" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="soporte.html" class="active">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth">
+    <!-- Se genera dinámicamente -->
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="support-hero">
+  <h1>Centro de <span class="hl">Soporte</span></h1>
+  <p>Estamos aquí para ayudarte. Contáctanos o consulta nuestras preguntas frecuentes.</p>
+</div>
+
+<!-- CONTACTO -->
+<section>
+  <!-- BOTONES DE WHATSAPP -->
+  <div class="whatsapp-support-buttons">
+    <!-- Botón 1: WhatsApp Grupo -->
+    <a href="https://chat.whatsapp.com/LZe47JFjyUWE9OqB6MeAIX" 
+      class="whatsapp-btn whatsapp-group" 
+      target="_blank">
+      <svg viewBox="0 0 24 24" class="whatsapp-icon">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+      <span>Grupo de WhatsApp</span>
+    </a>
+    
+    <!-- Botón 2: WhatsApp Soporte Directo -->
+    <a href="https://wa.me/5213221938917" 
+      class="whatsapp-btn whatsapp-support" 
+      target="_blank">
+      <svg viewBox="0 0 24 24" class="whatsapp-icon">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+      <span>Soporte Directo</span>
+    </a>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2 class="section-title">Preguntas <span class="hl">Frecuentes</span></h2>
+    
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>¿Cómo puedo registrarme en la plataforma?</h4>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          <p>Haz clic en "Registrarse" en la página principal, completa el formulario con tu nombre, correo y contraseña. Una vez creada tu cuenta, podrás iniciar sesión y acceder a todos nuestros servicios.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>¿Qué métodos de pago aceptan?</h4>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          <p> Aceptamos Bs para clientes de Venezuela que no manejen Binance pero se cobra a tasa USDT
+              Aceptamos Soles para clientes de Perú el costo de los crédito es 4 Soles Peruano cada crédito
+              Esta bien el de Binance
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>¿Cuánto tiempo tarda un desbloqueo por IMEI?</h4>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          <p>La mayoría de los desbloqueos por IMEI se procesan en 1-5 minutos. Algunos servicios pueden tardar hasta 30 minutos dependiendo del operador y el modelo del dispositivo.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>¿Qué pasa si el servicio no funciona?</h4>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          <p>Ofrecemos garantía de reembolso del 100%. Si un servicio falla, te devolvemos tu dinero automáticamente o te ofrecemos un nuevo intento sin costo adicional.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>¿Puedo revender sus servicios?</h4>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          <p>¡Sí! Ofrecemos planes especiales para revendedores con precios competitivos. Contáctanos para obtener información sobre nuestros planes reseller y comisiones.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <h4>¿Cómo funciona el soporte remoto?</h4>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          <p>Nuestros técnicos expertos se conectan remotamente a tu equipo para realizar el servicio. Solo necesitas tener instalado UltraViewer o AnyDesk y una conexión estable a internet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO BOX -->
+  <div class="info-box">
+    <h3>📋 Información Importante</h3>
+    <ul>
+      <li>Horario de soporte: 24/7 todos los días del año</li>
+      <li>Tiempo de respuesta promedio: 5-15 minutos</li>
+      <li>Garantía de reembolso en todos los servicios</li>
+      <li>Soporte disponible en español e inglés</li>
+      <li>Actualizaciones constantes de nuevos servicios</li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <strong>Servicios GF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<!-- FIREBASE CONFIG -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+
+<!-- LÓGICA -->
+<script>
+  // Toggle FAQ
+  function toggleFaq(element) {
+    const item = element.parentElement;
+    const isActive = item.classList.contains('active');
+    
+    // Cerrar todos
+    document.querySelectorAll('.faq-item').forEach(faq => {
+      faq.classList.remove('active');
+    });
+    
+    // Abrir el clickeado si no estaba activo
+    if (!isActive) {
+      item.classList.add('active');
+    }
+  }
+
+  // Mostrar usuario logueado
+  auth.onAuthStateChanged((user) => {
+    const navAuth = document.getElementById('navAuth');
+    if (user) {
+      db.collection('profiles').doc(user.uid).get().then(doc => {
+        const profile = doc.exists ? doc.data() : { name: user.email.split('@')[0] };
+        const name = profile.name || 'Usuario';
+        const initial = name.charAt(0).toUpperCase();
+        navAuth.innerHTML = `
+          <div class="user-pill">
+            <div class="user-avatar">${initial}</div>
+            <span class="user-name">${name}</span>
+            <button class="btn-logout-text" onclick="cerrarSesion()">Cerrar Sesión</button>
+          </div>
+        `;
+      });
+    } else {
+      navAuth.innerHTML = `
+        <a href="index.html" class="btn-ghost">Iniciar Sesión</a>
+        <a href="index.html" class="btn-primary">Registrarse</a>
+      `;
+    }
+  });
+
+  function cerrarSesion() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+</script>
+
+</body>
+</html>

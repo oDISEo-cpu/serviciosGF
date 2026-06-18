@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Términos y Condiciones - NexaGSM</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; line-height: 1.8; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  .section h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    color: var(--text);
+    margin: 20px 0 12px;
+  }
+
+  .section p {
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .section ul {
+    margin-left: 20px;
+    color: var(--text-muted);
+  }
+
+  .section li {
+    margin-bottom: 8px;
+  }
+
+  .highlight {
+    background: rgba(0,229,255,0.1);
+    border-left: 4px solid var(--cyan);
+    padding: 16px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+
+  .warning {
+    background: rgba(255,68,85,0.1);
+    border-left: 4px solid var(--red);
+    padding: 16px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+
+  .success {
+    background: rgba(0,255,136,0.1);
+    border-left: 4px solid var(--green);
+    padding: 16px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .content { padding: 20px; }
+    .section { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="NexaGSM" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="registros-imei.html">Servicios</a></li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="terminos.html" class="active">Términos</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <h1>Términos y <span class="hl">Condiciones</span></h1>
+  <p>Lee cuidadosamente antes de usar nuestros servicios</p>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <h2>💰 Sistema de Saldo y Créditos</h2>
+    
+    <h3>¿Cómo funciona?</h3>
+    <p>NexaGSM utiliza un sistema de créditos internos para procesar todas las transacciones:</p>
+    <ul>
+      <li><strong>1 USD = 1 crédito</strong> (equivalencia directa)</li>
+      <li>Los créditos se cargan en tu billetera virtual dentro de la plataforma</li>
+      <li>Los créditos <strong>NO vencen</strong> y pueden usarse en cualquier momento</li>
+      <li>Todos los servicios se pagan con créditos de tu saldo</li>
+    </ul>
+
+    <div class="highlight">
+      <strong>✅ Ejemplo:</strong><br>
+      Recargas $100 USD → Tu saldo será de 100 créditos<br>
+      Compras un servicio de $2.50 → Tu saldo será de 97.50 créditos
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔄 Política de Reembolsos</h2>
+    
+    <div class="warning">
+      <strong>⚠️ IMPORTANTE:</strong> Los reembolsos se realizan <strong>EXCLUSIVAMENTE EN CRÉDITOS</strong>, no en dinero real.
+    </div>
+
+    <h3>¿Cuándo aplica un reembolso?</h3>
+    <ul>
+      <li>El servicio fue rechazado por el proveedor</li>
+      <li>El equipo no es compatible con el servicio solicitado</li>
+      <li>Error técnico del sistema</li>
+      <li>El servicio no se pudo completar por causas ajenas al usuario</li>
+    </ul>
+
+    <h3>¿Cómo funciona el reembolso?</h3>
+    <ol style="margin-left: 20px; color: var(--text-muted);">
+      <li>El administrador rechaza el pedido indicando el motivo</li>
+      <li>El sistema devuelve automáticamente el monto total en créditos a tu billetera</li>
+      <li>Los créditos quedan disponibles inmediatamente para usar en otros servicios</li>
+      <li>Se registra una transacción de reembolso en tu historial</li>
+    </ol>
+
+    <div class="success">
+      <strong>✅ Ejemplo Práctico:</strong><br>
+      1. Compras un desbloqueo Samsung FRP por $10 créditos<br>
+      2. El servicio es rechazado (equipo no soportado)<br>
+      3. Recibes reembolso de $10 créditos en tu billetera<br>
+      4. Usas esos $10 créditos para comprar otro servicio<br>
+      <br>
+      <strong>Resultado:</strong> No pierdes dinero, solo lo reutilizas en otro servicio.
+    </div>
+
+    <h3>¿Por qué no se devuelve dinero real?</h3>
+    <ul>
+      <li>Los créditos son más rápidos (reembolso inmediato)</li>
+      <li>No hay comisiones de procesamiento bancarias</li>
+      <li>Puedes usar los créditos inmediatamente en otros servicios</li>
+      <li>Evita problemas con devoluciones a tarjetas/billeteras externas</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📋 Responsabilidades del Usuario</h2>
+    
+    <h3>Antes de comprar un servicio:</h3>
+    <ul>
+      <li>Verifica que el IMEI o datos ingresados sean correctos</li>
+      <li>Confirma que el equipo es compatible con el servicio</li>
+      <li>Lee la descripción del servicio cuidadosamente</li>
+      <li>Asegúrate de tener saldo suficiente en tu billetera</li>
+    </ul>
+
+    <h3>Durante el proceso:</h3>
+    <ul>
+      <li>No apagues ni reinicies el equipo mientras se procesa el servicio</li>
+      <li>Mantén la conexión a internet estable</li>
+      <li>Sigue las instrucciones proporcionadas por el administrador</li>
+    </ul>
+
+    <div class="warning">
+      <strong>❌ No aplica reembolso si:</strong>
+      <ul style="margin-top: 8px;">
+        <li>Ingresaste datos incorrectos (IMEI, modelo, etc.)</li>
+        <li>El equipo fue manipulado por terceros no autorizados</li>
+        <li>No seguiste las instrucciones proporcionadas</li>
+        <li>El servicio se completó exitosamente pero el usuario no sabe usarlo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>💳 Métodos de Recarga</h2>
+    
+    <h3>1. Binance Pay (USDT TRC20)</h3>
+    <ul>
+      <li>Pago automático y rápido</li>
+      <li>Los créditos se acreditan en 5-30 minutos</li>
+      <li>Requiere enviar el TXID (ID de transacción)</li>
+      <li>Usar exclusivamente red <strong>TRC20</strong></li>
+    </ul>
+
+    <h3>2. Transferencia Manual</h3>
+    <ul>
+      <li>Contactar al administrador por WhatsApp/Telegram</li>
+      <li>Coordinar el método de pago (PayPal, Zelle, etc.)</li>
+      <li>El administrador acredita los créditos manualmente</li>
+      <li>Tiempo de acreditación: 1-24 horas</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🎁 Paquetes Especiales</h2>
+    
+    <p>Los paquetes son ofertas especiales con descuento que incluyen múltiples servicios:</p>
+    <ul>
+      <li>Se compran con créditos de tu saldo</li>
+      <li>La compra es automática (no requiere aprobación manual)</li>
+      <li>Los servicios del paquete deben usarse dentro del período indicado</li>
+      <li>No son reembolsables una vez activados</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🔒 Seguridad y Privacidad</h2>
+    
+    <ul>
+      <li>Tus datos personales están protegidos</li>
+      <li>No compartimos información con terceros</li>
+      <li>Las transacciones son seguras y encriptadas</li>
+      <li>El administrador no puede acceder a tu contraseña</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📞 Contacto y Soporte</h2>
+    
+    <p>Si tienes dudas o problemas:</p>
+    <ul>
+      <li><strong>WhatsApp:</strong> +XX XXX XXX XXXX</li>
+      <li><strong>Telegram:</strong> @NexaGSM</li>
+      <li><strong>Email:</strong> soporte@nexagsm.com</li>
+      <li><strong>Horario:</strong> Lunes a Sábado, 9:00 AM - 8:00 PM</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>✅ Aceptación de Términos</h2>
+    
+    <p>Al registrarte y usar NexaGSM, aceptas automáticamente estos términos y condiciones. Si no estás de acuerdo con alguna parte, por favor no uses la plataforma.</p>
+    
+    <div class="highlight">
+      <strong>Última actualización:</strong> Junio 2026
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

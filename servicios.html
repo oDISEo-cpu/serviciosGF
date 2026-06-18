@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestros Servicios - NexaGSM</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+    --purple: #8a2be2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .services-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  .filter-tab {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-tab:hover, .filter-tab.active {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .admin-buttons {
+    display: none;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .btn-add-category {
+    background: var(--purple);
+    border: 1px solid var(--purple);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-add-category:hover {
+    background: #7a1fd1;
+    box-shadow: 0 0 20px rgba(138,43,226,0.4);
+  }
+
+  .btn-add-service {
+    background: var(--green);
+    border: 1px solid var(--green);
+    color: var(--dark);
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-add-service:hover {
+    background: #00cc6a;
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+  }
+
+  .service-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .service-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+  }
+
+  .service-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(0,229,255,0.15);
+    color: var(--cyan);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .service-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .service-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .service-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge.stock { background: rgba(0,255,136,0.15); color: var(--green); }
+  .badge.auto { background: rgba(0,229,255,0.15); color: var(--cyan); }
+  .badge.out { background: rgba(255,68,85,0.15); color: var(--red); }
+
+  .service-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .tag {
+    padding: 4px 10px;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .service-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--cyan-border);
+  }
+
+  .service-price {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  .service-price span {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .btn-select {
+    background: var(--cyan);
+    color: var(--dark);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-select:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+  }
+
+  .service-actions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-edit, .btn-delete {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-edit:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+
+  .btn-delete {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .btn-delete:hover {
+    background: var(--red);
+    color: white;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+    grid-column: 1 / -1;
+  }
+
+  .empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 80px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+    grid-column: 1 / -1;
+  }
+
+  .loading::after {
+    content: ' Cargando servicios';
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+
+  @keyframes dots {
+    0% { content: ' Cargando servicios'; }
+    33% { content: ' Cargando servicios.'; }
+    66% { content: ' Cargando servicios..'; }
+    100% { content: ' Cargando servicios...'; }
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(4,10,18,0.9);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 700px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  @keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover {
+    color: var(--cyan);
+  }
+
+  .modal h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .modal-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--cyan);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .modal-actions .btn-primary {
+    flex: 1;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .btn-primary {
+    background: var(--cyan);
+    border: 1px solid var(--cyan);
+    color: var(--dark);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 16px rgba(0,229,255,0.3);
+  }
+
+  .btn-ghost {
+    flex: 1;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .category-item {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .category-item .delete-category {
+    background: none;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+  }
+
+  .category-item .delete-category:hover {
+    color: #ff6677;
+  }
+
+  /* ✅ ESTILOS PARA MODAL DE PEDIDO */
+  .order-summary {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cyan-border);
+  }
+
+  .summary-item:last-child {
+    border-bottom: none;
+  }
+
+  .summary-item span:first-child {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .summary-item .price {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  .summary-item span:last-child:not(.price) {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .info-box {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid var(--cyan-border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .info-box strong {
+    color: var(--cyan);
+  }
+
+  .service-info-panel {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .service-info-panel h4 {
+    color: var(--cyan);
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .service-info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cyan-border);
+    font-size: 13px;
+  }
+
+  .service-info-item:last-child {
+    border-bottom: none;
+  }
+
+  .service-info-item .label {
+    color: var(--text-muted);
+  }
+
+  .service-info-item .value {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    padding: 12px;
+    background: rgba(0,255,136,0.05);
+    border: 1px solid var(--green);
+    border-radius: 6px;
+  }
+
+  .checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--green);
+  }
+
+  .checkbox-container label {
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .error-message {
+    background: rgba(255,68,85,0.15);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .error-message.show {
+    display: block;
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .services-container { padding: 20px; }
+    .services-header { flex-direction: column; align-items: stretch; }
+    .filter-tabs { justify-content: center; }
+    .admin-buttons { flex-direction: column; width: 100%; }
+    .btn-add-category, .btn-add-service { width: 100%; justify-content: center; }
+    .services-grid { grid-template-columns: 1fr; }
+    .modal { width: 95vw; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="NexaGSM" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html" class="active">Servicios</a></li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>Nuestros <span class="hl">Servicios</span></h1>
+  <p>Catálogo completo de servicios disponibles para técnicos GSM en toda Latinoamérica</p>
+</div>
+
+<div class="services-container">
+  <div class="services-header">
+    <div class="filter-tabs" id="filterTabs">
+      <!-- Se generan dinámicamente -->
+    </div>
+    
+    <div class="admin-buttons" id="adminButtons">
+      <button class="btn-add-category" onclick="openCategoryModal()">
+        📁 Nueva Categoría
+      </button>
+      <button class="btn-add-service" onclick="openAddModal()">
+        ➕ Agregar Servicio
+      </button>
+    </div>
+  </div>
+
+  <div class="services-grid" id="servicesGrid">
+    <div class="loading"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<!-- MODAL AGREGAR/EDITAR SERVICIO -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeServiceModal()"></button>
+    <h2 id="modalTitle">Agregar Servicio</h2>
+    <p class="modal-sub">Completa la información del servicio</p>
+    
+    <form id="serviceForm" onsubmit="saveService(event)">
+      <input type="hidden" id="serviceId">
+      
+      <div class="form-group">
+        <label>Nombre del Servicio</label>
+        <input type="text" id="serviceName" required placeholder="Ej: Samsung FRP via IMEI">
+      </div>
+      
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="serviceDesc" required placeholder="Ej: Desbloqueo de cuenta Google"></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="serviceCategory" required>
+            <!-- Se llena dinámicamente -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Precio (créditos)</label>
+          <input type="number" id="servicePrice" step="0.01" min="0" required placeholder="Ej: 2.50">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>¿En Stock?</label>
+          <select id="serviceStock" required>
+            <option value="true">✅ Sí, disponible</option>
+            <option value="false">❌ Agotado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>¿Automático?</label>
+          <select id="serviceAuto" required>
+            <option value="true"> Sí, automático</option>
+            <option value="false">👤 No, manual</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags (separados por coma)</label>
+        <input type="text" id="serviceTags" placeholder="Ej: Samsung, FRP, IMEI">
+      </div>
+      
+      <!-- ✅ NUEVOS CAMPOS PARA INFORMACIÓN ADICIONAL -->
+      <div class="form-group">
+        <label>Tiempo estimado del proceso</label>
+        <input type="text" id="serviceProcessTime" placeholder="Ej: 1 Hora | 6 minutos">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Tiempo promedio que tarda el servicio</small>
+      </div>
+      
+      <div class="form-group">
+        <label>Información adicional / Instrucciones</label>
+        <textarea id="serviceAdditionalInfo" placeholder="Ej: USAR REDIRECTOR 1.9.7, Conecta en Sideload / VOL + (assistant mode)"></textarea>
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Instrucciones especiales para el usuario</small>
+      </div>
+      
+      <div class="form-group">
+        <label>IP / DNS (opcional)</label>
+        <input type="text" id="serviceIP" placeholder="Ej: 51.161.9.229">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">IP o DNS del servidor (para servicios remotos)</small>
+      </div>
+      
+      <div class="modal-actions">
+        <button type="submit" class="btn-primary">💾 Guardar Servicio</button>
+        <button type="button" class="btn-ghost" onclick="closeServiceModal()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR CATEGORÍA -->
+<div class="modal-overlay" id="categoryModal">
+  <div class="modal" style="width: 500px;">
+    <button class="modal-close" onclick="closeCategoryModal()">✕</button>
+    <h2>📁 Gestionar Categorías</h2>
+    <p class="modal-sub">Crea nuevas categorías para organizar tus servicios</p>
+    
+    <div class="form-group">
+      <label>Nueva Categoría</label>
+      <input type="text" id="newCategoryName" placeholder="Ej: Desbloqueos, Licencias, etc.">
+    </div>
+    
+    <button class="btn-primary" onclick="addCategory()" style="width: 100%; margin-bottom: 20px;">
+      ➕ Agregar Categoría
+    </button>
+    
+    <div class="form-group">
+      <label>Categorías Existentes</label>
+      <div class="category-list" id="categoryList">
+        <!-- Se llena dinámicamente -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ NUEVO: MODAL DE PEDIDO COMPLETO -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOrderModal()">✕</button>
+    <h2 id="orderModalTitle">Ingresar Pedido</h2>
+    <p class="modal-sub" id="orderModalDesc">Completa los datos requeridos para procesar tu pedido</p>
+    
+    <div id="errorMessage" class="error-message"></div>
+    
+    <div class="form-row">
+      <!-- Columna izquierda: Formulario -->
+      <div>
+        <div class="order-summary">
+          <div class="summary-item">
+            <span>Servicio:</span>
+            <span id="orderServiceName" style="color: var(--text); font-weight: 600;">-</span>
+          </div>
+          <div class="summary-item">
+            <span>Precio:</span>
+            <span class="price" id="orderPrice">$0.00</span>
+          </div>
+          <div class="summary-item">
+            <span>Tu saldo actual:</span>
+            <span id="orderBalance">$0.00</span>
+          </div>
+        </div>
+        
+        <form id="orderForm" onsubmit="submitOrder(event)">
+          <div id="dynamicFields"></div>
+          
+          <div class="checkbox-container">
+            <input type="checkbox" id="priceGuaranteed" checked disabled>
+            <label for="priceGuaranteed">✓ Precio final garantizado</label>
+          </div>
+          
+          <button type="submit" class="btn-primary btn-full">
+            🛒 Ingresar Pedido
+          </button>
+        </form>
+      </div>
+      
+      <!-- Columna derecha: Información del servicio -->
+      <div>
+        <div class="service-info-panel">
+          <h4>📋 Información del Servicio</h4>
+          
+          <div class="service-info-item">
+            <span class="label">Precio:</span>
+            <span class="value" id="infoPrice">$0.00</span>
+          </div>
+          
+          <div class="service-info-item">
+            <span class="label">Estado:</span>
+            <span class="value" id="infoStatus">-</span>
+          </div>
+          
+          <div class="service-info-item" id="infoTimeContainer">
+            <span class="label">⏱️ Tiempo del proceso:</span>
+            <span class="value" id="infoProcessTime">-</span>
+          </div>
+          
+          <div id="infoAdditionalContainer">
+            <div class="service-info-item" style="flex-direction: column; align-items: flex-start;">
+              <span class="label" style="margin-bottom: 8px;">📝 Instrucciones:</span>
+              <span class="value" id="infoAdditional" style="line-height: 1.6;">-</span>
+            </div>
+          </div>
+          
+          <div class="service-info-item" id="infoIPContainer">
+            <span class="label">🌐 IP / DNS:</span>
+            <span class="value" id="infoIP">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let userProfile = null;
+  let allServices = [];
+  let allCategories = [];
+  let currentFilter = 'all';
+  let currentOrderService = null;
+
+  const defaultCategories = ['unlock', 'flash', 'bypass', 'license', 'remote', 'repair'];
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        userProfile = profileDoc.data();
+        if (userProfile.role === 'admin' || userProfile.role === 'client') {
+          document.getElementById('adminButtons').style.display = 'flex';
+        }
+      }
+      await loadCategories();
+      await loadServices();
+      updateNav();
+    } else {
+      await loadCategories();
+      await loadServices();
+      updateNav();
+    }
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser && userProfile) {
+      const name = userProfile.name || 'Usuario';
+      const initial = name.charAt(0).toUpperCase();
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${initial}</div>
+          <span class="user-name">${name}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    } else {
+      navAuth.innerHTML = `
+        <a href="index.html" class="btn-ghost">Iniciar Sesión</a>
+        <a href="index.html" class="btn-primary">Registrarse</a>
+      `;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  async function loadCategories() {
+    try {
+      const categoriesSnap = await db.collection('categories').get();
+      
+      if (categoriesSnap.empty) {
+        allCategories = defaultCategories;
+        defaultCategories.forEach(cat => {
+          db.collection('categories').doc(cat).set({
+            name: cat,
+            createdAt: new Date().toISOString()
+          });
+        });
+      } else {
+        allCategories = categoriesSnap.docs.map(doc => doc.id);
+      }
+      
+      renderFilterTabs();
+    } catch (error) {
+      console.error('Error cargando categorías:', error);
+      allCategories = defaultCategories;
+      renderFilterTabs();
+    }
+  }
+
+  function renderFilterTabs() {
+    const filterTabs = document.getElementById('filterTabs');
+    
+    let html = `<button class="filter-tab ${currentFilter === 'all' ? 'active' : ''}" onclick="filterServices('all')">Todos</button>`;
+    
+    allCategories.forEach(cat => {
+      const isActive = currentFilter === cat ? 'active' : '';
+      html += `<button class="filter-tab ${isActive}" onclick="filterServices('${cat}')">${cat}</button>`;
+    });
+    
+    filterTabs.innerHTML = html;
+  }
+
+  async function loadServices() {
+    try {
+      const servicesSnap = await db.collection('services').get();
+      allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      allServices.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+        return dateB - dateA;
+      });
+      
+      renderServices();
+    } catch (error) {
+      console.error('Error cargando servicios:', error);
+      document.getElementById('servicesGrid').innerHTML = `
+        <div class="empty-state">
+          <p style="color:var(--red);">Error al cargar servicios</p>
+          <button onclick="loadServices()" class="btn-primary" style="margin-top:20px;">🔄 Reintentar</button>
+        </div>
+      `;
+    }
+  }
+
+  function filterServices(category) {
+    currentFilter = category;
+    renderFilterTabs();
+    renderServices();
+  }
+
+  function renderServices() {
+    const grid = document.getElementById('servicesGrid');
+    
+    let filtered = allServices;
+    if (currentFilter !== 'all') {
+      filtered = allServices.filter(s => s.category === currentFilter);
+    }
+    
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+          </svg>
+          <p>No hay servicios disponibles</p>
+        </div>
+      `;
+      return;
+    }
+    
+    const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
+    
+    grid.innerHTML = filtered.map(service => {
+      const categoryLabels = {
+        'unlock': 'Unlock',
+        'flash': 'Flash',
+        'bypass': 'Bypass/FRP',
+        'license': 'Licencias',
+        'remote': 'Remotos',
+        'repair': 'Reparación'
+      };
+      
+      const tags = service.tags ? (Array.isArray(service.tags) ? service.tags : service.tags.split(',').map(t => t.trim())) : [];
+      
+      return `
+        <div class="service-card">
+          ${isAdmin ? `
+            <div class="service-actions">
+              <button class="btn-edit" onclick="editService('${service.id}')">✏️ Editar</button>
+              <button class="btn-delete" onclick="deleteService('${service.id}')">🗑️</button>
+            </div>
+          ` : ''}
+          
+          <div class="service-category">${categoryLabels[service.category] || service.category}</div>
+          <h3>${service.name}</h3>
+          <p>${service.description || 'Sin descripción'}</p>
+          
+          <div class="service-badges">
+            ${service.stock ? '<span class="badge stock">✓ En Stock</span>' : '<span class="badge out">Agotado</span>'}
+            ${service.autoServer ? '<span class="badge auto">⚡ Auto</span>' : ''}
+          </div>
+          
+          ${tags.length > 0 ? `
+            <div class="service-tags">
+              ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+          ` : ''}
+          
+          <div class="service-footer">
+            <div class="service-price">$${parseFloat(service.price || service.credits || 0).toFixed(2)} <span>créditos</span></div>
+            <button class="btn-select" onclick="selectService('${service.id}')">Seleccionar</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openCategoryModal() {
+    document.getElementById('categoryModal').classList.add('open');
+    renderCategoryList();
+  }
+
+  function closeCategoryModal() {
+    document.getElementById('categoryModal').classList.remove('open');
+    document.getElementById('newCategoryName').value = '';
+  }
+
+  function renderCategoryList() {
+    const categoryList = document.getElementById('categoryList');
+    
+    categoryList.innerHTML = allCategories.map(cat => `
+      <div class="category-item">
+        <span>${cat}</span>
+        ${!defaultCategories.includes(cat) ? `
+          <button class="delete-category" onclick="deleteCategory('${cat}')">✕</button>
+        ` : ''}
+      </div>
+    `).join('');
+  }
+
+  async function addCategory() {
+    const categoryName = document.getElementById('newCategoryName').value.trim().toLowerCase();
+    
+    if (!categoryName) {
+      showToast('⚠️ Ingresa un nombre de categoría', 'error');
+      return;
+    }
+    
+    if (allCategories.includes(categoryName)) {
+      showToast('⚠️ Esta categoría ya existe', 'error');
+      return;
+    }
+    
+    try {
+      await db.collection('categories').doc(categoryName).set({
+        name: categoryName,
+        createdAt: new Date().toISOString()
+      });
+      
+      allCategories.push(categoryName);
+      renderFilterTabs();
+      renderCategoryList();
+      document.getElementById('newCategoryName').value = '';
+      
+      showToast('✅ Categoría agregada', 'success');
+    } catch (error) {
+      showToast('❌ Error al agregar categoría: ' + error.message, 'error');
+    }
+  }
+
+  async function deleteCategory(categoryName) {
+    if (!confirm(`¿Eliminar la categoría "${categoryName}"?`)) return;
+    
+    try {
+      await db.collection('categories').doc(categoryName).delete();
+      allCategories = allCategories.filter(c => c !== categoryName);
+      renderFilterTabs();
+      renderCategoryList();
+      
+      showToast('🗑️ Categoría eliminada', 'success');
+    } catch (error) {
+      showToast('❌ Error al eliminar categoría: ' + error.message, 'error');
+    }
+  }
+
+  function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Agregar Servicio';
+    document.getElementById('serviceForm').reset();
+    document.getElementById('serviceId').value = '';
+    
+    const categorySelect = document.getElementById('serviceCategory');
+    categorySelect.innerHTML = allCategories.map(cat => 
+      `<option value="${cat}">${cat}</option>`
+    ).join('');
+    
+    document.getElementById('serviceModal').classList.add('open');
+  }
+
+  function closeServiceModal() {
+    document.getElementById('serviceModal').classList.remove('open');
+  }
+
+  async function editService(serviceId) {
+    const service = allServices.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    document.getElementById('modalTitle').textContent = 'Editar Servicio';
+    document.getElementById('serviceId').value = service.id;
+    document.getElementById('serviceName').value = service.name || '';
+    document.getElementById('serviceDesc').value = service.description || '';
+    
+    const categorySelect = document.getElementById('serviceCategory');
+    categorySelect.innerHTML = allCategories.map(cat => 
+      `<option value="${cat}" ${cat === service.category ? 'selected' : ''}>${cat}</option>`
+    ).join('');
+    
+    document.getElementById('servicePrice').value = service.price || service.credits || 0;
+    document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
+    document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
+    document.getElementById('serviceTags').value = service.tags ? (Array.isArray(service.tags) ? service.tags.join(', ') : service.tags) : '';
+    
+    // ✅ NUEVOS CAMPOS
+    document.getElementById('serviceProcessTime').value = service.processTime || '';
+    document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
+    document.getElementById('serviceIP').value = service.ip || '';
+    
+    document.getElementById('serviceModal').classList.add('open');
+  }
+
+  async function saveService(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('serviceId').value;
+    const tagsRaw = document.getElementById('serviceTags').value;
+    const tagsArray = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(t => t) : [];
+    
+    const serviceData = {
+      name: document.getElementById('serviceName').value,
+      description: document.getElementById('serviceDesc').value,
+      category: document.getElementById('serviceCategory').value,
+      price: parseFloat(document.getElementById('servicePrice').value),
+      credits: parseFloat(document.getElementById('servicePrice').value),
+      stock: document.getElementById('serviceStock').value === 'true',
+      autoServer: document.getElementById('serviceAuto').value === 'true',
+      tags: tagsArray,
+      // ✅ NUEVOS CAMPOS
+      processTime: document.getElementById('serviceProcessTime').value.trim(),
+      additionalInfo: document.getElementById('serviceAdditionalInfo').value.trim(),
+      ip: document.getElementById('serviceIP').value.trim(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    try {
+      if (id) {
+        await db.collection('services').doc(id).update(serviceData);
+        showToast('✅ Servicio actualizado', 'success');
+      } else {
+        serviceData.createdAt = new Date().toISOString();
+        serviceData.createdBy = currentUser.uid;
+        await db.collection('services').add(serviceData);
+        showToast('✅ Servicio agregado', 'success');
+      }
+      
+      closeServiceModal();
+      await loadServices();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  async function deleteService(serviceId) {
+    if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
+    
+    try {
+      await db.collection('services').doc(serviceId).delete();
+      showToast('🗑️ Servicio eliminado', 'success');
+      await loadServices();
+    } catch (error) {
+      showToast('❌ Error al eliminar: ' + error.message, 'error');
+    }
+  }
+
+  // ✅ SELECCIONAR SERVICIO Y ABRIR MODAL DE PEDIDO
+  function selectService(serviceId) {
+    if (!currentUser) {
+      showToast('⚠️ Debes iniciar sesión para comprar', 'error');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+      return;
+    }
+    
+    const service = allServices.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    const price = service.price || service.credits || 0;
+    const balance = userProfile?.balance || 0;
+    
+    // Verificar saldo
+    if (balance < price) {
+      showError('❌ No tienes suficiente saldo');
+      return;
+    }
+    
+    // Abrir modal de pedido
+    currentOrderService = service;
+    
+    document.getElementById('orderModalTitle').textContent = 'Ingresar Pedido';
+    document.getElementById('orderServiceName').textContent = service.name;
+    document.getElementById('orderPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('orderBalance').textContent = '$' + balance.toFixed(2);
+    
+    // ✅ MOSTRAR INFORMACIÓN DEL SERVICIO
+    document.getElementById('infoPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('infoStatus').innerHTML = service.stock ? '<span style="color: var(--green);">✓ EN STOCK</span>' : '<span style="color: var(--red);">AGOTADO</span>';
+    
+    if (service.processTime) {
+      document.getElementById('infoProcessTime').textContent = service.processTime;
+      document.getElementById('infoTimeContainer').style.display = 'flex';
+    } else {
+      document.getElementById('infoTimeContainer').style.display = 'none';
+    }
+    
+    if (service.additionalInfo) {
+      document.getElementById('infoAdditional').textContent = service.additionalInfo;
+      document.getElementById('infoAdditionalContainer').style.display = 'block';
+    } else {
+      document.getElementById('infoAdditionalContainer').style.display = 'none';
+    }
+    
+    if (service.ip) {
+      document.getElementById('infoIP').textContent = service.ip;
+      document.getElementById('infoIPContainer').style.display = 'flex';
+    } else {
+      document.getElementById('infoIPContainer').style.display = 'none';
+    }
+    
+    // Generar campos dinámicos según categoría
+    generateDynamicFields(service.category);
+    
+    // Ocultar mensaje de error
+    hideError();
+    
+    document.getElementById('orderModal').classList.add('open');
+  }
+
+  // ✅ GENERAR CAMPOS DINÁMICOS SEGÚN CATEGORÍA
+  function generateDynamicFields(category) {
+    const container = document.getElementById('dynamicFields');
+    let fieldsHTML = '';
+    
+    if (category === 'license') {
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Para comprar una licencia de herramienta, necesitamos el usuario y correo con el que te registraste en la herramienta.
+        </div>
+        
+        <div class="form-group">
+          <label>Username de la herramienta *</label>
+          <input type="text" id="orderUsername" required placeholder="Usuario con el que te registraste">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Ingresa el username exacto de tu cuenta en la herramienta</small>
+        </div>
+        
+        <div class="form-group">
+          <label>Correo electrónico *</label>
+          <input type="email" id="orderEmail" required placeholder="correo@ejemplo.com">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Email registrado en la herramienta</small>
+        </div>
+      `;
+    } else if (category === 'credits') {
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Para recargar créditos en una herramienta (ej: Ultra Auth), necesitamos el nombre de usuario con el que te registraste.
+        </div>
+        
+        <div class="form-group">
+          <label>Username de la herramienta *</label>
+          <input type="text" id="orderUsername" required placeholder="Usuario con el que te registraste">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Ingresa el username exacto de tu cuenta</small>
+        </div>
+      `;
+    } else if (category === 'unlock' || category === 'remote') {
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Para procesar este servicio, necesitamos el IMEI o número de serie del dispositivo.
+        </div>
+        
+        <div class="form-group">
+          <label>IMEI / Número de Serie *</label>
+          <input type="text" id="orderIMEI" required placeholder="123456789012345">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Marca *#06# en tu teléfono para ver el IMEI</small>
+        </div>
+      `;
+    } else {
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Ingresa los datos necesarios para procesar tu pedido.
+        </div>
+        
+        <div class="form-group">
+          <label>Datos adicionales *</label>
+          <textarea id="orderData" required placeholder="Ingresa la información necesaria..."></textarea>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = fieldsHTML;
+  }
+
+  // ✅ ENVIAR PEDIDO
+  async function submitOrder(e) {
+    e.preventDefault();
+    
+    if (!currentOrderService || !currentUser) return;
+    
+    hideError();
+    
+    const price = currentOrderService.price || currentOrderService.credits || 0;
+    const category = currentOrderService.category;
+    const balance = userProfile?.balance || 0;
+    
+    // Verificar saldo nuevamente
+    if (balance < price) {
+      showError('❌ No tienes suficiente saldo');
+      return;
+    }
+    
+    // Crear objeto de datos del pedido
+    const orderData = {
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      userName: userProfile.name || 'Usuario',
+      serviceId: currentOrderService.id,
+      serviceName: currentOrderService.name,
+      servicePrice: price,
+      category: category,
+      status: 'pending',
+      paymentMethod: 'balance',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // Agregar campos específicos según categoría
+    if (category === 'license') {
+      const username = document.getElementById('orderUsername').value.trim();
+      const email = document.getElementById('orderEmail').value.trim();
+      
+      if (!username || !email) {
+        showError('⚠️ Por favor completa todos los campos obligatorios');
+        return;
+      }
+      
+      orderData.username = username;
+      orderData.email = email;
+      orderData.inputData = `Username: ${username} | Email: ${email}`;
+    } else if (category === 'credits') {
+      const username = document.getElementById('orderUsername').value.trim();
+      
+      if (!username) {
+        showError('⚠️ Por favor ingresa el username');
+        return;
+      }
+      
+      orderData.username = username;
+      orderData.inputData = `Username: ${username}`;
+    } else if (category === 'unlock' || category === 'remote') {
+      const imei = document.getElementById('orderIMEI').value.trim();
+      
+      if (!imei) {
+        showError('️ Por favor ingresa el IMEI/SN');
+        return;
+      }
+      
+      orderData.imei = imei;
+      orderData.inputData = `IMEI/SN: ${imei}`;
+    } else {
+      const data = document.getElementById('orderData').value.trim();
+      
+      if (!data) {
+        showError('⚠️ Por favor ingresa los datos requeridos');
+        return;
+      }
+      
+      orderData.inputData = data;
+    }
+    
+    // Confirmar pedido
+    const confirmPurchase = confirm(
+      `✅ Confirmar Compra\n\n` +
+      `Servicio: ${currentOrderService.name}\n` +
+      `Precio: $${price.toFixed(2)}\n` +
+      `Categoría: ${category}\n\n` +
+      `¿Confirmas la compra?`
+    );
+    
+    if (!confirmPurchase) return;
+    
+    try {
+      // Crear pedido
+      await db.collection('orders').add(orderData);
+      
+      // Descontar saldo
+      const newBalance = balance - price;
+      await db.collection('profiles').doc(currentUser.uid).update({
+        balance: newBalance,
+        lastTransaction: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Registrar transacción
+      await db.collection('transactions').add({
+        userId: currentUser.uid,
+        type: 'purchase',
+        amount: -price,
+        description: `Pedido: ${currentOrderService.name}`,
+        balanceBefore: balance,
+        balanceAfter: newBalance,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      userProfile.balance = newBalance;
+      
+      showToast('✅ ¡Pedido creado exitosamente!', 'success');
+      
+      closeOrderModal();
+      
+      setTimeout(() => {
+        window.location.href = 'mis-pedidos.html';
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error creando pedido:', error);
+      showError('❌ Error al crear el pedido: ' + error.message);
+    }
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    document.getElementById('dynamicFields').innerHTML = '';
+    currentOrderService = null;
+    hideError();
+  }
+
+  function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+  }
+
+  function hideError() {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.classList.remove('show');
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.style.cssText = 'position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      background: var(--surface);
+      border: 1px solid ${type === 'success' ? 'var(--green)' : 'var(--red)'};
+      border-left: 4px solid ${type === 'success' ? 'var(--green)' : 'var(--red)'};
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: slideIn 0.3s ease;
+      min-width: 300px;
+    `;
+    
+    const icon = type === 'success' ? '✅' : '️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'fadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  document.getElementById('serviceModal').addEventListener('click', (e) => {
+    if (e.target.id === 'serviceModal') closeServiceModal();
+  });
+
+  document.getElementById('categoryModal').addEventListener('click', (e) => {
+    if (e.target.id === 'categoryModal') closeCategoryModal();
+  });
+
+  document.getElementById('orderModal').addEventListener('click', (e) => {
+    if (e.target.id === 'orderModal') closeOrderModal();
+  });
+
+  function applyFilterFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const filter = urlParams.get('filter');
+    
+    if (filter && filter !== 'all') {
+      const filterMap = {
+        'unlock': 'unlock',
+        'license': 'license',
+        'remote': 'remote',
+        'all': 'all'
+      };
+      
+      const categoryToFilter = filterMap[filter] || filter;
+      
+      currentFilter = categoryToFilter;
+      renderFilterTabs();
+      renderServices();
+      
+      console.log('✅ Filtro aplicado desde URL:', categoryToFilter);
+    }
+  }
+
+  setTimeout(applyFilterFromURL, 500);
+
+</script>
+
+</body>
+</html>

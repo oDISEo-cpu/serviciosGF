@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Pedidos - NexaGSM</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto 40px;
+    padding: 0 40px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .stat-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+  }
+  .stat-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  .stat-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stat-card.total .stat-number { color: var(--cyan); }
+  .stat-card.month .stat-number { color: var(--green); }
+  .stat-card.pending .stat-number { color: var(--yellow); }
+  .stat-card.approved .stat-number { color: var(--green); }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .orders-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+  }
+
+  .filter-section {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-section select,
+  .filter-section input {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+  }
+  .filter-section select:focus,
+  .filter-section input:focus {
+    border-color: var(--cyan);
+  }
+
+  .order-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .order-card:hover {
+    border-color: var(--cyan);
+    transform: translateX(4px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1);
+  }
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--cyan-border);
+  }
+  .order-id {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--cyan);
+  }
+  .order-user {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .order-status {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .order-status.pending {
+    background: rgba(255, 204, 0, 0.15);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+  }
+  .order-status.approved {
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+  .order-status.rejected {
+    background: rgba(255, 68, 85, 0.15);
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+  .order-items {
+    margin-bottom: 16px;
+  }
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cyan-border);
+  }
+  .order-item:last-child {
+    border-bottom: none;
+  }
+  .order-item-name {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .order-item-credits {
+    font-family: 'Orbitron', monospace;
+    color: var(--yellow);
+  }
+  .order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--cyan-border);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .order-total {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .loading {
+    text-align: center;
+    padding: 60px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .stats-grid { grid-template-columns: 1fr; padding: 0 20px; }
+    .orders-container { padding: 0 20px 60px; }
+    .filter-section { flex-direction: column; }
+    .order-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .order-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="NexaGSM" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="pedidos.html">Pedidos</a></li>
+    <li><a href="panel-pedidos.html" class="active">Panel Pedidos</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>Panel de <span class="hl">Pedidos</span></h1>
+  <p>Gestión y estadísticas de todos los pedidos del sistema</p>
+</div>
+
+<!-- Estadísticas -->
+<div class="stats-grid">
+  <div class="stat-card total">
+    <div class="stat-icon">📊</div>
+    <div class="stat-number" id="statTotal">0</div>
+    <div class="stat-label">Total Pedidos</div>
+  </div>
+  <div class="stat-card month">
+    <div class="stat-icon">📅</div>
+    <div class="stat-number" id="statMonth">$0</div>
+    <div class="stat-label">Ventas del Mes</div>
+  </div>
+  <div class="stat-card pending">
+    <div class="stat-icon">⏳</div>
+    <div class="stat-number" id="statPending">0</div>
+    <div class="stat-label">Pendientes</div>
+  </div>
+  <div class="stat-card approved">
+    <div class="stat-icon">✅</div>
+    <div class="stat-number" id="statApproved">0</div>
+    <div class="stat-label">Aprobados</div>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="orders-container">
+  <div class="filter-section">
+    <select id="filterStatus" onchange="filterOrders()">
+      <option value="all">Todos los estados</option>
+      <option value="pending">⏳ Pendientes</option>
+      <option value="approved">✅ Aprobados</option>
+      <option value="rejected">❌ Rechazados</option>
+    </select>
+    <input type="month" id="filterMonth" onchange="filterOrders()">
+    <input type="text" id="filterSearch" placeholder="🔍 Buscar por usuario o ID..." oninput="filterOrders()">
+  </div>
+
+  <div id="ordersContainer">
+    <div class="loading">Cargando pedidos...</div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let allOrders = [];
+  let currentUser = null;
+  let userRole = null;
+
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+    
+    currentUser = user;
+    
+    // Verificar rol
+    const profileDoc = await db.collection('profiles').doc(user.uid).get();
+    if (profileDoc.exists) {
+      userRole = profileDoc.data().role;
+      if (userRole !== 'admin' && userRole !== 'client') {
+        alert('❌ Acceso denegado. Solo administradores pueden ver esta página.');
+        window.location.href = 'index.html';
+        return;
+      }
+      updateNav(user, profileDoc.data());
+      await loadAllOrders();
+    }
+  });
+
+  function updateNav(user, profile) {
+    const navAuth = document.getElementById('navAuth');
+    const name = profile.name || 'Usuario';
+    const initial = name.charAt(0).toUpperCase();
+    navAuth.innerHTML = `
+      <div class="user-pill">
+        <div class="user-avatar">${initial}</div>
+        <span class="user-name">${name}</span>
+        <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+      </div>
+    `;
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  async function loadAllOrders() {
+    const container = document.getElementById('ordersContainer');
+    
+    try {
+      const ordersSnap = await db.collection('orders').get();
+      
+      if (ordersSnap.empty) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p style="font-size:16px;">No hay pedidos en el sistema</p>
+          </div>
+        `;
+        return;
+      }
+      
+      allOrders = ordersSnap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => {
+          const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+          const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+          return dateB - dateA;
+        });
+      
+      updateStats();
+      renderOrders(allOrders);
+      
+    } catch (error) {
+      console.error('Error cargando pedidos:', error);
+      container.innerHTML = `
+        <div class="empty-state">
+          <p style="font-size:16px;color:#ff4455;">Error al cargar los pedidos</p>
+          <p style="font-size:14px;color:var(--text-muted);">${error.message}</p>
+        </div>
+      `;
+    }
+  }
+
+  function updateStats() {
+    const total = allOrders.length;
+    const pending = allOrders.filter(o => o.status === 'pending').length;
+    const approved = allOrders.filter(o => o.status === 'approved').length;
+    
+    // Calcular ventas del mes actual
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    const monthSales = allOrders
+      .filter(order => {
+        const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+        return date.getMonth() === currentMonth && 
+               date.getFullYear() === currentYear &&
+               order.status === 'approved';
+      })
+      .reduce((sum, order) => sum + (order.totalCredits || 0), 0);
+    
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statMonth').textContent = '$' + monthSales.toFixed(2);
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statApproved').textContent = approved;
+  }
+
+  function filterOrders() {
+    const statusFilter = document.getElementById('filterStatus').value;
+    const monthFilter = document.getElementById('filterMonth').value;
+    const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
+    
+    let filtered = allOrders;
+    
+    // Filtrar por estado
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(o => o.status === statusFilter);
+    }
+    
+    // Filtrar por mes
+    if (monthFilter) {
+      const [year, month] = monthFilter.split('-').map(Number);
+      filtered = filtered.filter(order => {
+        const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+        return date.getFullYear() === year && date.getMonth() === month - 1;
+      });
+    }
+    
+    // Filtrar por búsqueda
+    if (searchFilter) {
+      filtered = filtered.filter(o => 
+        o.userEmail?.toLowerCase().includes(searchFilter) ||
+        o.userName?.toLowerCase().includes(searchFilter) ||
+        o.id.toLowerCase().includes(searchFilter)
+      );
+    }
+    
+    renderOrders(filtered);
+  }
+
+  function renderOrders(orders) {
+    const container = document.getElementById('ordersContainer');
+    
+    if (orders.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <p style="font-size:16px;">No se encontraron pedidos con estos filtros</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = orders.map(order => {
+      const statusClass = order.status || 'pending';
+      const statusText = {
+        'pending': '⏳ Pendiente',
+        'approved': '✅ Aprobado',
+        'rejected': '❌ Rechazado',
+        'processing': '🔄 Procesando',
+        'completed': '✓ Completado'
+      }[statusClass] || 'Pendiente';
+      
+      const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
+      const paymentMethod = order.paymentMethod === 'balance' ? '💳 Saldo' : order.paymentMethod === 'binance' ? '💰 Binance' : '💳 Otro';
+      
+      return `
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <div class="order-id">📦 Pedido #${order.id.substring(0, 8).toUpperCase()}</div>
+              <div class="order-user">
+                👤 ${order.userName || 'Usuario'} • ${order.userEmail || 'N/A'}
+              </div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">
+                ${date.toLocaleString('es-ES')} • ${paymentMethod}
+              </div>
+            </div>
+            <div class="order-status ${statusClass}">${statusText}</div>
+          </div>
+          
+          <div class="order-items">
+            ${(order.items || []).map(item => `
+              <div class="order-item">
+                <span class="order-item-name">${item.name} ${item.inputValue ? `(${item.inputValue})` : ''}</span>
+                <span class="order-item-credits">$${item.credits} x${item.quantity}</span>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="order-footer">
+            <div>
+              ${order.paymentDetails?.txid ? `
+                <div style="margin-bottom:4px;">💳 TXID: <span style="font-family:'Share Tech Mono',monospace;font-size:11px;">${order.paymentDetails.txid.substring(0, 20)}...</span></div>
+              ` : ''}
+            </div>
+            <div class="order-total">Total: $${(order.totalCredits || 0).toFixed(2)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+</script>
+
+</body>
+</html>

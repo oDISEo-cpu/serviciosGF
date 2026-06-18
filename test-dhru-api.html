@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test DHru API</title>
+    <style>
+        body { background: #040a12; color: #e0f4ff; font-family: 'Rajdhani', sans-serif; padding: 40px; }
+        .container { max-width: 900px; margin: 0 auto; background: #0f1e30; padding: 30px; border-radius: 12px; border: 1px solid #00e5ff; }
+        h1 { color: #00e5ff; }
+        button { background: #00e5ff; color: #040a12; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 700; cursor: pointer; margin: 10px 10px 10px 0; }
+        button:hover { background: #00b8cc; }
+        .result { 
+            background: #0a1220; 
+            padding: 20px; 
+            border-radius: 6px; 
+            margin-top: 20px; 
+            font-family: 'Share Tech Mono', monospace; 
+            white-space: pre-wrap; 
+            word-break: break-all; 
+            max-height: 600px; 
+            overflow-y: auto; 
+            border: 1px solid #1a2a3a;
+        }
+        .success { color: #00ff88; border-left: 4px solid #00ff88; padding-left: 16px; }
+        .error { color: #ff4455; border-left: 4px solid #ff4455; padding-left: 16px; }
+        .info { color: #00e5ff; border-left: 4px solid #00e5ff; padding-left: 16px; }
+        .warning { color: #ffcc00; border-left: 4px solid #ffcc00; padding-left: 16px; }
+        
+        .status-bar {
+            background: #0a1220;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #1a2a3a;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.green { background: #00ff88; }
+        .status-dot.red { background: #ff4455; }
+        .status-dot.yellow { background: #ffcc00; }
+        
+        .error-details {
+            background: rgba(255,68,85,0.1);
+            border: 1px solid #ff4455;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .error-details code {
+            color: #ffcc00;
+            font-family: 'Share Tech Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test DHru Fusion API</h1>
+        <p>Probando las Netlify Functions</p>
+        
+        <div class="status-bar" id="statusBar">
+            <span class="status-dot yellow" id="statusDot"></span>
+            <span id="statusText">Listo para probar</span>
+        </div>
+        
+        <button onclick="testBalance()">📊 Consultar Saldo</button>
+        <button onclick="testServices()">📦 Ver Servicios</button>
+        <button onclick="testOrder()">📦 Crear Pedido (test)</button>
+        
+        <div id="result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        function updateStatus(text, type = 'info') {
+            const dot = document.getElementById('statusDot');
+            const textEl = document.getElementById('statusText');
+            
+            dot.className = 'status-dot';
+            if (type === 'success') {
+                dot.classList.add('green');
+            } else if (type === 'error') {
+                dot.classList.add('red');
+            } else {
+                dot.classList.add('yellow');
+            }
+            
+            textEl.textContent = text;
+        }
+
+        function showResult(data, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            // Si es un objeto, formatearlo bonito
+            if (typeof data === 'object') {
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } else {
+                resultDiv.textContent = data;
+            }
+            
+            resultDiv.className = `result ${type}`;
+            
+            // Actualizar estado
+            if (type === 'success') {
+                updateStatus('✅ Operación exitosa', 'success');
+            } else if (type === 'error') {
+                updateStatus('❌ Error en la operación', 'error');
+            } else {
+                updateStatus('⏳ Procesando...', 'info');
+            }
+        }
+
+        function showError(error) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            // Mostrar el error de forma legible
+            let errorMessage = '';
+            let errorDetails = '';
+            
+            if (typeof error === 'object') {
+                errorMessage = error.message || error.error || JSON.stringify(error);
+                errorDetails = JSON.stringify(error, null, 2);
+            } else {
+                errorMessage = String(error);
+            }
+            
+            resultDiv.innerHTML = `
+❌ <strong>ERROR</strong>
+
+${errorMessage}
+
+${errorDetails ? `
+--- DETALLES DEL ERROR ---
+${errorDetails}
+` : ''}
+            `;
+            
+            resultDiv.className = 'result error';
+            updateStatus('❌ Error: ' + errorMessage.substring(0, 50), 'error');
+        }
+
+        async function testBalance() {
+            showResult('📡 Consultando saldo...', 'info');
+            updateStatus('📡 Consultando saldo...', 'info');
+            
+            try {
+                const response = await fetch('/.netlify/functions/dhru-balance');
+                const data = await response.json();
+                
+                console.log('📊 Balance response:', data);
+                
+                if (!response.ok) {
+                    throw new Error(data.error || data.ERROR || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                if (data.ERROR) {
+                    throw new Error(data.ERROR);
+                }
+                
+                // Extraer el balance de diferentes formatos posibles
+                const balance = data.balance || data.CreditBalance || data.credit || data.amount || 0;
+                
+                showResult({
+                    status: '✅ Éxito',
+                    balance: `$${parseFloat(balance).toFixed(2)}`,
+                    rawResponse: data
+                }, 'success');
+                
+            } catch (error) {
+                console.error('❌ Error en testBalance:', error);
+                showError(error);
+            }
+        }
+
+        async function testServices() {
+            showResult('📡 Obteniendo servicios...', 'info');
+            updateStatus('📡 Obteniendo servicios...', 'info');
+            
+            try {
+                const response = await fetch('/.netlify/functions/dhru-services');
+                const data = await response.json();
+                
+                console.log('📦 Services response:', data);
+                
+                if (!response.ok) {
+                    throw new Error(data.error || data.ERROR || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                if (data.ERROR) {
+                    throw new Error(data.ERROR);
+                }
+                
+                // Extraer servicios de diferentes formatos
+                const services = data.SERVICES || data.services || data.data || [];
+                const totalServices = services.length || 0;
+                
+                showResult({
+                    status: '✅ Éxito',
+                    total: totalServices,
+                    firstThree: services.slice(0, 3),
+                    rawResponse: data
+                }, 'success');
+                
+                if (totalServices === 0) {
+                    showResult({
+                        warning: '⚠️ No se encontraron servicios',
+                        rawResponse: data
+                    }, 'warning');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en testServices:', error);
+                showError(error);
+            }
+        }
+
+        async function testOrder() {
+            showResult('📡 Creando pedido de prueba...', 'info');
+            updateStatus('📡 Creando pedido...', 'info');
+            
+            try {
+                const response = await fetch('/.netlify/functions/dhru-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        imei: '123456789012345',
+                        serviceId: '1'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                console.log('📦 Order response:', data);
+                
+                if (!response.ok) {
+                    throw new Error(data.error || data.ERROR || `HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                if (data.ERROR) {
+                    throw new Error(data.ERROR);
+                }
+                
+                showResult({
+                    status: '✅ Éxito',
+                    orderId: data.orderId || data.id || data.order_id,
+                    status: data.status || data.Status || 'pending',
+                    rawResponse: data
+                }, 'success');
+                
+            } catch (error) {
+                console.error('❌ Error en testOrder:', error);
+                showError(error);
+            }
+        }
+    </script>
+</body>
+</html>

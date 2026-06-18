@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paquetes Especiales - NexaGSM</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --surface2: #132336;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --purple: #8a2be2;
+    --red: #ff4455;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .btn-primary { background: var(--cyan); border: 1px solid var(--cyan); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: var(--cyan-dim); box-shadow: 0 0 16px rgba(0,229,255,0.3); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .packages-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .package-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    transition: all 0.3s;
+    overflow: hidden;
+  }
+  .package-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .package-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.2);
+  }
+  .package-card:hover::before {
+    opacity: 1;
+  }
+  .package-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--purple);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .package-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  .package-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .package-description {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .package-features {
+    list-style: none;
+    margin-bottom: 24px;
+  }
+  .package-features li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .package-features li::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .package-price {
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--yellow);
+    margin-bottom: 20px;
+  }
+  .package-price span {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+  .package-savings {
+    background: rgba(0,255,136,0.1);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .btn-package {
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    background: var(--cyan);
+    border: 1px solid var(--cyan);
+    color: var(--dark);
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+  }
+  .btn-package:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  }
+
+  .admin-controls {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 40px;
+    display: none;
+  }
+  .admin-controls.visible {
+    display: block;
+  }
+  .admin-controls h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--cyan);
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+  .empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 80px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .loading::after {
+    content: ' Cargando paquetes';
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+  @keyframes dots {
+    0% { content: ' Cargando paquetes'; }
+    33% { content: ' Cargando paquetes.'; }
+    66% { content: ' Cargando paquetes..'; }
+    100% { content: ' Cargando paquetes...'; }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(4,10,18,0.9); backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex !important; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 550px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+  @keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--cyan); }
+  
+  .balance-box {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .balance-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .balance-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .balance-value.insufficient {
+    color: var(--red);
+  }
+  
+  .btn-recharge {
+    width: 100%;
+    padding: 12px;
+    font-size: 13px;
+    background: transparent;
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+  }
+  .btn-recharge:hover {
+    background: rgba(255,204,0,0.1);
+    border-color: var(--yellow);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .packages-container { padding: 40px 20px; }
+    .packages-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .modal { width: 95vw; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="NexaGSM" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="registros-imei.html">Servicios ▾</a></li>
+    <li><a href="precios.html" class="active">Paquetes</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>Paquetes <span class="hl">Especiales</span></h1>
+  <p>Aprovecha nuestras promociones y ahorra en tus servicios</p>
+</div>
+
+<div class="packages-container">
+  <!-- Admin Controls -->
+  <div class="admin-controls" id="adminControls">
+    <h3>🔧 Administrar Paquetes</h3>
+    <form id="packageForm" onsubmit="savePackage(event)">
+      <input type="hidden" id="packageId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre del Paquete</label>
+          <input type="text" id="packageName" required placeholder="Ej: Pack Básico - 5 Desbloqueos">
+        </div>
+        <div class="form-group">
+          <label>Precio (USD)</label>
+          <input type="number" id="packagePrice" step="0.01" min="0" required placeholder="Ej: 10.00">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="packageDesc" required placeholder="Ej: Ideal para técnicos que están comenzando. Incluye 5 desbloqueos FRP."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Características (una por línea)</label>
+        <textarea id="packageFeatures" required placeholder="5 Desbloqueos FRP&#10;Soporte 24/7&#10;Garantía de reembolso"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Icono (emoji)</label>
+          <input type="text" id="packageIcon" placeholder="📦" value="📦">
+        </div>
+        <div class="form-group">
+          <label>Ahorro (opcional)</label>
+          <input type="text" id="packageSavings" placeholder="Ej: Ahorra $2.50">
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button type="submit" class="btn-primary" style="flex: 1;">💾 Guardar Paquete</button>
+        <button type="button" class="btn-ghost" onclick="resetPackageForm()" style="flex: 1;">🔄 Limpiar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Packages Grid -->
+  <div class="packages-grid" id="packagesGrid">
+    <div class="loading"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<!-- MODAL DE CHECKOUT CON SALDO -->
+<div class="modal-overlay" id="packageCheckoutModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePackageCheckout()">✕</button>
+    
+    <h2 style="font-family:'Orbitron',monospace;font-size:20px;color:var(--cyan);margin-bottom:8px;">💳 Comprar Paquete</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px;" id="pkgModalName">Nombre del Paquete</p>
+    
+    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:16px;margin-bottom:20px;">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;" id="pkgModalDesc">Descripción</p>
+      <ul style="list-style:none;padding:0;margin:0;" id="pkgModalFeatures"></ul>
+    </div>
+    
+    <!-- Saldo del usuario -->
+    <div class="balance-box">
+      <div class="balance-label">💰 Tu Saldo Actual</div>
+      <div class="balance-value" id="userBalance">$0.00</div>
+    </div>
+    
+    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:20px;margin-bottom:24px;text-align:center;">
+      <div style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Total a Pagar</div>
+      <div style="font-family:'Orbitron',monospace;font-size:36px;font-weight:700;color:var(--yellow);margin-bottom:4px;" id="pkgModalPrice">$0.00</div>
+      <div style="font-size:14px;color:var(--text-muted);" id="balanceAfter">Saldo después de la compra: $0.00</div>
+    </div>
+    
+    <button class="btn-primary" id="btnConfirmPurchase" onclick="confirmPackagePurchase()" style="width:100%;padding:14px;font-size:15px;background:var(--green);border:1px solid var(--green);color:var(--dark);border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;">
+      ✅ Comprar Ahora (Pago Automático)
+    </button>
+    
+    <button class="btn-recharge" onclick="rechargeBalance()">
+      ➕ Recargar Saldo
+    </button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let userProfile = null;
+  let currentPackage = null;
+  let userBalance = 0;
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        userProfile = profileDoc.data();
+        userBalance = userProfile.balance || 0;
+        if (userProfile.role === 'admin' || userProfile.role === 'client') {
+          document.getElementById('adminControls').classList.add('visible');
+        }
+      }
+      await loadPackages();
+      updateNav();
+    } else {
+      await loadPackages();
+      updateNav();
+    }
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser && userProfile) {
+      const name = userProfile.name || 'Usuario';
+      const initial = name.charAt(0).toUpperCase();
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${initial}</div>
+          <span class="user-name">${name}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    } else {
+      navAuth.innerHTML = `
+        <a href="index.html" class="btn-ghost">Iniciar Sesión</a>
+        <a href="index.html" class="btn-primary">Registrarse</a>
+      `;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  async function loadPackages() {
+    try {
+      const packagesSnap = await db.collection('packages').get();
+      
+      if (packagesSnap.empty) {
+        document.getElementById('packagesGrid').innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            <p>No hay paquetes disponibles aún</p>
+            ${(currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client')) ? '<p style="margin-top:12px;font-size:14px;">¡Sé el primero en crear un paquete!</p>' : ''}
+          </div>
+        `;
+        return;
+      }
+      
+      const packages = packagesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderPackages(packages);
+    } catch (error) {
+      console.error('Error cargando paquetes:', error);
+      document.getElementById('packagesGrid').innerHTML = `
+        <div class="empty-state">
+          <p style="color:var(--red);">Error al cargar paquetes</p>
+          <button onclick="loadPackages()" class="btn-primary" style="margin-top:20px;">🔄 Reintentar</button>
+        </div>
+      `;
+    }
+  }
+
+  function renderPackages(packages) {
+    const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
+    
+    document.getElementById('packagesGrid').innerHTML = packages.map(pkg => `
+      <div class="package-card">
+        ${pkg.savings ? `<div class="package-badge">OFERTA</div>` : ''}
+        <div class="package-icon">${pkg.icon || '📦'}</div>
+        <h3>${pkg.name}</h3>
+        <p class="package-description">${pkg.description}</p>
+        <ul class="package-features">
+          ${(pkg.features || []).map(f => `<li>${f}</li>`).join('')}
+        </ul>
+        <div class="package-price">$${parseFloat(pkg.price).toFixed(2)} <span>USD</span></div>
+        ${pkg.savings ? `<div class="package-savings">${pkg.savings}</div>` : ''}
+        <button class="btn-package" onclick="openPackageCheckout('${pkg.id}')">🛒 Comprar Paquete</button>
+        ${isAdmin ? `
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button class="btn-ghost" onclick="editPackage('${pkg.id}')" style="flex: 1; padding: 8px; font-size: 11px;">✏️ Editar</button>
+            <button class="btn-ghost" onclick="deletePackage('${pkg.id}')" style="flex: 1; padding: 8px; font-size: 11px; color: var(--red); border-color: var(--red);">🗑️ Eliminar</button>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+  }
+
+  function openPackageCheckout(packageId) {
+    if (!currentUser) {
+      showToast('⚠️ Debes iniciar sesión para comprar', 'error');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+      return;
+    }
+    
+    db.collection('packages').doc(packageId).get().then(doc => {
+      if (doc.exists) {
+        currentPackage = { id: doc.id, ...doc.data() };
+        const price = parseFloat(currentPackage.price);
+        
+        document.getElementById('pkgModalName').textContent = currentPackage.name;
+        document.getElementById('pkgModalDesc').textContent = currentPackage.description;
+        document.getElementById('pkgModalPrice').textContent = `$${price.toFixed(2)}`;
+        document.getElementById('pkgModalFeatures').innerHTML = (currentPackage.features || []).map(f => `<li style="padding:6px 0;font-size:13px;color:var(--text);">✓ ${f}</li>`).join('');
+        
+        // Actualizar saldo
+        updateBalanceDisplay(price);
+        
+        document.getElementById('packageCheckoutModal').classList.add('open');
+      }
+    });
+  }
+
+  function updateBalanceDisplay(price) {
+    const balanceEl = document.getElementById('userBalance');
+    const balanceAfterEl = document.getElementById('balanceAfter');
+    const btnConfirm = document.getElementById('btnConfirmPurchase');
+    
+    balanceEl.textContent = `$${userBalance.toFixed(2)}`;
+    
+    const balanceAfter = userBalance - price;
+    
+    if (userBalance < price) {
+      // Saldo insuficiente
+      balanceEl.classList.add('insufficient');
+      balanceAfterEl.innerHTML = `<span style="color:var(--red);">❌ Saldo insuficiente. Te faltan $${(price - userBalance).toFixed(2)}</span>`;
+      btnConfirm.disabled = true;
+      btnConfirm.style.background = 'var(--text-dim)';
+      btnConfirm.style.borderColor = 'var(--text-dim)';
+      btnConfirm.style.cursor = 'not-allowed';
+      btnConfirm.textContent = '❌ Saldo Insuficiente';
+    } else {
+      // Saldo suficiente
+      balanceEl.classList.remove('insufficient');
+      balanceAfterEl.innerHTML = `Saldo después de la compra: <span style="color:var(--green);">$${balanceAfter.toFixed(2)}</span>`;
+      btnConfirm.disabled = false;
+      btnConfirm.style.background = 'var(--green)';
+      btnConfirm.style.borderColor = 'var(--green)';
+      btnConfirm.style.cursor = 'pointer';
+      btnConfirm.textContent = '✅ Comprar Ahora (Pago Automático)';
+    }
+  }
+
+  function closePackageCheckout() {
+    document.getElementById('packageCheckoutModal').classList.remove('open');
+    currentPackage = null;
+  }
+
+  // ✅ COMPRA AUTOMÁTICA CON SALDO
+  async function confirmPackagePurchase() {
+    if (!currentPackage) return;
+    
+    const price = parseFloat(currentPackage.price);
+    
+    // Verificar saldo nuevamente
+    if (userBalance < price) {
+      showToast('❌ Saldo insuficiente', 'error');
+      return;
+    }
+    
+    // Confirmar compra
+    const confirmPurchase = confirm(
+      `✅ Confirmar Compra Automática\n\n` +
+      `Paquete: ${currentPackage.name}\n` +
+      `Precio: $${price.toFixed(2)}\n` +
+      `Saldo actual: $${userBalance.toFixed(2)}\n` +
+      `Saldo después: $${(userBalance - price).toFixed(2)}\n\n` +
+      `✅ Tu paquete se activará INMEDIATAMENTE.\n\n` +
+      `¿Confirmas la compra?`
+    );
+    
+    if (!confirmPurchase) return;
+    
+    try {
+      // Crear pedido con estado "approved" automáticamente
+      const orderData = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile.name || 'Usuario',
+        packageId: currentPackage.id,
+        packageName: currentPackage.name,
+        packagePrice: price,
+        packageDescription: currentPackage.description,
+        packageFeatures: currentPackage.features || [],
+        items: [{
+          name: currentPackage.name,
+          credits: price,
+          quantity: 1,
+          inputValue: 'Paquete completo',
+          category: 'package'
+        }],
+        totalCredits: price,
+        status: 'approved',  // ✅ APROBADO AUTOMÁTICAMENTE
+        paymentMethod: 'balance',
+        autoApproved: true,  // ✅ Marcador de aprobación automática
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy: 'system'  // ✅ Aprobado por el sistema
+      };
+      
+      await db.collection('orders').add(orderData);
+      
+      // Descontar saldo
+      const newBalance = userBalance - price;
+      await db.collection('profiles').doc(currentUser.uid).update({
+        balance: newBalance,
+        lastTransaction: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Registrar transacción
+      await db.collection('transactions').add({
+        userId: currentUser.uid,
+        type: 'purchase',
+        amount: -price,
+        description: `Compra automática de paquete: ${currentPackage.name}`,
+        balanceBefore: userBalance,
+        balanceAfter: newBalance,
+        autoApproved: true,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Actualizar saldo local
+      userBalance = newBalance;
+      
+      // Mostrar mensaje de éxito
+      showToast(`✅ ¡Compra Exitosa!\n\nSe descontaron $${price.toFixed(2)}\nNuevo saldo: $${newBalance.toFixed(2)}\n\nTu paquete "${currentPackage.name}" está activo.`, 'success');
+      
+      closePackageCheckout();
+      
+      // Redirigir a "Tus Compras" después de 2.5 segundos
+      setTimeout(() => {
+        window.location.href = 'mis-pedidos.html';
+      }, 2500);
+      
+    } catch (error) {
+      console.error('Error creando pedido:', error);
+      showToast('❌ Error al crear el pedido: ' + error.message, 'error');
+    }
+  }
+
+  function rechargeBalance() {
+    window.location.href = 'recargar-saldo.html';
+  }
+
+  function savePackage(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('packageId').value;
+    const featuresText = document.getElementById('packageFeatures').value;
+    const features = featuresText.split('\n').filter(f => f.trim());
+    
+    const packageData = {
+      name: document.getElementById('packageName').value,
+      price: parseFloat(document.getElementById('packagePrice').value),
+      description: document.getElementById('packageDesc').value,
+      features: features,
+      icon: document.getElementById('packageIcon').value || '📦',
+      savings: document.getElementById('packageSavings').value,
+      updatedAt: new Date().toISOString()
+    };
+    
+    if (id) {
+      db.collection('packages').doc(id).update(packageData).then(() => {
+        showToast('✅ Paquete actualizado', 'success');
+        resetPackageForm();
+        loadPackages();
+      }).catch(error => {
+        showToast('❌ Error al actualizar: ' + error.message, 'error');
+      });
+    } else {
+      packageData.createdAt = new Date().toISOString();
+      packageData.createdBy = currentUser.uid;
+      
+      db.collection('packages').add(packageData).then(() => {
+        showToast('✅ Paquete creado', 'success');
+        resetPackageForm();
+        loadPackages();
+      }).catch(error => {
+        showToast('❌ Error al crear: ' + error.message, 'error');
+      });
+    }
+  }
+
+  async function editPackage(packageId) {
+    try {
+      const doc = await db.collection('packages').doc(packageId).get();
+      if (doc.exists) {
+        const pkg = doc.data();
+        document.getElementById('packageId').value = packageId;
+        document.getElementById('packageName').value = pkg.name;
+        document.getElementById('packagePrice').value = pkg.price;
+        document.getElementById('packageDesc').value = pkg.description;
+        document.getElementById('packageFeatures').value = (pkg.features || []).join('\n');
+        document.getElementById('packageIcon').value = pkg.icon || '📦';
+        document.getElementById('packageSavings').value = pkg.savings || '';
+        
+        document.getElementById('adminControls').scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (error) {
+      showToast('❌ Error al cargar paquete: ' + error.message, 'error');
+    }
+  }
+
+  function deletePackage(packageId) {
+    if (!confirm('¿Eliminar este paquete?')) return;
+    
+    db.collection('packages').doc(packageId).delete().then(() => {
+      showToast('🗑️ Paquete eliminado', 'success');
+      loadPackages();
+    }).catch(error => {
+      showToast('❌ Error al eliminar: ' + error.message, 'error');
+    });
+  }
+
+  function resetPackageForm() {
+    document.getElementById('packageForm').reset();
+    document.getElementById('packageId').value = '';
+    document.getElementById('packageIcon').value = '📦';
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.style.cssText = 'position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      background: var(--surface);
+      border: 1px solid ${type === 'success' ? 'var(--green)' : 'var(--red)'};
+      border-left: 4px solid ${type === 'success' ? 'var(--green)' : 'var(--red)'};
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: slideIn 0.3s ease;
+      min-width: 300px;
+    `;
+    
+    const icon = type === 'success' ? '✅' : '⚠️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'fadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>

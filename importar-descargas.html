@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Importar Descargas - NexaGSM</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    background: #040a12;
+    color: #e0f4ff;
+    font-family: 'Rajdhani', sans-serif;
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 { color: #00e5ff; margin-bottom: 20px; }
+  .form-group { margin-bottom: 20px; }
+  label { display: block; margin-bottom: 8px; font-weight: 600; color: #7ba8c4; }
+  input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    background: #0a1220;
+    border: 1px solid rgba(0,229,255,0.3);
+    color: #e0f4ff;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+  }
+  textarea { min-height: 150px; font-family: monospace; }
+  button {
+    background: #00e5ff;
+    color: #040a12;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    margin-right: 12px;
+  }
+  button:hover { background: #00b8cc; }
+  .info {
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+  }
+  .info h3 { color: #00e5ff; margin-bottom: 12px; }
+  .info ol { padding-left: 20px; margin: 0; }
+  .info li { margin-bottom: 8px; line-height: 1.6; }
+  .hint {
+    font-size: 12px;
+    color: #7ba8c4;
+    margin-top: 6px;
+    font-style: italic;
+  }
+  #result {
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 6px;
+    display: none;
+  }
+  .success { background: rgba(0,255,136,0.1); border: 1px solid #00ff88; color: #00ff88; }
+  .error { background: rgba(255,68,85,0.1); border: 1px solid #ff4455; color: #ff4455; }
+  .status-bar {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .status-bar.ok { border-color: #00ff88; color: #00ff88; }
+  .status-bar.bad { border-color: #ff4455; color: #ff4455; }
+</style>
+</head>
+<body>
+
+<h1>📥 Importar Descargas Masivamente</h1>
+
+<div id="statusBar" class="status-bar">
+  🔍 Verificando autenticación...
+</div>
+
+<div class="info">
+  <h3>Instrucciones:</h3>
+  <ol>
+    <li>Ve a Google Drive y copia los links de los archivos (uno por línea)</li>
+    <li>Escribe los nombres de cada archivo (MISMO ORDEN)</li>
+    <li><strong>Opcional:</strong> Especifica la subcarpeta para organizar (ej: "ENG ROM")</li>
+    <li>Selecciona la categoría principal</li>
+    <li>Click en "Importar"</li>
+  </ol>
+</div>
+
+<div class="form-group">
+  <label>Categoría Principal:</label>
+  <select id="category">
+    <option value="xiaomi">Xiaomi</option>
+    <option value="samsung">Samsung</option>
+    <option value="huawei">Huawei</option>
+    <option value="honor">Honor</option>
+    <option value="oppo">Oppo</option>
+    <option value="tecno">Tecno & Infinix</option>
+    <option value="programas">Programas</option>
+    <option value="videos">Videos</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label>Subcarpeta/Carpeta (opcional):</label>
+  <input type="text" id="subfolder" placeholder="Ej: ENG ROM, Drivers, Tools, etc.">
+  <div class="hint">💡 Déjalo vacío si no quieres subcarpetas</div>
+</div>
+
+<div class="form-group">
+  <label>Links de Google Drive (uno por línea):</label>
+  <textarea id="driveLinks" placeholder="https://drive.google.com/file/d/ABC123/view
+https://drive.google.com/file/d/XYZ789/view
+https://drive.google.com/file/d/DEF456/view"></textarea>
+</div>
+
+<div class="form-group">
+  <label>Nombres de los archivos (uno por línea, MISMO ORDEN):</label>
+  <textarea id="fileNames" placeholder="Mi 11 Lite 5G
+Note 10 Pro
+Note 13 Pro"></textarea>
+</div>
+
+<div class="form-group">
+  <label>Tamaño predeterminado (opcional):</label>
+  <input type="text" id="defaultSize" placeholder="Ej: 3.5 GB">
+</div>
+
+<button onclick="importDownloads()" id="btnImport" disabled>📥 Importar Archivos</button>
+<button onclick="clearForm()" style="background: #ff4455; color: white;">🗑️ Limpiar</button>
+
+<div id="result"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let userRole = null;
+
+  auth.onAuthStateChanged(async (user) => {
+    const statusBar = document.getElementById('statusBar');
+    const btnImport = document.getElementById('btnImport');
+    
+    if (!user) {
+      statusBar.className = 'status-bar bad';
+      statusBar.innerHTML = '❌ No estás logueado. <a href="index.html" style="color:#ff4455;text-decoration:underline;">Inicia sesión aquí</a>';
+      btnImport.disabled = true;
+      return;
+    }
+    
+    currentUser = user;
+    
+    try {
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        userRole = profileDoc.data().role;
+        if (userRole !== 'admin' && userRole !== 'client') {
+          statusBar.className = 'status-bar bad';
+          statusBar.innerHTML = '❌ Acceso denegado. Solo administradores pueden usar esta página.';
+          btnImport.disabled = true;
+          setTimeout(() => { window.location.href = 'index.html'; }, 3000);
+          return;
+        }
+        
+        statusBar.className = 'status-bar ok';
+        statusBar.innerHTML = `✅ Conectado como: <strong>${user.email}</strong> (${userRole.toUpperCase()})`;
+        btnImport.disabled = false;
+      }
+    } catch (error) {
+      statusBar.className = 'status-bar bad';
+      statusBar.innerHTML = '❌ Error: ' + error.message;
+      btnImport.disabled = true;
+    }
+  });
+
+  async function importDownloads() {
+    const category = document.getElementById('category').value;
+    const subfolder = document.getElementById('subfolder').value.trim();
+    const linksText = document.getElementById('driveLinks').value;
+    const namesText = document.getElementById('fileNames').value;
+    const defaultSize = document.getElementById('defaultSize').value;
+    const resultDiv = document.getElementById('result');
+    
+    if (!auth.currentUser) {
+      alert('❌ No estás logueado.');
+      return;
+    }
+    
+    if (!linksText.trim()) {
+      resultDiv.className = 'error';
+      resultDiv.innerHTML = '❌ Por favor ingresa al menos un link';
+      resultDiv.style.display = 'block';
+      return;
+    }
+    
+    const links = linksText.split('\n').filter(link => link.trim());
+    const names = namesText.split('\n').map(name => name.trim());
+    let successCount = 0;
+    let errorCount = 0;
+    let errors = [];
+    
+    resultDiv.innerHTML = '⏳ Importando...';
+    resultDiv.className = 'info';
+    resultDiv.style.display = 'block';
+    
+    for (let i = 0; i < links.length; i++) {
+      try {
+        const link = links[i].trim();
+        const fileName = names[i] || extractFileName(link);
+        
+        const downloadData = {
+          name: fileName || `Archivo ${i + 1}`,
+          description: `Archivo de ${category}`,
+          category: category,
+          subfolder: subfolder || null,  // ✅ NUEVO: Campo de subcarpeta
+          size: defaultSize || 'N/A',
+          url: link,
+          createdAt: new Date().toISOString()
+        };
+        
+        await db.collection('downloads').add(downloadData);
+        successCount++;
+      } catch (error) {
+        errors.push(`Archivo ${i + 1}: ${error.message}`);
+        errorCount++;
+      }
+    }
+    
+    if (errorCount > 0) {
+      resultDiv.className = 'error';
+      resultDiv.innerHTML = `
+        ⚠️ <strong>Importación con errores</strong><br>
+        ✔️ Exitosos: ${successCount}<br>
+        ❌ Errores: ${errorCount}
+      `;
+    } else {
+      resultDiv.className = 'success';
+      resultDiv.innerHTML = `
+        ✅ <strong>¡Importación completada!</strong><br>
+        ✔️ Archivos importados: ${successCount}<br>
+        📂 Categoría: ${category}<br>
+        ${subfolder ? `📁 Subcarpeta: ${subfolder}` : ''}
+      `;
+    }
+    
+    if (successCount > 0) {
+      setTimeout(() => {
+        window.location.href = 'descargas.html';
+      }, 2500);
+    }
+  }
+  
+  function extractFileName(url) {
+    const match = url.match(/\/file\/d\/([^/]+)/);
+    if (match) {
+      return `Archivo ${match[1].substring(0, 8)}`;
+    }
+    return null;
+  }
+  
+  function clearForm() {
+    document.getElementById('driveLinks').value = '';
+    document.getElementById('fileNames').value = '';
+    document.getElementById('subfolder').value = '';
+    document.getElementById('defaultSize').value = '';
+    document.getElementById('result').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>

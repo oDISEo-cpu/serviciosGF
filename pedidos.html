@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingresar Pedido - NexaGSM</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --surface2: #132336;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+    --purple: #8a2be2;
+    --purple-glow: rgba(138,43,226,0.15);
+    --purple-border: rgba(138,43,226,0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; overflow-x: hidden; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .btn-primary { background: var(--cyan); border: 1px solid var(--cyan); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: var(--cyan-dim); box-shadow: 0 0 16px rgba(0,229,255,0.3); }
+  
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .page-hero h1 .hl { color: var(--cyan); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .orders-layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .search-section {
+    margin-bottom: 24px;
+  }
+  .search-box {
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .search-box input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 20px 14px 50px;
+    border-radius: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .search-box input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+  }
+  .search-box::before {
+    content: '🔍';
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+  }
+  .categories-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .category-tab {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .category-tab:hover, .category-tab.active {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .category-tab.streaming-tab:hover, .category-tab.streaming-tab.active {
+    background: var(--purple-glow);
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .service-card {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .service-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.15);
+  }
+  .service-card.streaming-card {
+    border-color: var(--purple-border);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(138,43,226,0.05) 100%);
+  }
+  .service-card.streaming-card:hover {
+    border-color: var(--purple);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.25);
+  }
+  .service-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .service-card.streaming-card h3 {
+    color: var(--purple);
+  }
+  .service-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .service-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge.stock { background: rgba(0,255,136,0.15); color: var(--green); }
+  .badge.auto { background: rgba(0,229,255,0.15); color: var(--cyan); }
+  .badge.manual { background: rgba(138,43,226,0.15); color: var(--purple); }
+  .service-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--cyan-border);
+  }
+  .service-card.streaming-card .service-meta {
+    border-top-color: var(--purple-border);
+  }
+  .service-credits {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+  .service-credits span {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .btn-add-service {
+    background: var(--cyan);
+    color: var(--dark);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-add-service:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+  }
+  .btn-add-streaming {
+    background: var(--purple);
+    color: white;
+  }
+  .btn-add-streaming:hover {
+    background: #7b27c7;
+    box-shadow: 0 0 16px rgba(138, 43, 226, 0.4);
+  }
+
+  .cart-panel {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 24px;
+    position: sticky;
+    top: 88px;
+    height: fit-content;
+  }
+  .cart-panel h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--cyan-border);
+  }
+  
+  .balance-display {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .balance-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .balance-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .balance-value.insufficient {
+    color: var(--red);
+  }
+  
+  .cart-items {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  .cart-item {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .cart-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .cart-item-name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 14px;
+  }
+  .cart-item-credits {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--yellow);
+  }
+  .cart-item-input {
+    width: 100%;
+    background: var(--dark2);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 8px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .cart-item-input::placeholder {
+    color: var(--text-dim);
+  }
+  .btn-remove-item {
+    background: transparent;
+    border: 1px solid #ff4455;
+    color: #ff4455;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-remove-item:hover {
+    background: #ff4455;
+    color: white;
+  }
+  .cart-summary {
+    border-top: 1px solid var(--cyan-border);
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .cart-total-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .cart-total-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+  .btn-checkout {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    background: var(--green);
+    border: 1px solid var(--green);
+    color: var(--dark);
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-checkout:hover {
+    background: #00cc6a;
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
+  }
+  .btn-checkout:disabled {
+    background: var(--text-dim);
+    border-color: var(--text-dim);
+    color: var(--dark);
+    cursor: not-allowed;
+  }
+  
+  .btn-recharge {
+    width: 100%;
+    padding: 12px;
+    font-size: 13px;
+    background: transparent;
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+  }
+  .btn-recharge:hover {
+    background: rgba(255,204,0,0.1);
+    border-color: var(--yellow);
+  }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(4,10,18,0.9); backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 600px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+  .modal.streaming-modal {
+    border-color: var(--purple-border);
+  }
+  @keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--cyan); }
+  .modal h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .modal.streaming-modal h2 {
+    color: var(--purple);
+  }
+  .modal-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--cyan);
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .quantity-btn {
+    width: 40px;
+    height: 40px;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .quantity-btn:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+  .quantity-input {
+    flex: 1;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Orbitron', monospace;
+    background: transparent;
+    border: none;
+    color: var(--cyan);
+  }
+  .price-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--yellow);
+    margin: 20px 0;
+    text-align: right;
+  }
+  .btn-full { width: 100%; padding: 14px; font-size: 15px; }
+  .btn-purple {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: white;
+  }
+  .btn-purple:hover {
+    background: #7b27c7;
+    box-shadow: 0 0 16px rgba(138, 43, 226, 0.4);
+  }
+
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlideIn 0.3s ease;
+    min-width: 300px;
+  }
+  .toast.success { border-left: 4px solid var(--green); }
+  .toast.error { border-left: 4px solid #ff4455; }
+  @keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 1200px) {
+    .orders-layout {
+      grid-template-columns: 1fr;
+    }
+    .cart-panel {
+      position: static;
+    }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .orders-layout { padding: 20px; }
+    .services-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="NexaGSM" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="servicios.html">Servicios</a></li>
+    <li><a href="precios.html">Precios</a></li>
+    <li><a href="pedidos.html" class="active">Pedidos</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>Ingresar <span class="hl">Pedido</span></h1>
+  <p>Selecciona los servicios que necesitas y completa tu pedido. Los créditos se descontarán automáticamente de tu saldo.</p>
+</div>
+
+<div class="orders-layout">
+  <div>
+    <div class="search-section">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Buscar servicio..." oninput="filterServices()">
+      </div>
+      
+      <div class="categories-tabs" id="categoriesTabs">
+        <button class="category-tab" onclick="filterCategory('unlock', this)">Registros</button>
+        <button class="category-tab" onclick="filterCategory('license', this)">Licencias y Créditos</button>
+        <button class="category-tab" onclick="filterCategory('remote', this)">Servicios Remotos</button>
+      </div>
+    </div>
+    
+    <div class="services-grid" id="servicesGrid">
+      <p style="text-align:center;color:var(--text-dim);padding:40px;">Cargando servicios...</p>
+    </div>
+  </div>
+
+  <div class="cart-panel">
+    <h2>🛒 Tu Pedido</h2>
+    
+    <div class="balance-display">
+      <div class="balance-label">💰 Tu Saldo Actual</div>
+      <div class="balance-value" id="userBalance">$0.00</div>
+    </div>
+    
+    <div class="cart-items" id="cartItems">
+      <p style="text-align:center;color:var(--text-dim);padding:20px;">No hay servicios seleccionados</p>
+    </div>
+    <div class="cart-summary">
+      <div class="cart-total">
+        <span class="cart-total-label">Total en Créditos:</span>
+        <span class="cart-total-value" id="cartTotal">0</span>
+      </div>
+      <button class="btn-checkout" id="btnCheckout" onclick="processCheckout()" disabled>
+        💳 Pagar con Saldo
+      </button>
+      <button class="btn-recharge" onclick="rechargeBalance()">
+        ➕ Recargar Saldo
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>NexaGSM</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<!-- MODAL SERVICIO NORMAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOrderModal()">✕</button>
+    <h2 id="modalServiceName">Nombre del Servicio</h2>
+    <p class="modal-sub" id="modalServiceDesc">Descripción del servicio</p>
+    
+    <div class="form-group">
+      <label>Cantidad</label>
+      <div class="quantity-selector">
+        <button class="quantity-btn" onclick="changeQuantity(-1)">−</button>
+        <input type="number" id="quantityInput" class="quantity-input" value="1" min="1" max="99" readonly>
+        <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+      </div>
+      <small style="color:var(--text-dim);">Cantidad permitida: 1 - 99</small>
+    </div>
+    
+    <div class="form-group">
+      <label id="inputLabel">Datos requeridos (IMEI, Username, etc.)</label>
+      <input type="text" id="inputData" placeholder="Ingresa los datos necesarios">
+    </div>
+    
+    <div class="price-display" id="priceDisplay">$0.00</div>
+    
+    <button class="btn-primary btn-full" onclick="addToCartFromModal()">
+      Añadir al Carrito
+    </button>
+  </div>
+</div>
+
+<!-- MODAL SERVICIO STREAMING -->
+<div class="modal-overlay" id="streamingModal">
+  <div class="modal streaming-modal">
+    <button class="modal-close" onclick="closeStreamingModal()">✕</button>
+    <h2 id="streamingServiceName">📺 Servicio de Streaming</h2>
+    <p class="modal-sub">Completa el formulario para solicitar este servicio. Te contactaremos en 24-48 horas.</p>
+    
+    <div style="background: var(--purple-glow); border: 1px solid var(--purple-border); border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+      <p style="color: var(--purple); font-size: 13px; margin: 0; font-weight: 600;">
+        ⚠️ IMPORTANTE: Este servicio es entregado manualmente. Una vez que completes el pedido, recibirás las credenciales en tu correo electrónico.
+      </p>
+    </div>
+    
+    <form id="streamingForm" onsubmit="submitStreamingOrder(event)">
+      <div class="form-group">
+        <label>Servicio Seleccionado</label>
+        <input type="text" id="streamingServiceDisplay" readonly style="background: var(--dark2); cursor: not-allowed;">
+      </div>
+      
+      <div class="form-group">
+        <label>Precio</label>
+        <input type="text" id="streamingPriceDisplay" readonly style="background: var(--dark2); cursor: not-allowed; color: var(--yellow); font-weight: 700;">
+      </div>
+      
+      <div class="form-group">
+        <label>Email de Contacto *</label>
+        <input type="email" id="streamingContactEmail" required placeholder="tu@email.com">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Aquí recibirás las credenciales del servicio</small>
+      </div>
+      
+      <div class="form-group">
+        <label>WhatsApp (opcional)</label>
+        <input type="tel" id="streamingWhatsApp" placeholder="+58 412 1234567">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Para contacto rápido si es necesario</small>
+      </div>
+      
+      <div class="form-group">
+        <label>Notas Adicionales (opcional)</label>
+        <textarea id="streamingNotes" placeholder="¿Tienes alguna preferencia o requisito especial?"></textarea>
+      </div>
+      
+      <button type="submit" class="btn-purple btn-full">
+        📺 Solicitar Servicio de Streaming
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let userProfile = null;
+  let allServices = [];
+  let cart = [];
+  let currentCategory = 'all';
+  let currentService = null;
+  let currentStreamingService = null;
+  let userBalance = 0;
+
+  // ✅ SERVICIOS DE STREAMING (MANUALES)
+  const streamingServices = [
+    {
+      id: 'streaming_netflix_full',
+      name: 'Netflix Cuenta Completa',
+      description: 'Cuenta completa de Netflix con acceso a todos los perfiles. Entrega manual en 24-48 horas.',
+      price: 5.00,
+      category: 'streaming',
+      icon: '🎬'
+    },
+    {
+      id: 'streaming_netflix_profile',
+      name: 'Netflix Perfil Individual',
+      description: 'Perfil individual de Netflix. Perfecto para uso personal. Entrega manual en 24-48 horas.',
+      price: 2.50,
+      category: 'streaming',
+      icon: '👤'
+    },
+    {
+      id: 'streaming_disney_full',
+      name: 'Disney+ Cuenta Completa',
+      description: 'Cuenta completa de Disney+ con todo el catálogo. Entrega manual en 24-48 horas.',
+      price: 4.00,
+      category: 'streaming',
+      icon: '🏰'
+    },
+    {
+      id: 'streaming_hbo_full',
+      name: 'HBO Max Cuenta Completa',
+      description: 'Cuenta completa de HBO Max con series y películas exclusivas. Entrega manual en 24-48 horas.',
+      price: 4.00,
+      category: 'streaming',
+      icon: '🎭'
+    },
+    {
+      id: 'streaming_spotify',
+      name: 'Spotify Premium',
+      description: 'Spotify Premium por 1 mes. Sin anuncios, descarga offline. Entrega manual en 24-48 horas.',
+      price: 3.00,
+      category: 'streaming',
+      icon: '🎵'
+    },
+    {
+      id: 'streaming_amazon',
+      name: 'Amazon Prime Video',
+      description: 'Amazon Prime Video cuenta completa. Series, películas y originales. Entrega manual en 24-48 horas.',
+      price: 4.00,
+      category: 'streaming',
+      icon: '📦'
+    },
+    {
+      id: 'streaming_crunchyroll',
+      name: 'Crunchyroll Premium',
+      description: 'Crunchyroll Premium 1 mes. Anime sin anuncios. Entrega manual en 24-48 horas.',
+      price: 3.50,
+      category: 'streaming',
+      icon: '🎌'
+    },
+    {
+      id: 'streaming_youtube',
+      name: 'YouTube Premium',
+      description: 'YouTube Premium 1 mes. Sin anuncios, YouTube Music incluido. Entrega manual en 24-48 horas.',
+      price: 3.50,
+      category: 'streaming',
+      icon: '📺'
+    }
+  ];
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        userProfile = profileDoc.data();
+        userBalance = userProfile.balance || 0;
+        updateBalanceDisplay();
+      }
+      await loadServices();
+      updateNav();
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser && userProfile) {
+      const name = userProfile.name || 'Usuario';
+      const initial = name.charAt(0).toUpperCase();
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${initial}</div>
+          <span class="user-name">${name}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  function updateBalanceDisplay() {
+    const balanceEl = document.getElementById('userBalance');
+    balanceEl.textContent = '$' + userBalance.toFixed(2);
+    
+    const totalCredits = cart.reduce((sum, item) => sum + (item.credits * item.quantity), 0);
+    if (totalCredits > userBalance) {
+      balanceEl.classList.add('insufficient');
+    } else {
+      balanceEl.classList.remove('insufficient');
+    }
+  }
+
+  async function loadServices() {
+    try {
+      const servicesSnap = await db.collection('services').get();
+      
+      allServices = servicesSnap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(service => service.isPublic !== false)
+        .sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+          return dateB - dateA;
+        });
+      
+      console.log('✅ Servicios cargados:', allServices.length);
+      renderServices();
+    } catch (error) {
+      console.error('❌ Error cargando servicios:', error);
+      document.getElementById('servicesGrid').innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:40px;">Error al cargar servicios: ' + error.message + '</p>';
+    }
+  }
+
+  function filterCategory(category, btn) {
+    currentCategory = category;
+    document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+    btn.classList.add('active');
+    renderServices();
+  }
+
+  function filterServices() {
+    renderServices();
+  }
+
+  function renderServices() {
+    const grid = document.getElementById('servicesGrid');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    let filtered = [];
+    
+    // Si la categoría es streaming, mostrar servicios de streaming
+    if (currentCategory === 'streaming') {
+      filtered = streamingServices.filter(service => {
+        const matchesSearch = service.name.toLowerCase().includes(searchTerm) || 
+                             service.description.toLowerCase().includes(searchTerm);
+        return matchesSearch;
+      });
+    } else {
+      // Filtrar servicios normales de Firebase
+      filtered = allServices.filter(service => {
+        const matchesCategory = currentCategory === 'all' || service.category === currentCategory;
+        const matchesSearch = service.name.toLowerCase().includes(searchTerm) || 
+                             (service.tags && Array.isArray(service.tags) && service.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+        return matchesCategory && matchesSearch;
+      });
+    }
+    
+    if (filtered.length === 0) {
+      grid.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:40px;grid-column:1/-1;">No se encontraron servicios</p>';
+      return;
+    }
+    
+    // Renderizar servicios de streaming
+    if (currentCategory === 'streaming') {
+      grid.innerHTML = filtered.map(service => {
+        return `
+          <div class="service-card streaming-card" onclick="openStreamingModal('${service.id}')">
+            <h3>${service.icon} ${service.name}</h3>
+            <p>${service.description}</p>
+            <div class="service-badges">
+              <span class="badge stock">✓ En Stock</span>
+              <span class="badge manual">👤 Entrega Manual</span>
+            </div>
+            <div class="service-meta">
+              <div class="service-credits">$${service.price.toFixed(2)} <span>créditos</span></div>
+              <button class="btn-add-service btn-add-streaming" onclick="event.stopPropagation(); openStreamingModal('${service.id}')">
+                Solicitar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      // Renderizar servicios normales
+      grid.innerHTML = filtered.map(service => {
+        const price = service.credits || service.price || 0;
+        const badges = `
+          ${service.stock ? '<span class="badge stock">✓ En Stock</span>' : '<span class="badge" style="background:rgba(255,68,85,0.15);color:#ff4455;">Agotado</span>'}
+          ${service.autoServer ? '<span class="badge auto">⚡ Automático</span>' : ''}
+        `;
+        
+        return `
+          <div class="service-card" onclick="openOrderModal('${service.id}')">
+            <h3>${service.name}</h3>
+            <p>${service.description || 'Sin descripción'}</p>
+            <div class="service-badges">${badges}</div>
+            <div class="service-meta">
+              <div class="service-credits">$${price.toFixed(2)} <span>créditos</span></div>
+              <button class="btn-add-service" onclick="event.stopPropagation(); openOrderModal('${service.id}')">
+                Seleccionar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function openOrderModal(serviceId) {
+    currentService = allServices.find(s => s.id === serviceId);
+    if (!currentService) return;
+    
+    document.getElementById('modalServiceName').textContent = currentService.name;
+    document.getElementById('modalServiceDesc').textContent = currentService.description || '';
+    document.getElementById('quantityInput').value = 1;
+    document.getElementById('inputData').value = '';
+    
+    const categoryLabels = {
+      'unlock': 'IMEI o Número de Serie',
+      'license': 'Username o Email',
+      'remote': 'Username o Datos de acceso',
+      'flash': 'Modelo del dispositivo',
+      'bypass': 'IMEI o Número de Serie',
+      'repair': 'Descripción del problema'
+    };
+    const label = categoryLabels[currentService.category] || 'Datos requeridos';
+    document.getElementById('inputLabel').textContent = label;
+    document.getElementById('inputData').placeholder = `Ingresa ${label.toLowerCase()}`;
+    
+    updatePriceDisplay();
+    document.getElementById('orderModal').classList.add('open');
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    currentService = null;
+  }
+
+  function changeQuantity(delta) {
+    const input = document.getElementById('quantityInput');
+    let value = parseInt(input.value) + delta;
+    if (value < 1) value = 1;
+    if (value > 99) value = 99;
+    input.value = value;
+    updatePriceDisplay();
+  }
+
+  function updatePriceDisplay() {
+    if (!currentService) return;
+    const quantity = parseInt(document.getElementById('quantityInput').value);
+    const unitPrice = currentService.credits || currentService.price || 0;
+    const total = unitPrice * quantity;
+    document.getElementById('priceDisplay').textContent = `$${total.toFixed(2)}`;
+  }
+
+  function addToCartFromModal() {
+    if (!currentService) return;
+    
+    const quantity = parseInt(document.getElementById('quantityInput').value);
+    const inputData = document.getElementById('inputData').value.trim();
+    
+    if (!inputData) {
+      showToast('Por favor ingresa los datos requeridos', 'error');
+      return;
+    }
+    
+    const existingItem = cart.find(item => item.id === currentService.id && item.inputValue === inputData);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.push({
+        id: currentService.id,
+        name: currentService.name,
+        credits: currentService.credits || currentService.price || 0,
+        quantity: quantity,
+        inputValue: inputData,
+        category: currentService.category
+      });
+    }
+    
+    renderCart();
+    closeOrderModal();
+    showToast('Servicio añadido al carrito', 'success');
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+  }
+
+  function updateCartItem(index, value) {
+    if (cart[index]) {
+      cart[index].inputValue = value;
+    }
+  }
+
+  function renderCart() {
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const btnCheckout = document.getElementById('btnCheckout');
+    
+    if (cart.length === 0) {
+      cartItems.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay servicios seleccionados</p>';
+      cartTotal.textContent = '0';
+      btnCheckout.disabled = true;
+      updateBalanceDisplay();
+      return;
+    }
+    
+    const totalCredits = cart.reduce((sum, item) => sum + (item.credits * item.quantity), 0);
+    
+    cartItems.innerHTML = cart.map((item, index) => `
+      <div class="cart-item">
+        <div class="cart-item-header">
+          <span class="cart-item-name">${item.name}</span>
+          <span class="cart-item-credits">${item.credits} créditos c/u</span>
+        </div>
+        <input type="text" class="cart-item-input" placeholder="${item.category === 'unlock' ? 'IMEI/SN' : 'Username/Datos'}" 
+               value="${item.inputValue}" 
+               onchange="updateCartItem(${index}, this.value)">
+        <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:12px;color:var(--text-dim);">Cantidad: ${item.quantity} = ${(item.credits * item.quantity).toFixed(2)} créditos</div>
+          <button class="btn-remove-item" onclick="removeFromCart(${index})">Eliminar</button>
+        </div>
+      </div>
+    `).join('');
+    
+    cartTotal.textContent = totalCredits.toFixed(2);
+    btnCheckout.disabled = false;
+    updateBalanceDisplay();
+  }
+
+  async function processCheckout() {
+    const totalCredits = cart.reduce((sum, item) => sum + (item.credits * item.quantity), 0);
+    
+    if (userBalance < totalCredits) {
+      const shortfall = totalCredits - userBalance;
+      const confirmRecarga = confirm(
+        `❌ Saldo Insuficiente\n\n` +
+        `Saldo actual: $${userBalance.toFixed(2)}\n` +
+        `Total del pedido: $${totalCredits.toFixed(2)}\n` +
+        `Te falta: $${shortfall.toFixed(2)}\n\n` +
+        `¿Deseas recargar saldo ahora?`
+      );
+      
+      if (confirmRecarga) {
+        rechargeBalance();
+      }
+      return;
+    }
+    
+    const confirmPurchase = confirm(
+      `✅ Confirmar Compra\n\n` +
+      `Total a pagar: $${totalCredits.toFixed(2)}\n` +
+      `Saldo actual: $${userBalance.toFixed(2)}\n` +
+      `Saldo después de la compra: $${(userBalance - totalCredits).toFixed(2)}\n\n` +
+      `¿Confirmas la compra?`
+    );
+    
+    if (!confirmPurchase) return;
+    
+    try {
+      const orderData = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile.name || 'Usuario',
+        items: cart,
+        totalCredits: totalCredits,
+        status: 'pending',
+        paymentMethod: 'balance',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      await db.collection('orders').add(orderData);
+      
+      const newBalance = userBalance - totalCredits;
+      await db.collection('profiles').doc(currentUser.uid).update({
+        balance: newBalance,
+        lastTransaction: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      await db.collection('transactions').add({
+        userId: currentUser.uid,
+        type: 'purchase',
+        amount: -totalCredits,
+        description: `Pedido de servicios`,
+        balanceBefore: userBalance,
+        balanceAfter: newBalance,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      userBalance = newBalance;
+      updateBalanceDisplay();
+      
+      showToast(`✅ Pedido creado. Se descontaron $${totalCredits.toFixed(2)} de tu saldo. Nuevo saldo: $${newBalance.toFixed(2)}`, 'success');
+      
+      cart = [];
+      renderCart();
+      
+      setTimeout(() => {
+        window.location.href = 'mis-pedidos.html';
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error creando pedido:', error);
+      showToast('❌ Error al crear el pedido: ' + error.message, 'error');
+    }
+  }
+
+  // ✅ FUNCIONES PARA STREAMING
+  function openStreamingModal(serviceId) {
+    currentStreamingService = streamingServices.find(s => s.id === serviceId);
+    if (!currentStreamingService) return;
+    
+    document.getElementById('streamingServiceName').textContent = `📺 ${currentStreamingService.name}`;
+    document.getElementById('streamingServiceDisplay').value = currentStreamingService.name;
+    document.getElementById('streamingPriceDisplay').value = `$${currentStreamingService.price.toFixed(2)} créditos`;
+    
+    // Limpiar formulario
+    document.getElementById('streamingContactEmail').value = currentUser.email || '';
+    document.getElementById('streamingWhatsApp').value = '';
+    document.getElementById('streamingNotes').value = '';
+    
+    document.getElementById('streamingModal').classList.add('open');
+  }
+
+  function closeStreamingModal() {
+    document.getElementById('streamingModal').classList.remove('open');
+    currentStreamingService = null;
+  }
+
+  async function submitStreamingOrder(e) {
+    e.preventDefault();
+    
+    if (!currentStreamingService) return;
+    
+    const contactEmail = document.getElementById('streamingContactEmail').value.trim();
+    const whatsapp = document.getElementById('streamingWhatsApp').value.trim();
+    const notes = document.getElementById('streamingNotes').value.trim();
+    
+    if (!contactEmail) {
+      showToast('Por favor ingresa un email de contacto', 'error');
+      return;
+    }
+    
+    try {
+      // Verificar saldo
+      if (userBalance < currentStreamingService.price) {
+        const shortfall = currentStreamingService.price - userBalance;
+        const confirmRecarga = confirm(
+          `❌ Saldo Insuficiente\n\n` +
+          `Saldo actual: $${userBalance.toFixed(2)}\n` +
+          `Precio del servicio: $${currentStreamingService.price.toFixed(2)}\n` +
+          `Te falta: $${shortfall.toFixed(2)}\n\n` +
+          `¿Deseas recargar saldo ahora?`
+        );
+        
+        if (confirmRecarga) {
+          closeStreamingModal();
+          rechargeBalance();
+        }
+        return;
+      }
+      
+      // Confirmar pedido
+      const confirmPurchase = confirm(
+        `✅ Confirmar Pedido de Streaming\n\n` +
+        `Servicio: ${currentStreamingService.name}\n` +
+        `Precio: $${currentStreamingService.price.toFixed(2)}\n` +
+        `Email de contacto: ${contactEmail}\n\n` +
+        `Se descontará de tu saldo actual.\n` +
+        `¿Confirmas el pedido?`
+      );
+      
+      if (!confirmPurchase) return;
+      
+      // Crear pedido de streaming
+      const streamingOrder = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile.name || 'Usuario',
+        serviceId: currentStreamingService.id,
+        serviceName: currentStreamingService.name,
+        servicePrice: currentStreamingService.price,
+        contactEmail: contactEmail,
+        whatsapp: whatsapp,
+        notes: notes,
+        status: 'pending',
+        paymentMethod: 'balance',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      await db.collection('streamingOrders').add(streamingOrder);
+      
+      // Descontar saldo
+      const newBalance = userBalance - currentStreamingService.price;
+      await db.collection('profiles').doc(currentUser.uid).update({
+        balance: newBalance,
+        lastTransaction: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Registrar transacción
+      await db.collection('transactions').add({
+        userId: currentUser.uid,
+        type: 'streaming_purchase',
+        amount: -currentStreamingService.price,
+        description: `Pedido streaming: ${currentStreamingService.name}`,
+        balanceBefore: userBalance,
+        balanceAfter: newBalance,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      userBalance = newBalance;
+      updateBalanceDisplay();
+      
+      showToast(`✅ ¡Pedido de streaming solicitado! Te contactaremos en 24-48 horas a ${contactEmail}`, 'success');
+      
+      closeStreamingModal();
+      
+      // Redirigir a mis pedidos después de 2 segundos
+      setTimeout(() => {
+        window.location.href = 'mis-pedidos.html';
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error creando pedido de streaming:', error);
+      showToast('❌ Error al crear el pedido: ' + error.message, 'error');
+    }
+  }
+
+  function rechargeBalance() {
+    window.location.href = 'recargar-saldo.html';
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? '✅' : '⚠️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  document.getElementById('orderModal').addEventListener('click', (e) => {
+    if (e.target.id === 'orderModal') closeOrderModal();
+  });
+
+  document.getElementById('streamingModal').addEventListener('click', (e) => {
+    if (e.target.id === 'streamingModal') closeStreamingModal();
+  });
+</script>
+
+</body>
+</html>

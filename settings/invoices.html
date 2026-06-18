@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Facturas - NexaGSM</title>
+<link rel="icon" type="image/png" href="../logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --yellow: #ffcc00;
+    --red: #ff4455;
+    --purple: #8a2be2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-header {
+    padding: 40px 40px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .page-header h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .breadcrumb {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    color: var(--cyan);
+  }
+
+  .invoices-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 40px 60px;
+  }
+
+  /* Tabs de filtros */
+  .invoice-tabs {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .tabs-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--cyan-border);
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 12px 24px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab-button:hover {
+    color: var(--cyan);
+  }
+
+  .tab-button.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+  }
+
+  .tab-count {
+    background: var(--cyan-glow);
+    color: var(--cyan);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .tab-button.active .tab-count {
+    background: var(--cyan);
+    color: var(--dark);
+  }
+
+  /* Barra de búsqueda */
+  .search-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 300px;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .search-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px var(--cyan-glow);
+  }
+
+  .filter-select {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .filter-select:focus {
+    border-color: var(--cyan);
+  }
+
+  /* Tabla de facturas */
+  .invoices-table {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.5fr 1.5fr 1fr 1fr 1fr;
+    gap: 0;
+    background: var(--dark3);
+    border-bottom: 1px solid var(--cyan-border);
+    padding: 16px 20px;
+  }
+
+  .table-header span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+  }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.5fr 1.5fr 1fr 1fr 1fr;
+    gap: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0,229,255,0.08);
+    align-items: center;
+    transition: background 0.2s;
+  }
+
+  .table-row:hover {
+    background: rgba(0,229,255,0.03);
+  }
+
+  .table-row:last-child {
+    border-bottom: none;
+  }
+
+  .invoice-id {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .invoice-date {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .invoice-total {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--yellow);
+    font-weight: 700;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .status-badge.paid { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid var(--green); }
+  .status-badge.pending { background: rgba(255,204,0,0.15); color: var(--yellow); border: 1px solid var(--yellow); }
+  .status-badge.proforma { background: rgba(0,229,255,0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+  .status-badge.void { background: rgba(255,68,85,0.15); color: var(--red); border: 1px solid var(--red); }
+
+  .btn-download {
+    background: transparent;
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .btn-download:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+
+  .empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 60px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .loading::after {
+    content: ' Cargando facturas';
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+
+  @keyframes dots {
+    0% { content: ' Cargando facturas'; }
+    33% { content: ' Cargando facturas.'; }
+    66% { content: ' Cargando facturas..'; }
+    100% { content: ' Cargando facturas...'; }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--cyan); }
+
+  @media (max-width: 1200px) {
+    .table-header, .table-row { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .table-header span:nth-child(5), .table-row > *:nth-child(5),
+    .table-header span:nth-child(6), .table-row > *:nth-child(6) { display: none; }
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-header { padding: 40px 20px 20px; }
+    .invoices-container { padding: 20px; }
+    .table-header, .table-row { grid-template-columns: 1fr 1fr; }
+    .table-header span:nth-child(3), .table-row > *:nth-child(3),
+    .table-header span:nth-child(4), .table-row > *:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="logo">
+    <img src="../logo.png" alt="NexaGSM" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Inicio</a></li>
+    <li><a href="../registros-imei.html">Servicios</a></li>
+    <li><a href="../precios.html">Paquetes</a></li>
+    <li><a href="../mis-pedidos.html">Tus pedidos</a></li>
+    <li><a href="../dashboard.html">Dashboard</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-header">
+  <h1>Mis Facturas</h1>
+  <div class="breadcrumb">
+    <a href="../index.html">Inicio</a> / <span>Mis Facturas</span>
+  </div>
+</div>
+
+<div class="invoices-container">
+  <div class="invoice-tabs">
+    <!-- Tabs Header -->
+    <div class="tabs-header">
+      <button class="tab-button active" onclick="filterInvoices('paid')">
+        Pagado <span class="tab-count" id="countPaid">0</span>
+      </button>
+      <button class="tab-button" onclick="filterInvoices('proforma')">
+        Proforma <span class="tab-count" id="countProforma">0</span>
+      </button>
+      <button class="tab-button" onclick="filterInvoices('pending')">
+        Pendiente Pago <span class="tab-count" id="countPending">0</span>
+      </button>
+      <button class="tab-button" onclick="filterInvoices('void')">
+        Void <span class="tab-count" id="countVoid">0</span>
+      </button>
+    </div>
+
+    <!-- Barra de búsqueda -->
+    <div class="search-bar">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Buscar por ID de factura, servicio, etc..." oninput="searchInvoices()">
+      <select class="filter-select" id="dateFilter" onchange="filterByDate()">
+        <option value="all">Todas las fechas</option>
+        <option value="today">Hoy</option>
+        <option value="week">Esta semana</option>
+        <option value="month">Este mes</option>
+        <option value="year">Este año</option>
+      </select>
+    </div>
+
+    <!-- Tabla de facturas -->
+    <div class="invoices-table" id="invoicesTable">
+      <div class="loading"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  let currentUser = null;
+  let allInvoices = [];
+  let currentFilter = 'paid';
+
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = '../index.html';
+      return;
+    }
+    
+    currentUser = user;
+    await loadInvoices();
+    updateNav();
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser) {
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${currentUser.email.charAt(0).toUpperCase()}</div>
+          <span class="user-name">${currentUser.email}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = '../index.html';
+    });
+  }
+
+  async function loadInvoices() {
+    try {
+      const ordersSnap = await db.collection('orders')
+        .where('userId', '==', currentUser.uid)
+        .get();
+      
+      allInvoices = ordersSnap.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          invoiceType: getInvoiceType(data)
+        };
+      });
+      
+      allInvoices.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
+      
+      updateCounts();
+      renderInvoices();
+      
+    } catch (error) {
+      console.error('Error cargando facturas:', error);
+      document.getElementById('invoicesTable').innerHTML = `
+        <div class="empty-state">
+          <p style="color:var(--red);">Error al cargar facturas</p>
+        </div>
+      `;
+    }
+  }
+
+  function getInvoiceType(order) {
+    const status = (order.status || 'pending').toLowerCase();
+    
+    if (status === 'approved') return 'paid';
+    if (status === 'pending') return 'pending';
+    if (status === 'rejected') return 'void';
+    return 'proforma';
+  }
+
+  function updateCounts() {
+    const paid = allInvoices.filter(inv => inv.invoiceType === 'paid').length;
+    const proforma = allInvoices.filter(inv => inv.invoiceType === 'proforma').length;
+    const pending = allInvoices.filter(inv => inv.invoiceType === 'pending').length;
+    const void_ = allInvoices.filter(inv => inv.invoiceType === 'void').length;
+    
+    document.getElementById('countPaid').textContent = paid;
+    document.getElementById('countProforma').textContent = proforma;
+    document.getElementById('countPending').textContent = pending;
+    document.getElementById('countVoid').textContent = void_;
+  }
+
+  function filterInvoices(type) {
+    currentFilter = type;
+    
+    // Actualizar tabs activos
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    renderInvoices();
+  }
+
+  function searchInvoices() {
+    renderInvoices();
+  }
+
+  function filterByDate() {
+    renderInvoices();
+  }
+
+  function renderInvoices() {
+    const table = document.getElementById('invoicesTable');
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const dateFilter = document.getElementById('dateFilter').value;
+    
+    // Filtrar por tipo
+    let filtered = allInvoices.filter(inv => inv.invoiceType === currentFilter);
+    
+    // Filtrar por búsqueda
+    if (searchTerm) {
+      filtered = filtered.filter(inv => 
+        inv.id.toLowerCase().includes(searchTerm) ||
+        (inv.packageName && inv.packageName.toLowerCase().includes(searchTerm)) ||
+        (inv.items && inv.items.some(item => item.name.toLowerCase().includes(searchTerm)))
+      );
+    }
+    
+    // Filtrar por fecha
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      filtered = filtered.filter(inv => {
+        const date = inv.createdAt?.toDate ? inv.createdAt.toDate() : new Date(inv.createdAt);
+        
+        switch (dateFilter) {
+          case 'today':
+            return date.toDateString() === now.toDateString();
+          case 'week':
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return date >= weekAgo;
+          case 'month':
+            return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+          case 'year':
+            return date.getFullYear() === now.getFullYear();
+          default:
+            return true;
+        }
+      });
+    }
+    
+    if (filtered.length === 0) {
+      table.innerHTML = `
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <p>No se encuentran facturas</p>
+        </div>
+      `;
+      return;
+    }
+    
+    const statusLabels = {
+      'paid': 'Pagado',
+      'pending': 'Pendiente Pago',
+      'proforma': 'Proforma',
+      'void': 'Void'
+    };
+    
+    table.innerHTML = `
+      <div class="table-header">
+        <span>#ID</span>
+        <span>FECHA</span>
+        <span>FECHA DE VENCIMIENTO</span>
+        <span>FECHA DE PAGO</span>
+        <span>TOTAL</span>
+        <span>STATUS</span>
+        <span>ACCIÓN</span>
+      </div>
+      ${filtered.map(invoice => {
+        const date = invoice.createdAt?.toDate ? invoice.createdAt.toDate() : new Date(invoice.createdAt);
+        const dueDate = new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 días después
+        const paidDate = invoice.approvedAt?.toDate ? invoice.approvedAt.toDate() : null;
+        
+        return `
+          <div class="table-row">
+            <div class="invoice-id">#${invoice.id.substring(0, 8).toUpperCase()}</div>
+            <div class="invoice-date">${date.toLocaleDateString('es-ES')}</div>
+            <div class="invoice-date">${dueDate.toLocaleDateString('es-ES')}</div>
+            <div class="invoice-date">${paidDate ? paidDate.toLocaleDateString('es-ES') : '-'}</div>
+            <div class="invoice-total">$${(invoice.totalCredits || 0).toFixed(2)}</div>
+            <div><span class="status-badge ${invoice.invoiceType}">${statusLabels[invoice.invoiceType]}</span></div>
+            <div>
+              <button class="btn-download" onclick="downloadInvoice('${invoice.id}')">📄 Descargar</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function downloadInvoice(invoiceId) {
+    const invoice = allInvoices.find(inv => inv.id === invoiceId);
+    if (!invoice) return;
+    
+    // Crear contenido de la factura
+    const date = invoice.createdAt?.toDate ? invoice.createdAt.toDate() : new Date(invoice.createdAt);
+    const content = `
+FACTURA NEXAGSM
+================
+
+ID: #${invoice.id.substring(0, 8).toUpperCase()}
+Fecha: ${date.toLocaleDateString('es-ES')}
+Estado: ${invoice.invoiceType.toUpperCase()}
+
+DETALLES:
+${invoice.packageName ? `Paquete: ${invoice.packageName}` : 'Servicios:'}
+${invoice.items ? invoice.items.map(item => `- ${item.name}: $${item.credits.toFixed(2)} x${item.quantity}`).join('\n') : ''}
+
+TOTAL: $${(invoice.totalCredits || 0).toFixed(2)}
+
+================
+NexaGSM - Servidor GSM de Latinoamérica
+    `.trim();
+    
+    // Crear blob y descargar
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `factura_${invoice.id.substring(0, 8)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

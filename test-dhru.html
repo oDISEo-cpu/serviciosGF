@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Test DHru API</title>
+<style>
+  body {
+    background: #040a12;
+    color: #e0f4ff;
+    font-family: 'Rajdhani', sans-serif;
+    padding: 40px;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #0f1e30;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #00e5ff;
+  }
+  h1 { color: #00e5ff; margin-bottom: 20px; }
+  button {
+    background: #00e5ff;
+    color: #040a12;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 10px 10px 10px 0;
+  }
+  button:hover { background: #00b8cc; }
+  .result {
+    background: #0a1220;
+    padding: 20px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    white-space: pre-wrap;
+  }
+  .success { color: #00ff88; }
+  .error { color: #ff4455; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 Test DHru Fusion API</h1>
+    
+    <button onclick="checkBalance()">📊 Consultar Saldo</button>
+    <button onclick="getServices()">📦 Ver Servicios</button>
+    
+    <div id="result" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    const DHruConfig = {
+      apiKey: 'IZQ-MNQ-61K-6SD-FFQ-BQG-5UP-XU9',
+      username: 'Esojlin',
+      baseUrl: 'https://jonartgsm.com/api'
+    };
+
+    async function callDHruAPI(action, extraParams = {}) {
+      const params = new URLSearchParams({
+        key: DHruConfig.apiKey,
+        username: DHruConfig.username,
+        action: action,
+        ...extraParams
+      });
+
+      try {
+        const response = await fetch(DHruConfig.baseUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params.toString()
+        });
+
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        return { error: error.message };
+      }
+    }
+
+    async function checkBalance() {
+      showResult('Consultando saldo...', 'info');
+      const result = await callDHruAPI('balance');
+      showResult(JSON.stringify(result, null, 2), result.ERROR ? 'error' : 'success');
+    }
+
+    async function getServices() {
+      showResult('Obteniendo servicios...', 'info');
+      const result = await callDHruAPI('services');
+      showResult(JSON.stringify(result, null, 2), result.ERROR ? 'error' : 'success');
+    }
+
+    function showResult(message, type) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = message;
+      resultDiv.className = `result ${type}`;
+    }
+  </script>
+</body>
+</html>
