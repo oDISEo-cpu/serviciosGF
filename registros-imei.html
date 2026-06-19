@@ -28,6 +28,7 @@
     --yellow: #ffcc00;
     --red: #ff4455;
     --purple: #8a2be2;
+    --orange: #ff6b35;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
@@ -120,9 +121,7 @@
     -ms-overflow-style: none;
   }
   
-  .category-tabs-container::-webkit-scrollbar {
-    display: none;
-  }
+  .category-tabs-container::-webkit-scrollbar { display: none; }
 
   .category-tabs {
     display: flex;
@@ -171,12 +170,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 20px;
   }
 
-  /* ✅ BARRA DE BÚSQUEDA */
   .search-container {
     position: relative;
     flex: 1;
@@ -248,9 +246,7 @@
     background: rgba(255,68,85,0.1);
   }
 
-  .search-clear.visible {
-    display: block;
-  }
+  .search-clear.visible { display: block; }
 
   .search-results-info {
     margin-top: 8px;
@@ -260,13 +256,119 @@
     display: none;
   }
 
-  .search-results-info.visible {
-    display: block;
+  .search-results-info.visible { display: block; }
+  .search-results-info .count { color: var(--emerald); font-weight: 700; }
+
+  /* ✅ NUEVO: FILTROS POR MARCA */
+  .brand-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
-  .search-results-info .count {
+  .brand-filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .brand-pill {
+    background: var(--surface);
+    border: 1px solid var(--emerald-border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-pill:hover {
+    background: var(--emerald-glow);
+    border-color: var(--emerald);
     color: var(--emerald);
+  }
+
+  .brand-pill.active {
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--dark);
     font-weight: 700;
+  }
+
+  .brand-pill .pill-count {
+    background: rgba(0,0,0,0.2);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .brand-pill.active .pill-count {
+    background: rgba(0,0,0,0.3);
+    color: var(--dark);
+  }
+
+  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sort-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sort-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .sort-select {
+    background: var(--surface);
+    border: 1px solid var(--emerald-border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .sort-select:hover, .sort-select:focus {
+    border-color: var(--emerald);
+    background: var(--dark3);
+  }
+
+  .sort-select option {
+    background: var(--dark2);
+    color: var(--text);
   }
 
   .admin-buttons {
@@ -312,12 +414,68 @@
     position: relative;
     transition: all 0.3s;
     background: linear-gradient(135deg, var(--surface) 0%, rgba(0,255,136,0.05) 100%);
+    overflow: hidden;
   }
 
   .service-card:hover {
     border-color: var(--emerald);
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(0, 255, 136, 0.25);
+  }
+
+  /* ✅ NUEVO: CINTA "MÁS VENDIDO" / "NUEVO" */
+  .service-ribbon {
+    position: absolute;
+    top: 14px;
+    left: -10px;
+    padding: 5px 14px 5px 18px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 0 4px 4px 0;
+    z-index: 3;
+    color: var(--dark);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .service-ribbon.bestseller {
+    background: linear-gradient(135deg, #ff6b35, #ffcc00);
+  }
+
+  .service-ribbon.new {
+    background: linear-gradient(135deg, #00ff88, #00e5ff);
+  }
+
+  .service-ribbon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: rgba(0,0,0,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+  }
+
+  /* ✅ NUEVO: ICONO DE MARCA */
+  .brand-icon-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--dark3);
+    border: 1px solid var(--emerald-border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
 
   .service-category {
@@ -339,6 +497,7 @@
     font-weight: 700;
     color: var(--emerald);
     margin-bottom: 8px;
+    padding-right: 50px;
   }
 
   .service-card p {
@@ -427,9 +586,10 @@
   .service-actions {
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 64px;
     display: flex;
     gap: 8px;
+    z-index: 3;
   }
 
   .btn-edit, .btn-delete {
@@ -503,9 +663,7 @@
     justify-content: center;
   }
 
-  .modal-overlay.open {
-    display: flex;
-  }
+  .modal-overlay.open { display: flex; }
 
   .modal {
     background: var(--surface);
@@ -537,9 +695,7 @@
     transition: color 0.2s;
   }
 
-  .modal-close:hover {
-    color: var(--emerald);
-  }
+  .modal-close:hover { color: var(--emerald); }
 
   .modal h2 {
     font-family: 'Orbitron', monospace;
@@ -554,9 +710,7 @@
     margin-bottom: 24px;
   }
 
-  .form-group {
-    margin-bottom: 18px;
-  }
+  .form-group { margin-bottom: 18px; }
 
   .form-group label {
     display: block;
@@ -590,10 +744,7 @@
     border-color: var(--emerald);
   }
 
-  .form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
 
   .form-row {
     display: grid;
@@ -607,11 +758,7 @@
     margin-top: 24px;
   }
 
-  .btn-full {
-    width: 100%;
-    padding: 14px;
-    font-size: 15px;
-  }
+  .btn-full { width: 100%; padding: 14px; font-size: 15px; }
 
   .btn-save {
     background: var(--emerald);
@@ -650,14 +797,8 @@
     border-bottom: 1px solid var(--emerald-border);
   }
 
-  .summary-item:last-child {
-    border-bottom: none;
-  }
-
-  .summary-item span:first-child {
-    color: var(--text-muted);
-    font-size: 14px;
-  }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item span:first-child { color: var(--text-muted); font-size: 14px; }
 
   .summary-item .price {
     font-family: 'Orbitron', monospace;
@@ -684,9 +825,7 @@
     line-height: 1.6;
   }
 
-  .info-box strong {
-    color: var(--emerald);
-  }
+  .info-box strong { color: var(--emerald); }
 
   .service-info-panel {
     background: var(--dark3);
@@ -711,18 +850,9 @@
     font-size: 13px;
   }
 
-  .service-info-item:last-child {
-    border-bottom: none;
-  }
-
-  .service-info-item .label {
-    color: var(--text-muted);
-  }
-
-  .service-info-item .value {
-    color: var(--text);
-    font-weight: 600;
-  }
+  .service-info-item:last-child { border-bottom: none; }
+  .service-info-item .label { color: var(--text-muted); }
+  .service-info-item .value { color: var(--text); font-weight: 600; }
 
   .checkbox-container {
     display: flex;
@@ -760,9 +890,7 @@
     display: none;
   }
 
-  .error-message.show {
-    display: block;
-  }
+  .error-message.show { display: block; }
 
   .toast-container {
     position: fixed;
@@ -825,6 +953,9 @@
     .form-row { grid-template-columns: 1fr; }
     .services-header { flex-direction: column; align-items: stretch; }
     .search-container { max-width: 100%; }
+    .service-actions { right: 10px; top: 60px; }
+    .brand-icon-badge { width: 34px; height: 34px; font-size: 18px; }
+    .service-card h3 { padding-right: 40px; }
   }
 </style>
 </head>
@@ -868,7 +999,6 @@
 </div>
 
 <div class="services-container">
-  <!-- ✅ BARRA DE BÚSQUEDA -->
   <div class="services-header">
     <div class="search-container">
       <div class="search-input-wrapper">
@@ -892,6 +1022,26 @@
       <button class="btn-add-service" onclick="openAddModal()">
         ➕ Agregar Servicio
       </button>
+    </div>
+  </div>
+
+  <!-- ✅ NUEVO: FILTROS POR MARCA -->
+  <div class="brand-filters" id="brandFilters">
+    <span class="brand-filter-label">🏷️ Filtrar por marca:</span>
+    <!-- Se genera dinámicamente -->
+  </div>
+
+  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
+  <div class="controls-row">
+    <div class="sort-container">
+      <span class="sort-label">📊 Ordenar:</span>
+      <select class="sort-select" id="sortSelect" onchange="handleSort()">
+        <option value="recent">Más recientes</option>
+        <option value="price-asc">Precio ↑ (menor a mayor)</option>
+        <option value="price-desc">Precio ↓ (mayor a menor)</option>
+        <option value="popular">Más vendidos</option>
+        <option value="name">Nombre A-Z</option>
+      </select>
     </div>
   </div>
 
@@ -1070,10 +1220,9 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ✅ CONFIGURACIÓN DE TELEGRAM CORREGIDA
   const telegramConfig = {
     botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['1461150518', '8225719154'], // ✅ Array de chat IDs
+    chatIds: ['1461150518', '8225719154'],
     enabled: true
   };
 
@@ -1083,28 +1232,247 @@
   let filteredServices = [];
   let currentOrderService = null;
   let searchQuery = '';
+  let currentBrandFilter = 'all';
+  let currentSort = 'recent';
 
-  // ✅ FUNCIÓN DE TELEGRAM CORREGIDA (envía a múltiples chats)
-  async function sendTelegramMessage(message) {
-    if (!telegramConfig.enabled) {
-      console.log('🔕 Notificaciones de Telegram desactivadas');
-      return false;
+  // ✅ NUEVO: FUNCIÓN PARA PARSEAR TAGS CORRECTAMENTE (FIX DEL BUG)
+  function parseTags(tags) {
+    if (!tags) return [];
+    
+    // Si ya es un array, devolverlo limpio
+    if (Array.isArray(tags)) {
+      return tags.filter(t => typeof t === 'string' && t.trim() !== '');
     }
+    
+    // Si es string
+    if (typeof tags === 'string') {
+      // Intentar parsear como JSON primero
+      try {
+        const parsed = JSON.parse(tags);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(t => typeof t === 'string' && t.trim() !== '');
+        }
+      } catch (e) {
+        // No es JSON válido, continuar
+      }
+      
+      // Limpiar caracteres JSON residuales
+      let cleaned = tags
+        .replace(/[\[\]"]/g, '')  // Quitar corchetes y comillas
+        .replace(/\\n/g, ',')      // Reemplazar \n por coma
+        .trim();
+      
+      // Split por coma
+      return cleaned.split(',')
+        .map(t => t.trim())
+        .filter(t => t && t.length > 0);
+    }
+    
+    return [];
+  }
+
+  // ✅ NUEVO: DETECTAR MARCA DEL SERVICIO
+  function detectBrand(service) {
+    const text = [
+      service.name || '',
+      service.description || '',
+      parseTags(service.tags).join(' ')
+    ].join(' ').toLowerCase();
+    
+    const brands = [
+      { name: 'Samsung', keywords: ['samsung', 'galaxy', 'sm-', 'gt-', 'sch-'] },
+      { name: 'Xiaomi', keywords: ['xiaomi', 'redmi', 'poco', ' mi ', 'mi account', 'miui'] },
+      { name: 'Apple', keywords: ['apple', 'iphone', 'ipad', 'ios', 'icloud', 'hello iphone'] },
+      { name: 'Honor', keywords: ['honor'] },
+      { name: 'Huawei', keywords: ['huawei'] },
+      { name: 'Motorola', keywords: ['motorola', 'moto '] },
+      { name: 'LG', keywords: [' lg ', 'lg-', 'lg '] },
+      { name: 'Realme', keywords: ['realme'] },
+      { name: 'Oppo', keywords: ['oppo'] },
+      { name: 'OnePlus', keywords: ['oneplus', 'one plus'] },
+      { name: 'Tecno', keywords: ['tecno', 'infinix'] },
+      { name: 'Nokia', keywords: ['nokia', 'hmd'] }
+    ];
+    
+    for (const brand of brands) {
+      for (const keyword of brand.keywords) {
+        if (text.includes(keyword)) return brand.name;
+      }
+    }
+    return null;
+  }
+
+  // ✅ NUEVO: OBTENER ICONO DE MARCA
+  function getBrandIcon(brand) {
+    const icons = {
+      'Samsung': '📱',
+      'Xiaomi': '🔶',
+      'Apple': '🍎',
+      'Honor': '⭐',
+      'Huawei': '🌸',
+      'Motorola': '🔷',
+      'LG': '🔴',
+      'Realme': '🟡',
+      'Oppo': '🟢',
+      'OnePlus': '➕',
+      'Tecno': '🔵',
+      'Nokia': '🟣'
+    };
+    return icons[brand] || '📲';
+  }
+
+  // ✅ NUEVO: VERIFICAR SI ES MÁS VENDIDO
+  function isBestSeller(service) {
+    const name = (service.name || '').toLowerCase();
+    const bestSellers = [
+      'samsung frp',
+      'xiaomi mi account',
+      'iphone bypass',
+      'honor frp',
+      'samsung unlock',
+      'frp via imei'
+    ];
+    return bestSellers.some(bs => name.includes(bs));
+  }
+
+  // ✅ NUEVO: VERIFICAR SI ES NUEVO (menos de 7 días)
+  function isNew(service) {
+    if (!service.createdAt) return false;
+    const created = new Date(service.createdAt);
+    const now = new Date();
+    const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+    return diffDays <= 7;
+  }
+
+  // ✅ NUEVO: EXTRAER MARCAS ÚNICAS DE LOS SERVICIOS
+  function extractBrands(services) {
+    const brandCount = {};
+    services.forEach(service => {
+      const brand = detectBrand(service);
+      if (brand) {
+        brandCount[brand] = (brandCount[brand] || 0) + 1;
+      }
+    });
+    return brandCount;
+  }
+
+  // ✅ NUEVO: RENDERIZAR FILTROS DE MARCA
+  function renderBrandFilters() {
+    const container = document.getElementById('brandFilters');
+    const brandCount = extractBrands(allServices);
+    const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]);
+    
+    let html = '<span class="brand-filter-label">🏷️ Filtrar por marca:</span>';
+    
+    // Botón "Todos"
+    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">
+      Todos <span class="pill-count">${allServices.length}</span>
+    </button>`;
+    
+    // Botones por marca
+    brands.forEach(([brand, count]) => {
+      const icon = getBrandIcon(brand);
+      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">
+        ${icon} ${brand} <span class="pill-count">${count}</span>
+      </button>`;
+    });
+    
+    container.innerHTML = html;
+  }
+
+  // ✅ NUEVO: FILTRAR POR MARCA
+  function filterByBrand(brand) {
+    currentBrandFilter = brand;
+    applyFiltersAndSort();
+    renderBrandFilters();
+  }
+
+  // ✅ NUEVO: MANEJAR ORDENAMIENTO
+  function handleSort() {
+    currentSort = document.getElementById('sortSelect').value;
+    applyFiltersAndSort();
+  }
+
+  // ✅ NUEVO: APLICAR FILTROS Y ORDENAMIENTO
+  function applyFiltersAndSort() {
+    let result = [...allServices];
+    
+    // Aplicar búsqueda
+    if (searchQuery) {
+      result = result.filter(service => {
+        const name = (service.name || '').toLowerCase();
+        const description = (service.description || '').toLowerCase();
+        const tags = parseTags(service.tags).join(' ').toLowerCase();
+        
+        return name.includes(searchQuery) || 
+               description.includes(searchQuery) || 
+               tags.includes(searchQuery);
+      });
+    }
+    
+    // Aplicar filtro de marca
+    if (currentBrandFilter !== 'all') {
+      result = result.filter(service => {
+        const brand = detectBrand(service);
+        return brand === currentBrandFilter;
+      });
+    }
+    
+    // Aplicar ordenamiento
+    switch (currentSort) {
+      case 'price-asc':
+        result.sort((a, b) => (a.price || a.credits || 0) - (b.price || b.credits || 0));
+        break;
+      case 'price-desc':
+        result.sort((a, b) => (b.price || b.credits || 0) - (a.price || a.credits || 0));
+        break;
+      case 'popular':
+        result.sort((a, b) => {
+          const aBest = isBestSeller(a) ? 1 : 0;
+          const bBest = isBestSeller(b) ? 1 : 0;
+          return bBest - aBest;
+        });
+        break;
+      case 'name':
+        result.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        break;
+      case 'recent':
+      default:
+        result.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+          return dateB - dateA;
+        });
+    }
+    
+    filteredServices = result;
+    renderServices();
+    
+    // Actualizar info de búsqueda
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    if (searchQuery || currentBrandFilter !== 'all') {
+      resultsInfo.classList.add('visible');
+      document.getElementById('searchResultsCount').textContent = filteredServices.length;
+      document.getElementById('searchTotalCount').textContent = allServices.length;
+    } else {
+      resultsInfo.classList.remove('visible');
+    }
+  }
+
+  async function sendTelegramMessage(message) {
+    if (!telegramConfig.enabled) return false;
     
     let allSuccess = true;
     
-    // ✅ Enviar a cada chat ID
     for (const chatId of telegramConfig.chatIds) {
       try {
         const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
         
         const response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            chat_id: chatId, // ✅ Usa el chatId del loop
+            chat_id: chatId,
             text: message,
             parse_mode: 'HTML'
           })
@@ -1127,7 +1495,6 @@
     return allSuccess;
   }
 
-  // 📦 NOTIFICACIÓN DE NUEVO PEDIDO
   async function notifyNewOrder(orderData) {
     const message = `
 🆕 <b>NUEVO PEDIDO RECIBIDO</b>
@@ -1195,14 +1562,11 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       
       allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       
-      allServices.sort((a, b) => {
-        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-        return dateB - dateA;
-      });
+      // Renderizar filtros de marca
+      renderBrandFilters();
       
-      filteredServices = [...allServices];
-      renderServices();
+      // Aplicar filtros y ordenamiento
+      applyFiltersAndSort();
     } catch (error) {
       console.error('Error cargando servicios:', error);
       document.getElementById('servicesGrid').innerHTML = `
@@ -1214,11 +1578,9 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     }
   }
 
-  // ✅ FUNCIÓN DE BÚSQUEDA
   function handleSearch() {
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('searchClear');
-    const resultsInfo = document.getElementById('searchResultsInfo');
     
     searchQuery = input.value.trim().toLowerCase();
     
@@ -1228,27 +1590,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       clearBtn.classList.remove('visible');
     }
     
-    if (searchQuery === '') {
-      filteredServices = [...allServices];
-      resultsInfo.classList.remove('visible');
-    } else {
-      filteredServices = allServices.filter(service => {
-        const name = (service.name || '').toLowerCase();
-        const description = (service.description || '').toLowerCase();
-        const tags = service.tags ? 
-          (Array.isArray(service.tags) ? service.tags.join(' ').toLowerCase() : service.tags.toLowerCase()) : '';
-        
-        return name.includes(searchQuery) || 
-               description.includes(searchQuery) || 
-               tags.includes(searchQuery);
-      });
-      
-      resultsInfo.classList.add('visible');
-      document.getElementById('searchResultsCount').textContent = filteredServices.length;
-      document.getElementById('searchTotalCount').textContent = allServices.length;
-    }
-    
-    renderServices();
+    applyFiltersAndSort();
   }
 
   function clearSearch() {
@@ -1256,8 +1598,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     document.getElementById('searchClear').classList.remove('visible');
     document.getElementById('searchResultsInfo').classList.remove('visible');
     searchQuery = '';
-    filteredServices = [...allServices];
-    renderServices();
+    applyFiltersAndSort();
     document.getElementById('searchInput').focus();
   }
 
@@ -1269,7 +1610,10 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     const grid = document.getElementById('servicesGrid');
     
     if (filteredServices.length === 0) {
-      if (searchQuery) {
+      if (searchQuery || currentBrandFilter !== 'all') {
+        const filterText = currentBrandFilter !== 'all' ? `de la marca <strong style="color:var(--emerald);">${currentBrandFilter}</strong>` : '';
+        const searchText = searchQuery ? `"<strong style="color:var(--emerald);">${searchQuery}</strong>"` : '';
+        
         grid.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1277,8 +1621,8 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
               <path d="m21 21-4.35-4.35"></path>
             </svg>
             <p style="color:var(--emerald);font-size:18px;margin-bottom:8px;">No se encontraron resultados</p>
-            <p style="color:var(--text-dim);">No hay servicios que coincidan con "<strong style="color:var(--emerald);">${searchQuery}</strong>"</p>
-            <button onclick="clearSearch()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar búsqueda</button>
+            <p style="color:var(--text-dim);">No hay servicios que coincidan ${filterText} ${searchText}</p>
+            <button onclick="clearAllFilters()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar filtros</button>
           </div>
         `;
       } else {
@@ -1297,7 +1641,12 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
     
     grid.innerHTML = filteredServices.map(service => {
-      const tags = service.tags ? (Array.isArray(service.tags) ? service.tags : service.tags.split(',').map(t => t.trim())) : [];
+      // ✅ FIX: Usar parseTags en lugar del procesamiento anterior
+      const tags = parseTags(service.tags);
+      const brand = detectBrand(service);
+      const brandIcon = brand ? getBrandIcon(brand) : null;
+      const bestSeller = isBestSeller(service);
+      const newService = isNew(service);
       
       // Resaltar coincidencias
       let highlightedName = service.name;
@@ -1306,11 +1655,28 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
         highlightedName = service.name.replace(regex, '<mark style="background:var(--emerald);color:var(--dark);padding:0 2px;border-radius:2px;">$1</mark>');
       }
       
+      // ✅ NUEVO: Cinta de "Más vendido" o "Nuevo"
+      let ribbonHTML = '';
+      if (bestSeller) {
+        ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
+      } else if (newService) {
+        ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
+      }
+      
+      // ✅ NUEVO: Icono de marca
+      let brandIconHTML = '';
+      if (brandIcon) {
+        brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Marca'}">${brandIcon}</div>`;
+      }
+      
       return `
         <div class="service-card">
+          ${ribbonHTML}
+          ${brandIconHTML}
+          
           ${isAdmin ? `
             <div class="service-actions">
-              <button class="btn-edit" onclick="editService('${service.id}')">✏️ Editar</button>
+              <button class="btn-edit" onclick="editService('${service.id}')">✏️</button>
               <button class="btn-delete" onclick="deleteService('${service.id}')">🗑️</button>
             </div>
           ` : ''}
@@ -1339,6 +1705,19 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     }).join('');
   }
 
+  // ✅ NUEVO: LIMPIAR TODOS LOS FILTROS
+  function clearAllFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    document.getElementById('searchResultsInfo').classList.remove('visible');
+    document.getElementById('sortSelect').value = 'recent';
+    searchQuery = '';
+    currentBrandFilter = 'all';
+    currentSort = 'recent';
+    renderBrandFilters();
+    applyFiltersAndSort();
+  }
+
   function openAddModal() {
     document.getElementById('modalTitle').textContent = '➕ Agregar Servicio';
     document.getElementById('serviceForm').reset();
@@ -1361,7 +1740,9 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     document.getElementById('servicePrice').value = service.price || service.credits || 0;
     document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
     document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
-    document.getElementById('serviceTags').value = service.tags ? (Array.isArray(service.tags) ? service.tags.join(', ') : service.tags) : '';
+    // ✅ FIX: Mostrar tags correctamente (sin JSON crudo)
+    const tags = parseTags(service.tags);
+    document.getElementById('serviceTags').value = tags.join(', ');
     document.getElementById('serviceProcessTime').value = service.processTime || '';
     document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
     document.getElementById('serviceIP').value = service.ip || '';
@@ -1552,8 +1933,6 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     
     try {
       await db.collection('orders').add(orderData);
-      
-      // ✅ ENVIAR NOTIFICACIÓN A TELEGRAM (ahora funciona correctamente)
       await notifyNewOrder(orderData);
       
       const newBalance = balance - price;
@@ -1640,7 +2019,6 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     if (e.target.id === 'orderModal') closeOrderModal();
   });
 
-  // ✅ Atajos de teclado
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
       e.preventDefault();

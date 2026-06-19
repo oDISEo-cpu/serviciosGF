@@ -714,3 +714,104 @@ footer { background: var(--dark2); border-top: 1px solid var(--cyan-border); pad
   .logo-img { height: 40px; }
   .footer-brand .logo-img { height: 50px; }
 }
+
+/* Métodos de Pago */
+.payment-methods {
+  background: linear-gradient(135deg, rgba(0,229,255,0.05) 0%, rgba(0,255,136,0.05) 100%);
+  border-top: 1px solid var(--cyan-border);
+  border-bottom: 1px solid var(--cyan-border);
+  padding: 30px 20px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.payment-title {
+  margin-bottom: 20px;
+}
+
+.payment-title span {
+  font-family: 'Orbitron', monospace;
+  font-size: 14px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 8px 20px;
+  border: 1px solid var(--cyan-border);
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.payment-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.payment-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 20px;
+  background: var(--dark3);
+  border: 1px solid var(--cyan-border);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.payment-item:hover {
+  transform: translateY(-5px);
+  border-color: var(--cyan);
+  box-shadow: 0 5px 20px rgba(0,229,255,0.3);
+}
+
+.payment-icon {
+  font-size: 32px;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+.payment-item span {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .payment-logos {
+    gap: 15px;
+  }
+  
+  .payment-item {
+    padding: 12px 15px;
+    min-width: 80px;
+  }
+  
+  .payment-icon {
+    font-size: 24px;
+  }
+  
+  .payment-item span {
+    font-size: 10px;
+  }
+  
+  .payment-title span {
+    font-size: 12px;
+    padding: 6px 15px;
+  }
+}

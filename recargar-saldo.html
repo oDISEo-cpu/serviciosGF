@@ -114,13 +114,108 @@
   }
   .exchange-rate-banner .refresh-btn:hover { background: rgba(255,204,0,0.1); }
 
+  /* ✅ NUEVO: STEPPER DE PROGRESO */
+  .stepper-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 40px;
+  }
+
+  .stepper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 20px 0;
+  }
+
+  .stepper::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--dark3);
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+
+  .stepper-progress {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .step {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .step-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--dark3);
+    border: 2px solid var(--cyan-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dim);
+    transition: all 0.3s ease;
+  }
+
+  .step.active .step-circle {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: var(--dark);
+    box-shadow: 0 0 20px rgba(0,229,255,0.4);
+    transform: scale(1.1);
+  }
+
+  .step.completed .step-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--dark);
+  }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .step.active .step-label {
+    color: var(--cyan);
+  }
+
+  .step.completed .step-label {
+    color: var(--green);
+  }
+
+  /* ✅ CONTENEDOR PRINCIPAL */
   .checkout-container {
-    max-width: 1000px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 20px 40px 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
   }
 
   .checkout-card {
@@ -128,6 +223,7 @@
     border: 1px solid var(--cyan-border);
     border-radius: 12px;
     padding: 28px;
+    margin-bottom: 24px;
   }
 
   .checkout-card h2 {
@@ -143,342 +239,138 @@
     margin-bottom: 24px;
   }
 
-  .amount-display {
-    background: var(--dark3);
-    border: 1px solid var(--cyan-border);
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
+  /* ✅ PASOS OCULTOS POR DEFECTO */
+  .step-content {
+    display: none;
+  }
+
+  .step-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ✅ PASO 1: MONTO */
+  .amount-presets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
     margin-bottom: 24px;
   }
 
-  .amount-display .label {
-    font-size: 12px;
+  .amount-preset-btn {
+    background: var(--dark3);
+    border: 2px solid var(--cyan-border);
+    color: var(--text);
+    padding: 20px 16px;
+    border-radius: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .amount-preset-btn:hover {
+    border-color: var(--cyan);
+    background: var(--cyan-glow);
+    transform: translateY(-2px);
+  }
+
+  .amount-preset-btn.selected {
+    border-color: var(--green);
+    background: rgba(0,255,136,0.1);
+    color: var(--green);
+    box-shadow: 0 0 20px rgba(0,255,136,0.2);
+  }
+
+  .amount-preset-btn small {
+    display: block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
     color: var(--text-dim);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .custom-amount-input {
+    background: var(--dark3);
+    border: 2px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .custom-amount-input label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
   }
 
-  .amount-display .value {
-    font-family: 'Orbitron', monospace;
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--green);
-  }
-
-  .amount-display .credits {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  .calculation-breakdown {
+  .custom-amount-input input {
+    width: 100%;
     background: var(--dark2);
     border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 16px;
     border-radius: 6px;
-    padding: 12px;
-    margin-top: 12px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: var(--text-muted);
-    text-align: left;
-  }
-  .calculation-breakdown .calc-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 0;
-  }
-  .calculation-breakdown .calc-row.total {
-    border-top: 1px solid var(--cyan-border);
-    margin-top: 8px;
-    padding-top: 8px;
-    color: var(--orange);
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
     font-weight: 700;
-    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
   }
 
-  .equivalent-cards {
+  .custom-amount-input input:focus {
+    border-color: var(--cyan);
+  }
+
+  .amount-preview {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--cyan-border);
-  }
-
-  .equivalent-card {
-    background: var(--dark2);
-    border-radius: 10px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .equivalent-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-  }
-
-  .equivalent-card.venezuela {
-    border: 1px solid rgba(252,209,22,0.3);
-  }
-  .equivalent-card.venezuela::before {
-    background: var(--venezuela);
-  }
-  .equivalent-card.venezuela:hover {
-    background: rgba(252,209,22,0.05);
-    border-color: var(--venezuela);
-    transform: translateY(-2px);
-  }
-
-  .equivalent-card.peru {
-    border: 1px solid rgba(217,20,63,0.3);
-  }
-  .equivalent-card.peru::before {
-    background: var(--peru);
-  }
-  .equivalent-card.peru:hover {
-    background: rgba(217,20,63,0.05);
-    border-color: var(--peru);
-    transform: translateY(-2px);
-  }
-
-  .equivalent-card .card-flag {
-    width: 40px;
-    height: 28px;
-    border-radius: 4px;
-    object-fit: cover;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    flex-shrink: 0;
-  }
-
-  .equivalent-card .card-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .equivalent-card .card-label {
-    font-size: 10px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-
-  .equivalent-card .card-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 16px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .equivalent-card.venezuela .card-value {
-    color: var(--venezuela);
-  }
-
-  .equivalent-card.peru .card-value {
-    color: var(--peru);
-  }
-
-  .custom-amount-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .custom-amount-cards .mini-card {
+    padding: 16px;
     background: var(--dark2);
     border-radius: 8px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
     border: 1px solid var(--cyan-border);
   }
 
-  .custom-amount-cards .mini-card.venezuela {
-    border-color: rgba(252,209,22,0.3);
+  .preview-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: var(--dark3);
+    border-radius: 6px;
   }
 
-  .custom-amount-cards .mini-card.peru {
-    border-color: rgba(217,20,63,0.3);
-  }
-
-  .custom-amount-cards .mini-card img {
+  .preview-card img {
     width: 28px;
     height: 20px;
     border-radius: 3px;
     object-fit: cover;
   }
 
-  .custom-amount-cards .mini-card .mini-value {
+  .preview-card .preview-value {
     font-family: 'Orbitron', monospace;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  .custom-amount-cards .mini-card.venezuela .mini-value {
-    color: var(--venezuela);
-  }
+  .preview-card.venezuela .preview-value { color: var(--venezuela); }
+  .preview-card.peru .preview-value { color: var(--peru); }
 
-  .custom-amount-cards .mini-card.peru .mini-value {
-    color: var(--peru);
-  }
-
-  .usdt-to-pay-box {
-    background: linear-gradient(135deg, rgba(240,185,11,0.15) 0%, rgba(255,136,0,0.15) 100%);
-    border: 2px solid var(--binance);
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .usdt-to-pay-box::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, rgba(240,185,11,0.2), transparent 70%);
-  }
-  .usdt-to-pay-box .label {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    position: relative;
-  }
-  .usdt-to-pay-box .usdt-amount {
-    font-family: 'Orbitron', monospace;
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--binance);
-    position: relative;
-    text-shadow: 0 0 20px rgba(240,185,11,0.3);
-  }
-  .usdt-to-pay-box .usdt-symbol {
-    font-size: 24px;
-    color: var(--yellow);
-    margin-left: 8px;
-  }
-  .usdt-to-pay-box .warning {
-    font-size: 11px;
-    color: var(--yellow);
-    margin-top: 8px;
-    position: relative;
-    font-weight: 600;
-  }
-
-  .soles-to-pay-box {
-    background: linear-gradient(135deg, rgba(217,20,63,0.15) 0%, rgba(255,136,0,0.15) 100%);
-    border: 2px solid var(--peru);
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .soles-to-pay-box::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, rgba(217,20,63,0.2), transparent 70%);
-  }
-  .soles-to-pay-box .label {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    position: relative;
-  }
-  .soles-to-pay-box .soles-amount {
-    font-family: 'Orbitron', monospace;
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--peru);
-    position: relative;
-    text-shadow: 0 0 20px rgba(217,20,63,0.3);
-  }
-  .soles-to-pay-box .soles-symbol {
-    font-size: 24px;
-    color: #ff4455;
-    margin-left: 8px;
-  }
-  .soles-to-pay-box .warning {
-    font-size: 11px;
-    color: #ff4455;
-    margin-top: 8px;
-    position: relative;
-    font-weight: 600;
-  }
-
-  .bs-to-pay-box {
-    background: linear-gradient(135deg, rgba(252,209,22,0.15) 0%, rgba(255,136,0,0.15) 100%);
-    border: 2px solid var(--venezuela);
-    border-radius: 12px;
-    padding: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .bs-to-pay-box::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, rgba(252,209,22,0.2), transparent 70%);
-  }
-  .bs-to-pay-box .label {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    position: relative;
-  }
-  .bs-to-pay-box .bs-amount {
-    font-family: 'Orbitron', monospace;
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--venezuela);
-    position: relative;
-    text-shadow: 0 0 20px rgba(252,209,22,0.3);
-  }
-  .bs-to-pay-box .bs-symbol {
-    font-size: 24px;
-    color: #ffcc00;
-    margin-left: 8px;
-  }
-  .bs-to-pay-box .warning {
-    font-size: 11px;
-    color: #ffcc00;
-    margin-top: 8px;
-    position: relative;
-    font-weight: 600;
-  }
-
+  /* ✅ PASO 2: MÉTODO DE PAGO */
   .payment-method-selector {
     display: flex;
     flex-direction: column;
@@ -566,19 +458,38 @@
   .badge-peru { background: rgba(217,20,63,0.15); color: var(--peru); }
   .badge-venezuela { background: rgba(252,209,22,0.15); color: var(--venezuela); }
 
-  .payment-content {
-    display: none;
+  /* ✅ PASO 3: PAGO */
+  .payment-summary-box {
+    background: var(--dark3);
+    border: 2px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: center;
   }
 
-  .payment-content.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
+  .payment-summary-box .summary-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+  .payment-summary-box .summary-amount {
+    font-family: 'Orbitron', monospace;
+    font-size: 36px;
+    font-weight: 700;
   }
+
+  .payment-summary-box.binance { border-color: var(--binance); }
+  .payment-summary-box.binance .summary-amount { color: var(--binance); }
+
+  .payment-summary-box.plin { border-color: var(--peru); }
+  .payment-summary-box.plin .summary-amount { color: var(--peru); }
+
+  .payment-summary-box.pagomovil { border-color: var(--venezuela); }
+  .payment-summary-box.pagomovil .summary-amount { color: var(--venezuela); }
 
   .qr-section { text-align: center; margin: 20px 0; }
 
@@ -638,6 +549,97 @@
     line-height: 1.6;
   }
 
+  /* ✅ PASO 4: CONFIRMACIÓN */
+  .confirmation-summary {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .confirmation-summary h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,229,255,0.1);
+    font-size: 14px;
+  }
+
+  .summary-row:last-child { border-bottom: none; }
+
+  .summary-row .label { color: var(--text-muted); }
+  .summary-row .value { color: var(--text); font-weight: 600; }
+
+  /* ✅ SUBIDA DE COMPROBANTE */
+  .upload-section {
+    background: var(--dark3);
+    border: 2px dashed var(--cyan-border);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .upload-section:hover {
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.05);
+  }
+
+  .upload-section.has-file {
+    border-color: var(--green);
+    border-style: solid;
+    background: rgba(0,255,136,0.05);
+  }
+
+  .upload-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .upload-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .upload-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .upload-preview {
+    display: none;
+    margin-top: 16px;
+  }
+
+  .upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid var(--cyan-border);
+  }
+
+  .upload-preview .remove-file {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
   .form-group { margin-bottom: 18px; }
 
   .form-group label {
@@ -652,7 +654,8 @@
   }
 
   .form-group input,
-  .form-group select {
+  .form-group select,
+  .form-group textarea {
     width: 100%;
     background: var(--dark3);
     border: 1px solid var(--cyan-border);
@@ -666,8 +669,14 @@
   }
 
   .form-group input:focus,
-  .form-group select:focus {
+  .form-group select:focus,
+  .form-group textarea:focus {
     border-color: var(--cyan);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
   }
 
   .btn-full { width: 100%; padding: 14px; font-size: 15px; }
@@ -705,11 +714,80 @@
     box-shadow: 0 0 20px rgba(252,209,22,0.4);
   }
 
+  .btn-success {
+    background: var(--green);
+    border: 1px solid var(--green);
+    color: var(--dark);
+  }
+
+  .btn-success:hover {
+    background: #00cc6a;
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
+  }
+
+  /* ✅ BOTONES DE NAVEGACIÓN */
+  .step-navigation {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--cyan-border);
+  }
+
+  .btn-back-step {
+    background: transparent;
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+  }
+
+  .btn-back-step:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .btn-next-step {
+    background: var(--cyan);
+    border: 1px solid var(--cyan);
+    color: var(--dark);
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 2;
+  }
+
+  .btn-next-step:hover {
+    background: var(--cyan-dim);
+    box-shadow: 0 0 20px rgba(0,229,255,0.4);
+  }
+
+  .btn-next-step:disabled {
+    background: var(--text-dim);
+    border-color: var(--text-dim);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
   .current-balance {
     background: var(--dark3);
     border: 1px solid var(--cyan-border);
     border-radius: 8px;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     margin-bottom: 24px;
   }
@@ -724,61 +802,9 @@
 
   .current-balance .value {
     font-family: 'Orbitron', monospace;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--green);
-  }
-
-  .current-balance-equivalents {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--cyan-border);
-  }
-
-  .balance-mini-card {
-    background: var(--dark2);
-    border-radius: 6px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid var(--cyan-border);
-  }
-
-  .balance-mini-card.venezuela {
-    border-color: rgba(252,209,22,0.3);
-  }
-
-  .balance-mini-card.peru {
-    border-color: rgba(217,20,63,0.3);
-  }
-
-  .balance-mini-card img {
-    width: 24px;
-    height: 16px;
-    border-radius: 2px;
-    object-fit: cover;
-  }
-
-  .balance-mini-card .balance-mini-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .balance-mini-card.venezuela .balance-mini-value {
-    color: var(--venezuela);
-  }
-
-  .balance-mini-card.peru .balance-mini-value {
-    color: var(--peru);
   }
 
   .btn-back {
@@ -836,16 +862,15 @@
   @media (max-width: 900px) {
     nav { padding: 0 20px; }
     .nav-links { display: none; }
-    .checkout-container { grid-template-columns: 1fr; padding: 20px; }
+    .checkout-container { padding: 20px; }
+    .stepper-container { padding: 0 20px; }
     .qr-wrapper img { width: 200px; height: 200px; }
     .exchange-rate-banner { flex-direction: column; text-align: center; gap: 8px; }
-    .usdt-to-pay-box .usdt-amount,
-    .soles-to-pay-box .soles-amount,
-    .bs-to-pay-box .bs-amount { font-size: 32px; }
-    .equivalent-cards { grid-template-columns: 1fr; }
-    .equivalent-card .card-value { font-size: 14px; }
-    .current-balance-equivalents { grid-template-columns: 1fr; }
-    .custom-amount-cards { grid-template-columns: 1fr; }
+    .amount-presets { grid-template-columns: repeat(2, 1fr); }
+    .amount-preview { grid-template-columns: 1fr; }
+    .step-label { font-size: 9px; }
+    .step-circle { width: 40px; height: 40px; font-size: 14px; }
+    .payment-summary-box .summary-amount { font-size: 28px; }
   }
 </style>
 </head>
@@ -878,76 +903,106 @@
   </div>
 </div>
 
-<div class="checkout-container">
-  <div>
-    <a href="index.html" class="btn-back">← Volver al inicio</a>
+<!-- ✅ STEPPER DE PROGRESO -->
+<div class="stepper-container">
+  <div class="stepper">
+    <div class="stepper-progress" id="stepperProgress"></div>
     
+    <div class="step active" data-step="1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Monto</div>
+    </div>
+    
+    <div class="step" data-step="2">
+      <div class="step-circle">2</div>
+      <div class="step-label">Método</div>
+    </div>
+    
+    <div class="step" data-step="3">
+      <div class="step-circle">3</div>
+      <div class="step-label">Pago</div>
+    </div>
+    
+    <div class="step" data-step="4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Confirmar</div>
+    </div>
+  </div>
+</div>
+
+<div class="checkout-container">
+  
+  <!-- ✅ PASO 1: SELECCIONAR MONTO -->
+  <div class="step-content active" id="step1Content">
     <div class="checkout-card">
-      <h2>💰 Resumen de Recarga</h2>
-      <p class="subtitle">Confirma los detalles de tu recarga</p>
+      <h2>💰 ¿Cuánto deseas recargar?</h2>
+      <p class="subtitle">Selecciona un monto o ingresa uno personalizado</p>
       
       <div class="current-balance">
-        <div class="label">Saldo Actual</div>
+        <div class="label">Tu saldo actual</div>
         <div class="value" id="currentBalance">$0.00</div>
-        
-        <div class="current-balance-equivalents">
-          <div class="balance-mini-card venezuela">
-            <img src="https://flagcdn.com/w40/ve.png" alt="Venezuela">
-            <span class="balance-mini-value" id="currentBalanceBs">Bs 0,00</span>
-          </div>
-          <div class="balance-mini-card peru">
-            <img src="https://flagcdn.com/w40/pe.png" alt="Perú">
-            <span class="balance-mini-value" id="currentBalanceSoles">S/ 0.00</span>
-          </div>
+      </div>
+      
+      <div class="amount-presets">
+        <button class="amount-preset-btn" onclick="selectPresetAmount(10, this)">
+          $10
+          <small>10 créditos</small>
+        </button>
+        <button class="amount-preset-btn" onclick="selectPresetAmount(25, this)">
+          $25
+          <small>25 créditos</small>
+        </button>
+        <button class="amount-preset-btn" onclick="selectPresetAmount(50, this)">
+          $50
+          <small>50 créditos</small>
+        </button>
+        <button class="amount-preset-btn" onclick="selectPresetAmount(100, this)">
+          $100
+          <small>100 créditos</small>
+        </button>
+      </div>
+      
+      <div class="custom-amount-input">
+        <label>O ingresa un monto personalizado</label>
+        <input type="number" id="customAmount" min="1" step="0.01" placeholder="Ej: 40.00" oninput="updateCustomPreview()">
+      </div>
+      
+      <div class="amount-preview" id="amountPreview" style="display:none;">
+        <div class="preview-card venezuela">
+          <img src="https://flagcdn.com/w40/ve.png" alt="Venezuela">
+          <span class="preview-value" id="previewBs">Bs 0,00</span>
+        </div>
+        <div class="preview-card peru">
+          <img src="https://flagcdn.com/w40/pe.png" alt="Perú">
+          <span class="preview-value" id="previewSoles">S/ 0.00</span>
         </div>
       </div>
       
-      <div class="amount-display">
-        <div class="label">Monto a Recargar</div>
-        <div class="value" id="paymentAmount">$0.00</div>
-        <div class="credits">= <span id="creditsAmount">0</span> créditos</div>
-        
-        <div class="calculation-breakdown" id="calculationBreakdown" style="display:none;">
-          <div class="calc-row">
-            <span>Créditos:</span>
-            <span id="calcCredits">0</span>
-          </div>
-          <div class="calc-row">
-            <span>Tasa del día:</span>
-            <span id="calcRate">Bs 0,00</span>
-          </div>
-          <div class="calc-row total">
-            <span>Total Bs:</span>
-            <span id="calcTotal">Bs 0,00</span>
-          </div>
-          <div class="calc-row">
-            <span>Equivalente Soles:</span>
-            <span id="calcSoles" style="color: var(--peru); font-weight: 700;">S/ 0.00</span>
-          </div>
-        </div>
-        
-        <div class="equivalent-cards">
-          <div class="equivalent-card venezuela">
-            <img src="https://flagcdn.com/w40/ve.png" alt="Venezuela" class="card-flag">
-            <div class="card-info">
-              <span class="card-label">Venezuela</span>
-              <span class="card-value" id="paymentAmountBs">Bs 0,00</span>
-            </div>
-          </div>
-          <div class="equivalent-card peru">
-            <img src="https://flagcdn.com/w40/pe.png" alt="Perú" class="card-flag">
-            <div class="card-info">
-              <span class="card-label">Perú</span>
-              <span class="card-value" id="paymentAmountSoles">S/ 0.00</span>
-            </div>
-          </div>
+      <div class="step-navigation">
+        <button class="btn-next-step" id="btnStep1Next" onclick="goToStep(2)" disabled>
+          Continuar al Método de Pago →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ PASO 2: SELECCIONAR MÉTODO DE PAGO -->
+  <div class="step-content" id="step2Content">
+    <div class="checkout-card">
+      <h2>💳 ¿Cómo deseas pagar?</h2>
+      <p class="subtitle">Selecciona tu método de pago preferido</p>
+      
+      <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:8px;padding:16px;margin-bottom:24px;text-align:center;">
+        <div style="font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Monto a recargar</div>
+        <div style="font-family:'Orbitron',monospace;font-size:32px;font-weight:700;color:var(--green);" id="step2Amount">$0.00</div>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;">
+          <span style="font-size:12px;color:var(--venezuela);" id="step2AmountBs">Bs 0,00</span>
+          <span style="font-size:12px;color:var(--peru);" id="step2AmountSoles">S/ 0.00</span>
         </div>
       </div>
-      
-      <h2 style="font-family:'Orbitron',monospace;font-size:16px;color:var(--cyan);margin-bottom:16px;">Selecciona Método de Pago</h2>
       
       <div class="payment-method-selector">
-        <div class="payment-method-option active" onclick="selectPaymentMethod('binance')">
+        <div class="payment-method-option active" onclick="selectPaymentMethod('binance', this)">
           <input type="radio" name="paymentMethod" value="binance" checked>
           <div class="icon">
             <span class="emoji-icon">💰</span>
@@ -959,7 +1014,7 @@
           <span class="badge badge-international">Internacional</span>
         </div>
         
-        <div class="payment-method-option" onclick="selectPaymentMethod('plin')">
+        <div class="payment-method-option" onclick="selectPaymentMethod('plin', this)">
           <input type="radio" name="paymentMethod" value="plin">
           <div class="icon">
             <img src="https://flagcdn.com/w40/pe.png" alt="Perú">
@@ -971,7 +1026,7 @@
           <span class="badge badge-peru">Perú</span>
         </div>
         
-        <div class="payment-method-option" onclick="selectPaymentMethod('pagomovil')">
+        <div class="payment-method-option" onclick="selectPaymentMethod('pagomovil', this)">
           <input type="radio" name="paymentMethod" value="pagomovil">
           <div class="icon">
             <img src="https://flagcdn.com/w40/ve.png" alt="Venezuela">
@@ -983,198 +1038,100 @@
           <span class="badge badge-venezuela">Venezuela</span>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div>
-    <div class="checkout-card">
       
-      <!-- ✅ BINANCE PAY -->
-      <div id="binancePayment" class="payment-content active">
-        <h2>💰 Pago con Binance</h2>
-        <p class="subtitle">Escanea el QR en la app de Binance</p>
-        
-        <div class="usdt-to-pay-box" id="usdtToPayBox" style="display:none;">
-          <div class="label">💰 Debes enviar exactamente:</div>
-          <div class="usdt-amount">
-            <span id="usdtToPay">0.00</span>
-            <span class="usdt-symbol">USDT</span>
-          </div>
-          <div class="warning">⚠️ Envía este monto exacto en la red TRC20</div>
-        </div>
-        
-        <!-- ✅ QR Y DATOS OCULTOS INICIALMENTE -->
-        <div id="binancePaymentDetails" style="display:none;">
-          <div class="qr-section">
-            <div class="qr-wrapper">
-              <img id="binanceQR" src="qr-binance.png" alt="QR Binance Pay - Servicios GF">
-            </div>
-            <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de Binance</p>
-          </div>
-          
-          <div class="pay-id-box">
-            <div class="pay-id-label">Binance Pay ID</div>
-            <div class="pay-id-value">1246101499</div>
-          </div>
-          
-          <div class="instructions-box">
-            <div>
-              <strong>📝 Instrucciones:</strong><br>
-              1. Usa el método de envío a otro usuario e ingresa el Pay ID manualmente o escanea el QR<br>
-              2. Copia el ID de orden del pago realizado<br>
-              3. Pégalo abajo y dale en confirmar<br>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>ID de Transacción (TXID) *</label>
-            <input type="text" id="txidInput" placeholder="Ej: a1b2c3d4e5f6g7h8i9j0..." style="font-family:'Share Tech Mono',monospace;font-size:13px;">
-            <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Lo encuentras en el historial de transacciones de Binance</small>
-          </div>
-          
-          <button class="btn-primary btn-full btn-binance" onclick="confirmPayment('binance')">
-            ✅ Confirmar Pago
-          </button>
-          
-          <p style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:12px;">
-            ⏱️ El saldo se acreditará en 5-30 minutos tras verificación
-          </p>
-        </div>
-        
-        <!-- ✅ BOTÓN PARA MOSTRAR QR -->
-        <button id="showBinanceDetails" class="btn-primary btn-full" onclick="showPaymentDetails('binance')" style="margin-top:20px;">
-          📱 CONTINUAR CON EL PAGO
-        </button>
+      <div class="step-navigation">
+        <button class="btn-back-step" onclick="goToStep(1)">← Atrás</button>
+        <button class="btn-next-step" onclick="goToStep(3)">Continuar al Pago →</button>
       </div>
-
-      <!-- ✅ PLIN (PERÚ) -->
-      <div id="plinPayment" class="payment-content">
-        <h2><img src="https://flagcdn.com/w40/pe.png" alt="Perú" style="width:24px;height:16px;vertical-align:middle;margin-right:8px;">Pago con Plin</h2>
-        <p class="subtitle">Escanea el QR desde la app de Plin</p>
-        
-        <div class="soles-to-pay-box" id="solesToPayBox" style="display:none;">
-          <div class="label">💰 Debes enviar exactamente:</div>
-          <div class="soles-amount">
-            <span id="solesToPay">0.00</span>
-            <span class="soles-symbol">S/</span>
-          </div>
-          <div class="warning">⚠️ Envía este monto exacto vía Plin</div>
-        </div>
-        
-        <!-- ✅ QR Y DATOS OCULTOS INICIALMENTE -->
-        <div id="plinPaymentDetails" style="display:none;">
-          <div class="qr-section">
-            <div class="qr-wrapper">
-              <img id="plinQR" src="qr-plin.png" alt="QR Plin - Servicios GF">
-            </div>
-            <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de Plin</p>
-          </div>
-          
-          <div class="instructions-box">
-            <div>
-              <strong>📝 Instrucciones:</strong><br>
-              1. Abre la app de Plin<br>
-              2. Escanea el QR<br>
-              3. Confirma el pago<br>
-              4. Ingresa el número de operación abajo
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Número de Operación / Comprobante *</label>
-            <input type="text" id="plinOperationNumber" placeholder="Ej: 123456789" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
-            <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Número de operación que aparece en Plin</small>
-          </div>
-          
-          <button class="btn-primary btn-full btn-plin" onclick="confirmPayment('plin')">
-            ✅ Confirmar Pago
-          </button>
-          
-          <p style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:12px;">
-            ⏱️ El saldo se acreditará en 10-60 minutos tras verificación
-          </p>
-        </div>
-        
-        <!-- ✅ BOTÓN PARA MOSTRAR QR -->
-        <button id="showPlinDetails" class="btn-primary btn-full" onclick="showPaymentDetails('plin')" style="margin-top:20px;">
-          📱 CONTINUAR CON EL PAGO
-        </button>
-      </div>
-
-      <!-- ✅ PAGO MÓVIL (VENEZUELA) -->
-      <div id="pagomovilPayment" class="payment-content">
-        <h2><img src="https://flagcdn.com/w40/ve.png" alt="Venezuela" style="width:24px;height:16px;vertical-align:middle;margin-right:8px;">Pago Móvil</h2>
-        <p class="subtitle">Escanea el QR desde la app de tu banco</p>
-        
-        <div class="bs-to-pay-box" id="bsToPayBox" style="display:none;">
-          <div class="label">💰 Debes enviar exactamente:</div>
-          <div class="bs-amount">
-            <span id="bsToPay">0,00</span>
-            <span class="bs-symbol">Bs</span>
-          </div>
-          <div class="warning">⚠️ Envía este monto exacto vía Pago Móvil</div>
-        </div>
-        
-        <!-- ✅ QR Y DATOS OCULTOS INICIALMENTE -->
-        <div id="pagomovilPaymentDetails" style="display:none;">
-          <div class="qr-section">
-            <div class="qr-wrapper">
-              <img id="pagomovilQR" src="qr-pagomovil.png" alt="QR Pago Móvil - BBVA Provincial">
-            </div>
-            <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de tu banco</p>
-          </div>
-          
-          <div class="instructions-box">
-            <div>
-              <strong>📝 Instrucciones:</strong><br>
-              1. Abre la app de tu banco<br>
-              2. Selecciona Pago Móvil<br>
-              3. Escanea el QR<br>
-              4. Confirma la transferencia<br>
-              5. Ingresa los datos abajo
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>Últimos 4 dígitos de la cuenta de origen *</label>
-            <input type="text" id="pagomovilLastDigits" placeholder="Ej: 1234" maxlength="4" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
-            <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Últimos 4 dígitos de la cuenta desde donde pagaste</small>
-          </div>
-          
-          <div class="form-group">
-            <label>Banco de origen *</label>
-            <select id="pagomovilBank" style="font-size:14px;">
-              <option value="">Selecciona tu banco</option>
-              <option value="Banesco">Banesco (0134)</option>
-              <option value="Mercantil">Mercantil (0105)</option>
-              <option value="BOD">BOD (0171)</option>
-              <option value="Provincial">BBVA Provincial (0108)</option>
-              <option value="Venezuela">Banco de Venezuela (0102)</option>
-              <option value="BBVA">BBVA (0177)</option>
-              <option value="Banco de la Gente">Banco de la Gente (0146)</option>
-              <option value="Bancaribe">Bancaribe (0114)</option>
-              <option value="Exterior">Banco Exterior (0115)</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          
-          <button class="btn-primary btn-full btn-pagomovil" onclick="confirmPayment('pagomovil')">
-            ✅ Confirmar Pago
-          </button>
-          
-          <p style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:12px;">
-            ⏱️ El saldo se acreditará en 15-60 minutos tras verificación
-          </p>
-        </div>
-        
-        <!-- ✅ BOTÓN PARA MOSTRAR QR -->
-        <button id="showPagomovilDetails" class="btn-primary btn-full" onclick="showPaymentDetails('pagomovil')" style="margin-top:20px;">
-          📱 CONTINUAR CON EL PAGO
-        </button>
-      </div>
-
     </div>
   </div>
+
+  <!-- ✅ PASO 3: REALIZAR PAGO -->
+  <div class="step-content" id="step3Content">
+    <div class="checkout-card">
+      <h2 id="step3Title">💰 Realiza tu pago</h2>
+      <p class="subtitle" id="step3Subtitle">Escanea el QR y envía el monto exacto</p>
+      
+      <!-- Resumen del monto a pagar -->
+      <div class="payment-summary-box" id="paymentSummaryBox">
+        <div class="summary-label">Debes enviar exactamente:</div>
+        <div class="summary-amount" id="paymentAmountDisplay">0.00</div>
+      </div>
+      
+      <!-- Contenido dinámico según método -->
+      <div id="paymentMethodContent">
+        <!-- Se genera dinámicamente -->
+      </div>
+      
+      <div class="step-navigation">
+        <button class="btn-back-step" onclick="goToStep(2)">← Atrás</button>
+        <button class="btn-next-step btn-success" onclick="goToStep(4)">✅ Ya realicé el pago</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ PASO 4: CONFIRMAR PAGO -->
+  <div class="step-content" id="step4Content">
+    <div class="checkout-card">
+      <h2>📋 Confirma tu pago</h2>
+      <p class="subtitle">Sube el comprobante y los datos de tu transacción</p>
+      
+      <!-- Resumen del pago -->
+      <div class="confirmation-summary">
+        <h3>📝 Resumen de tu transacción</h3>
+        <div class="summary-row">
+          <span class="label">Monto:</span>
+          <span class="value" id="confirmAmount">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Método:</span>
+          <span class="value" id="confirmMethod">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Créditos a recibir:</span>
+          <span class="value" id="confirmCredits" style="color:var(--green);">0</span>
+        </div>
+      </div>
+      
+      <!-- Subir comprobante -->
+      <div class="form-group">
+        <label>📸 Comprobante de pago (opcional pero recomendado)</label>
+        <div class="upload-section" id="uploadSection" onclick="document.getElementById('receiptFile').click()">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">Haz clic para subir captura del comprobante</div>
+          <div class="upload-hint">PNG, JPG o PDF (máx. 5MB)</div>
+          <input type="file" id="receiptFile" accept="image/*,.pdf" style="display:none;" onchange="handleFileUpload(event)">
+        </div>
+        <div class="upload-preview" id="uploadPreview">
+          <img id="previewImage" src="" alt="Preview">
+          <button class="remove-file" onclick="removeFile(event)">✕ Quitar imagen</button>
+        </div>
+      </div>
+      
+      <!-- Campos dinámicos según método -->
+      <div id="confirmationFields">
+        <!-- Se genera dinámicamente -->
+      </div>
+      
+      <!-- Notas adicionales -->
+      <div class="form-group">
+        <label>📝 Notas adicionales (opcional)</label>
+        <textarea id="paymentNotes" placeholder="Cualquier información adicional sobre tu pago..."></textarea>
+      </div>
+      
+      <div class="step-navigation">
+        <button class="btn-back-step" onclick="goToStep(3)">← Atrás</button>
+        <button class="btn-next-step btn-success" onclick="confirmPayment()" id="btnConfirmPayment">
+          ✅ Confirmar y Enviar
+        </button>
+      </div>
+      
+      <p style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:16px;">
+        ⏱️ Tu saldo se acreditará en 5-60 minutos tras verificación
+      </p>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
@@ -1184,7 +1141,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ✅ CONFIGURACIÓN DE FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
     authDomain: "nexagsm.firebaseapp.com",
@@ -1198,66 +1154,480 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ✅ CONFIGURACIÓN DE TELEGRAM
 const telegramConfig = {
     botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['82257199154', '1461150518'],
+    chatIds: ['', '1461150518'],
     enabled: true
 };
 
-// ✅ CONSTANTES DE CONVERSIÓN
-const SOLES_PER_CREDIT = 4; // 1 crédito = 4 soles
+const SOLES_PER_CREDIT = 4;
 const BINANCE_PAY_ID = '1246101499';
 
-// ✅ VARIABLES GLOBALES
 let currentUser = null;
 let userProfile = null;
 let paymentAmount = 0;
 let selectedPaymentMethod = 'binance';
 let exchangeRate = 0;
 let rateLastUpdate = null;
+let currentStep = 1;
+let uploadedReceipt = null;
 
 // ============================================
-// ✅ FUNCIONES DHRU
+// ✅ STEPPER / NAVEGACIÓN ENTRE PASOS
 // ============================================
 
-async function checkDhruBalance() {
-    try {
-        const response = await fetch('/.netlify/functions/dhru-balance');
-        const data = await response.json();
-        console.log('💰 Saldo DHru:', data);
-        return data;
-    } catch (error) {
-        console.error('❌ Error consultando saldo DHru:', error);
-        return null;
+function goToStep(step) {
+    // Validaciones antes de avanzar
+    if (step > currentStep) {
+        if (currentStep === 1 && paymentAmount <= 0) {
+            showToast('⚠️ Selecciona o ingresa un monto', 'error');
+            return;
+        }
+        if (currentStep === 2 && !selectedPaymentMethod) {
+            showToast('⚠️ Selecciona un método de pago', 'error');
+            return;
+        }
+    }
+    
+    currentStep = step;
+    
+    // Actualizar stepper visual
+    document.querySelectorAll('.step').forEach((stepEl, index) => {
+        const stepNum = index + 1;
+        stepEl.classList.remove('active', 'completed');
+        if (stepNum < currentStep) stepEl.classList.add('completed');
+        else if (stepNum === currentStep) stepEl.classList.add('active');
+    });
+    
+    // Actualizar barra de progreso
+    const progress = ((currentStep - 1) / 3) * 100;
+    document.getElementById('stepperProgress').style.width = progress + '%';
+    
+    // Mostrar contenido del paso actual
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`step${step}Content`).classList.add('active');
+    
+    // Actualizar contenido específico del paso
+    if (step === 2) updateStep2Content();
+    if (step === 3) updateStep3Content();
+    if (step === 4) updateStep4Content();
+    
+    // Scroll arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// ✅ PASO 1: SELECCIONAR MONTO
+// ============================================
+
+function selectPresetAmount(amount, btn) {
+    paymentAmount = amount;
+    
+    // Quitar selección de otros botones
+    document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    
+    // Limpiar input personalizado
+    document.getElementById('customAmount').value = '';
+    
+    updateAmountPreview();
+    document.getElementById('btnStep1Next').disabled = false;
+}
+
+function updateCustomPreview() {
+    const amount = parseFloat(document.getElementById('customAmount').value);
+    
+    // Quitar selección de presets
+    document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
+    
+    if (amount > 0) {
+        paymentAmount = amount;
+        updateAmountPreview();
+        document.getElementById('btnStep1Next').disabled = false;
+    } else {
+        paymentAmount = 0;
+        document.getElementById('amountPreview').style.display = 'none';
+        document.getElementById('btnStep1Next').disabled = true;
     }
 }
 
-async function getDhruServices() {
-    try {
-        const response = await fetch('/.netlify/functions/dhru-services');
-        const data = await response.json();
-        console.log('📦 Servicios DHru:', data);
-        return data;
-    } catch (error) {
-        console.error('❌ Error obteniendo servicios DHru:', error);
-        return null;
+function updateAmountPreview() {
+    if (paymentAmount <= 0 || exchangeRate <= 0) return;
+    
+    const bsAmount = paymentAmount * exchangeRate;
+    const solesAmount = paymentAmount * SOLES_PER_CREDIT;
+    
+    document.getElementById('previewBs').textContent = `Bs ${formatBs(bsAmount)}`;
+    document.getElementById('previewSoles').textContent = `S/ ${solesAmount.toFixed(2)}`;
+    document.getElementById('amountPreview').style.display = 'grid';
+}
+
+// ============================================
+// ✅ PASO 2: SELECCIONAR MÉTODO
+// ============================================
+
+function updateStep2Content() {
+    document.getElementById('step2Amount').textContent = `$${paymentAmount.toFixed(2)}`;
+    document.getElementById('step2AmountBs').textContent = `Bs ${formatBs(paymentAmount * exchangeRate)}`;
+    document.getElementById('step2AmountSoles').textContent = `S/ ${(paymentAmount * SOLES_PER_CREDIT).toFixed(2)}`;
+}
+
+function selectPaymentMethod(method, element) {
+    selectedPaymentMethod = method;
+    
+    document.querySelectorAll('.payment-method-option').forEach(opt => {
+        opt.classList.remove('active');
+        const radio = opt.querySelector('input[type="radio"]');
+        if (radio) radio.checked = false;
+    });
+    
+    element.classList.add('active');
+    element.querySelector('input[type="radio"]').checked = true;
+}
+
+// ============================================
+// ✅ PASO 3: REALIZAR PAGO
+// ============================================
+
+function updateStep3Content() {
+    const content = document.getElementById('paymentMethodContent');
+    const summaryBox = document.getElementById('paymentSummaryBox');
+    const amountDisplay = document.getElementById('paymentAmountDisplay');
+    const title = document.getElementById('step3Title');
+    const subtitle = document.getElementById('step3Subtitle');
+    
+    summaryBox.className = 'payment-summary-box';
+    
+    if (selectedPaymentMethod === 'binance') {
+        summaryBox.classList.add('binance');
+        amountDisplay.textContent = `${paymentAmount.toFixed(2)} USDT`;
+        title.innerHTML = '💰 Pago con Binance';
+        subtitle.textContent = 'Escanea el QR en la app de Binance';
+        
+        content.innerHTML = `
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <img src="qr-binance.png" alt="QR Binance Pay">
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de Binance</p>
+            </div>
+            
+            <div class="pay-id-box">
+                <div class="pay-id-label">Binance Pay ID</div>
+                <div class="pay-id-value">${BINANCE_PAY_ID}</div>
+            </div>
+            
+            <div class="instructions-box">
+                <div>
+                    <strong>📝 Instrucciones:</strong><br>
+                    1. Abre la app de Binance y ve a Pay<br>
+                    2. Ingresa el Pay ID: <strong>${BINANCE_PAY_ID}</strong> o escanea el QR<br>
+                    3. Envía exactamente <strong>${paymentAmount.toFixed(2)} USDT</strong><br>
+                    4. Copia el ID de transacción (TXID) del pago<br>
+                    5. Haz clic en "Ya realicé el pago"
+                </div>
+            </div>
+            
+            <div style="background:rgba(240,185,11,0.1);border:1px solid var(--binance);border-radius:6px;padding:12px;text-align:center;">
+                <div style="font-size:11px;color:var(--text-dim);">⚠️ IMPORTANTE</div>
+                <div style="font-size:13px;color:var(--binance);font-weight:600;margin-top:4px;">
+                    Envía exactamente ${paymentAmount.toFixed(2)} USDT en la red TRC20
+                </div>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'plin') {
+        const solesAmount = paymentAmount * SOLES_PER_CREDIT;
+        summaryBox.classList.add('plin');
+        amountDisplay.textContent = `S/ ${solesAmount.toFixed(2)}`;
+        title.innerHTML = '<img src="https://flagcdn.com/w40/pe.png" alt="Perú" style="width:24px;height:16px;vertical-align:middle;margin-right:8px;">Pago con Plin';
+        subtitle.textContent = 'Escanea el QR desde la app de Plin';
+        
+        content.innerHTML = `
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <img src="qr-plin.png" alt="QR Plin">
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de Plin</p>
+            </div>
+            
+            <div class="instructions-box">
+                <div>
+                    <strong>📝 Instrucciones:</strong><br>
+                    1. Abre la app de tu banco con Plin<br>
+                    2. Escanea el código QR<br>
+                    3. Confirma el pago de <strong>S/ ${solesAmount.toFixed(2)}</strong><br>
+                    4. Guarda el número de operación<br>
+                    5. Haz clic en "Ya realicé el pago"
+                </div>
+            </div>
+            
+            <div style="background:rgba(217,20,63,0.1);border:1px solid var(--peru);border-radius:6px;padding:12px;text-align:center;">
+                <div style="font-size:11px;color:var(--text-dim);">⚠️ IMPORTANTE</div>
+                <div style="font-size:13px;color:var(--peru);font-weight:600;margin-top:4px;">
+                    Envía exactamente S/ ${solesAmount.toFixed(2)} vía Plin
+                </div>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'pagomovil') {
+        const bsAmount = paymentAmount * exchangeRate;
+        summaryBox.classList.add('pagomovil');
+        amountDisplay.textContent = `Bs ${formatBs(bsAmount)}`;
+        title.innerHTML = '<img src="https://flagcdn.com/w40/ve.png" alt="Venezuela" style="width:24px;height:16px;vertical-align:middle;margin-right:8px;">Pago Móvil';
+        subtitle.textContent = 'Escanea el QR desde la app de tu banco';
+        
+        content.innerHTML = `
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <img src="qr-pagomovil.png" alt="QR Pago Móvil">
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de tu banco</p>
+            </div>
+            
+            <div class="instructions-box">
+                <div>
+                    <strong>📝 Instrucciones:</strong><br>
+                    1. Abre la app de tu banco<br>
+                    2. Selecciona "Pago Móvil"<br>
+                    3. Escanea el código QR<br>
+                    4. Confirma la transferencia de <strong>Bs ${formatBs(bsAmount)}</strong><br>
+                    5. Guarda los datos de la transacción<br>
+                    6. Haz clic en "Ya realicé el pago"
+                </div>
+            </div>
+            
+            <div style="background:rgba(252,209,22,0.1);border:1px solid var(--venezuela);border-radius:6px;padding:12px;text-align:center;">
+                <div style="font-size:11px;color:var(--text-dim);">⚠️ IMPORTANTE</div>
+                <div style="font-size:13px;color:var(--venezuela);font-weight:600;margin-top:4px;">
+                    Envía exactamente Bs ${formatBs(bsAmount)} vía Pago Móvil
+                </div>
+            </div>
+        `;
     }
 }
 
-async function createDhruOrder(imei, serviceId) {
+// ============================================
+// ✅ PASO 4: CONFIRMAR PAGO
+// ============================================
+
+function updateStep4Content() {
+    // Actualizar resumen
+    document.getElementById('confirmAmount').textContent = `$${paymentAmount.toFixed(2)}`;
+    document.getElementById('confirmCredits').textContent = paymentAmount.toFixed(2);
+    
+    const methodNames = {
+        'binance': '💰 Binance Pay',
+        'plin': '🇵🇪 Plin',
+        'pagomovil': '🇻🇪 Pago Móvil'
+    };
+    document.getElementById('confirmMethod').textContent = methodNames[selectedPaymentMethod];
+    
+    // Generar campos dinámicos según método
+    const fields = document.getElementById('confirmationFields');
+    
+    if (selectedPaymentMethod === 'binance') {
+        fields.innerHTML = `
+            <div class="form-group">
+                <label>🔗 ID de Transacción (TXID) *</label>
+                <input type="text" id="txidInput" placeholder="Ej: a1b2c3d4e5f6g7h8i9j0..." style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Lo encuentras en el historial de transacciones de Binance</small>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'plin') {
+        fields.innerHTML = `
+            <div class="form-group">
+                <label>🔢 Número de Operación *</label>
+                <input type="text" id="plinOperationNumber" placeholder="Ej: 123456789" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Número de operación que aparece en tu app de Plin</small>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'pagomovil') {
+        fields.innerHTML = `
+            <div class="form-group">
+                <label>🔢 Últimos 4 dígitos de la cuenta de origen *</label>
+                <input type="text" id="pagomovilLastDigits" placeholder="Ej: 1234" maxlength="4" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Últimos 4 dígitos de la cuenta desde donde pagaste</small>
+            </div>
+            
+            <div class="form-group">
+                <label>🏦 Banco de origen *</label>
+                <select id="pagomovilBank" style="font-size:14px;">
+                    <option value="">Selecciona tu banco</option>
+                    <option value="Banesco">Banesco (0134)</option>
+                    <option value="Mercantil">Mercantil (0105)</option>
+                    <option value="BOD">BOD (0171)</option>
+                    <option value="Provincial">BBVA Provincial (0108)</option>
+                    <option value="Venezuela">Banco de Venezuela (0102)</option>
+                    <option value="BBVA">BBVA (0177)</option>
+                    <option value="Banco de la Gente">Banco de la Gente (0146)</option>
+                    <option value="Bancaribe">Bancaribe (0114)</option>
+                    <option value="Exterior">Banco Exterior (0115)</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>📄 Número de referencia (opcional)</label>
+                <input type="text" id="pagomovilReference" placeholder="Ej: 123456789" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Si aparece en tu comprobante</small>
+            </div>
+        `;
+    }
+}
+
+// ============================================
+// ✅ SUBIDA DE COMPROBANTE
+// ============================================
+
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Validar tamaño (máx 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('⚠️ El archivo es muy grande (máx. 5MB)', 'error');
+        return;
+    }
+    
+    // Validar tipo
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+        showToast('⚠️ Solo se permiten imágenes o PDF', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedReceipt = e.target.result;
+        
+        const uploadSection = document.getElementById('uploadSection');
+        const preview = document.getElementById('uploadPreview');
+        const previewImg = document.getElementById('previewImage');
+        
+        uploadSection.classList.add('has-file');
+        uploadSection.querySelector('.upload-text').textContent = '✅ Archivo cargado: ' + file.name;
+        
+        if (file.type.startsWith('image/')) {
+            previewImg.src = uploadedReceipt;
+            preview.style.display = 'block';
+        } else {
+            previewImg.src = '';
+            preview.style.display = 'none';
+            uploadSection.querySelector('.upload-text').textContent = '✅ PDF cargado: ' + file.name;
+        }
+        
+        showToast('✅ Comprobante cargado', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeFile(event) {
+    event.stopPropagation();
+    uploadedReceipt = null;
+    document.getElementById('receiptFile').value = '';
+    document.getElementById('uploadSection').classList.remove('has-file');
+    document.getElementById('uploadSection').querySelector('.upload-text').textContent = 'Haz clic para subir captura del comprobante';
+    document.getElementById('uploadPreview').style.display = 'none';
+}
+
+// ============================================
+// ✅ CONFIRMAR PAGO
+// ============================================
+
+async function confirmPayment() {
+    const amountBs = paymentAmount * exchangeRate;
+    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
+    
+    let paymentData = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile.name || 'Usuario',
+        type: 'deposit',
+        amount: paymentAmount,
+        amountBs: amountBs,
+        amountSoles: amountSoles,
+        exchangeRate: exchangeRate,
+        paymentMethod: selectedPaymentMethod,
+        status: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // Validar y agregar datos según método
+    if (selectedPaymentMethod === 'binance') {
+        const txid = document.getElementById('txidInput')?.value.trim();
+        
+        if (!txid) {
+            showToast('⚠️ Por favor ingresa el ID de transacción', 'error');
+            return;
+        }
+        
+        if (txid.length < 5) {
+            showToast('⚠️ El ID parece inválido', 'error');
+            return;
+        }
+        
+        paymentData.txid = txid;
+        paymentData.payId = BINANCE_PAY_ID;
+        
+    } else if (selectedPaymentMethod === 'plin') {
+        const operationNumber = document.getElementById('plinOperationNumber')?.value.trim();
+        
+        if (!operationNumber) {
+            showToast('⚠️ Por favor ingresa el número de operación', 'error');
+            return;
+        }
+        
+        paymentData.operationNumber = operationNumber;
+        paymentData.notes = `Plin: ${operationNumber}`;
+        
+    } else if (selectedPaymentMethod === 'pagomovil') {
+        const lastDigits = document.getElementById('pagomovilLastDigits')?.value.trim();
+        const bank = document.getElementById('pagomovilBank')?.value;
+        const reference = document.getElementById('pagomovilReference')?.value.trim();
+        
+        if (!lastDigits || !bank) {
+            showToast('⚠️ Por favor completa los campos obligatorios', 'error');
+            return;
+        }
+        
+        paymentData.operationNumber = lastDigits;
+        paymentData.bank = bank;
+        if (reference) paymentData.reference = reference;
+        paymentData.notes = `Pago Móvil - ${bank} - ***${lastDigits}${reference ? ' - Ref: ' + reference : ''}`;
+    }
+    
+    // Agregar comprobante si se subió
+    if (uploadedReceipt) {
+        paymentData.receipt = uploadedReceipt;
+    }
+    
+    // Agregar notas adicionales
+    const notes = document.getElementById('paymentNotes')?.value.trim();
+    if (notes) {
+        paymentData.userNotes = notes;
+    }
+    
+    // Deshabilitar botón
+    const btn = document.getElementById('btnConfirmPayment');
+    btn.disabled = true;
+    btn.textContent = '⏳ Enviando...';
+    
     try {
-        const response = await fetch('/.netlify/functions/dhru-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ imei, serviceId })
-        });
-        const data = await response.json();
-        console.log('📦 Pedido DHru creado:', data);
-        return data;
+        const transactionRef = await db.collection('transactions').add(paymentData);
+        
+        await notifyNewDeposit(paymentData);
+        
+        showToast('✅ ¡Pago registrado! Esperando verificación...', 'success');
+        
+        setTimeout(() => {
+            window.location.href = `pago-confirmado.html?tx=${transactionRef.id}`;
+        }, 2000);
+        
     } catch (error) {
-        console.error('❌ Error creando pedido DHru:', error);
-        return null;
+        console.error('Error:', error);
+        showToast('❌ Error al registrar pago: ' + error.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '✅ Confirmar y Enviar';
     }
 }
 
@@ -1266,10 +1636,7 @@ async function createDhruOrder(imei, serviceId) {
 // ============================================
 
 async function sendTelegramMessage(message) {
-    if (!telegramConfig.enabled) {
-        console.log('🔕 Notificaciones de Telegram desactivadas');
-        return false;
-    }
+    if (!telegramConfig.enabled) return false;
     
     let allSuccess = true;
     
@@ -1310,7 +1677,7 @@ async function notifyNewDeposit(depositData) {
     
     if (depositData.paymentMethod === 'binance') {
         methodText = '💰 Binance Pay';
-        amountText = `$${(depositData.amount || 0).toFixed(2)} USDT`;
+        amountText = `${(depositData.amount || 0).toFixed(2)} USDT`;
     } else if (depositData.paymentMethod === 'plin') {
         methodText = '🇵🇪 Plin';
         amountText = `S/ ${(depositData.amountSoles || 0).toFixed(2)}`;
@@ -1330,7 +1697,7 @@ async function notifyNewDeposit(depositData) {
 💳 <b>Método:</b> ${methodText}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
 
-${depositData.txid ? `🔗 <b>TXID:</b> <code>${depositData.txid}</code>\n` : ''}${depositData.operationNumber ? `🔢 <b>N° Operación:</b> <code>${depositData.operationNumber}</code>\n` : ''}${depositData.notes ? `📝 <b>Notas:</b> ${depositData.notes}\n` : ''}
+${depositData.txid ? `🔗 <b>TXID:</b> <code>${depositData.txid}</code>\n` : ''}${depositData.operationNumber ? `🔢 <b>N° Operación:</b> <code>${depositData.operationNumber}</code>\n` : ''}${depositData.receipt ? `📸 <b>Comprobante:</b> Adjunto\n` : ''}${depositData.userNotes ? `📝 <b>Notas:</b> ${depositData.userNotes}\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de verificación
     `.trim();
     
@@ -1358,19 +1725,17 @@ async function loadExchangeRate() {
         
         rateLastUpdate = new Date();
         updateRateDisplay();
-        updateAllAmounts();
+        
+        if (paymentAmount > 0) updateAmountPreview();
         
         showToast('✅ Tasa actualizada', 'success');
         
     } catch (error) {
         console.error('Error cargando tasa:', error);
-        
         exchangeRate = 850.00;
         rateLastUpdate = new Date();
         updateRateDisplay();
-        updateAllAmounts();
-        
-        showToast('⚠️ Usando tasa por defecto (850.00)', 'warning');
+        showToast('⚠️ Usando tasa por defecto (850.00)', 'error');
     }
 }
 
@@ -1386,82 +1751,6 @@ function updateRateDisplay() {
             const dateStr = rateLastUpdate.toLocaleDateString('es-VE');
             document.getElementById('rateUpdated').textContent = `Actualizado: ${dateStr} ${timeStr}`;
         }
-    }
-}
-
-// ✅ ACTUALIZAR TODOS LOS MONTOS
-function updateAllAmounts() {
-    if (exchangeRate <= 0) return;
-    
-    const amountBs = paymentAmount * exchangeRate;
-    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
-    
-    // Actualizar saldo actual con las dos ventanitas
-    const currentBalance = parseFloat(userProfile?.balance || 0);
-    const currentBalanceBs = currentBalance * exchangeRate;
-    const currentBalanceSoles = currentBalance * SOLES_PER_CREDIT;
-    
-    document.getElementById('currentBalanceBs').textContent = `Bs ${formatBs(currentBalanceBs)}`;
-    document.getElementById('currentBalanceSoles').textContent = `S/ ${currentBalanceSoles.toFixed(2)}`;
-    
-    // Actualizar ventanitas del monto a recargar
-    document.getElementById('paymentAmountBs').textContent = `Bs ${formatBs(amountBs)}`;
-    document.getElementById('paymentAmountSoles').textContent = `S/ ${amountSoles.toFixed(2)}`;
-    
-    updatePaymentByMethod();
-}
-
-// ✅ MOSTRAR SOLO EL MONTO DEL MÉTODO SELECCIONADO
-function updatePaymentByMethod() {
-    const amountBs = paymentAmount * exchangeRate;
-    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
-    
-    const usdtBox = document.getElementById('usdtToPayBox');
-    const solesBox = document.getElementById('solesToPayBox');
-    const bsBox = document.getElementById('bsToPayBox');
-    
-    if (usdtBox) usdtBox.style.display = 'none';
-    if (solesBox) solesBox.style.display = 'none';
-    if (bsBox) bsBox.style.display = 'none';
-    
-    if (selectedPaymentMethod === 'binance') {
-        if (usdtBox) {
-            document.getElementById('usdtToPay').textContent = paymentAmount.toFixed(2);
-            usdtBox.style.display = 'block';
-        }
-    } else if (selectedPaymentMethod === 'plin') {
-        if (solesBox) {
-            document.getElementById('solesToPay').textContent = amountSoles.toFixed(2);
-            solesBox.style.display = 'block';
-        }
-    } else if (selectedPaymentMethod === 'pagomovil') {
-        if (bsBox) {
-            document.getElementById('bsToPay').textContent = formatBs(amountBs);
-            bsBox.style.display = 'block';
-        }
-    }
-    
-    updateCalculationBreakdown();
-}
-
-// ✅ ACTUALIZAR CÁLCULO DETALLADO
-function updateCalculationBreakdown() {
-    const breakdown = document.getElementById('calculationBreakdown');
-    if (!breakdown) return;
-    
-    if (paymentAmount > 0 && exchangeRate > 0) {
-        breakdown.style.display = 'block';
-        
-        const credits = paymentAmount;
-        const totalBs = paymentAmount * exchangeRate;
-        const totalSoles = paymentAmount * SOLES_PER_CREDIT;
-        
-        document.getElementById('calcCredits').textContent = credits.toFixed(2);
-        document.getElementById('calcRate').textContent = `Bs ${formatBs(exchangeRate)}`;
-        document.getElementById('calcTotal').textContent = `Bs ${formatBs(totalBs)}`;
-        document.getElementById('calcSoles').textContent = `S/ ${totalSoles.toFixed(2)}`;
-    } else {
-        breakdown.style.display = 'none';
     }
 }
 
@@ -1493,15 +1782,15 @@ auth.onAuthStateChanged(async (user) => {
     
     await loadExchangeRate();
     
-    setInterval(loadExchangeRate, 5 * 60 * 1000);
-    
+    // Verificar si viene con monto de URL
     const urlParams = new URLSearchParams(window.location.search);
-    paymentAmount = parseFloat(urlParams.get('amount')) || 0;
+    const urlAmount = parseFloat(urlParams.get('amount'));
     
-    if (paymentAmount > 0) {
-        updatePaymentDisplay(paymentAmount);
-    } else {
-        showAmountSelector();
+    if (urlAmount > 0) {
+        paymentAmount = urlAmount;
+        document.getElementById('customAmount').value = urlAmount;
+        updateAmountPreview();
+        document.getElementById('btnStep1Next').disabled = false;
     }
     
     updateNav();
@@ -1526,281 +1815,6 @@ function logout() {
     auth.signOut().then(() => {
         window.location.href = 'index.html';
     });
-}
-
-// ============================================
-// ✅ SELECTOR DE MONTOS
-// ============================================
-
-function showAmountSelector() {
-    const summaryDiv = document.querySelector('.checkout-card');
-    
-    summaryDiv.innerHTML += `
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cyan-border);">
-            <h3 style="font-family:'Orbitron',monospace;font-size:16px;color:var(--cyan);margin-bottom:16px;">💵 Selecciona un Monto</h3>
-            
-            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
-                <button onclick="selectAmount(10)" class="btn-ghost" style="padding:16px;font-size:15px;">$10</button>
-                <button onclick="selectAmount(25)" class="btn-ghost" style="padding:16px;font-size:15px;">$25</button>
-                <button onclick="selectAmount(50)" class="btn-ghost" style="padding:16px;font-size:15px;">$50</button>
-                <button onclick="selectAmount(100)" class="btn-ghost" style="padding:16px;font-size:15px;">$100</button>
-            </div>
-            
-            <div class="form-group" style="margin-top:16px;">
-                <label>O ingresa un monto personalizado</label>
-                <input type="number" id="customAmount" min="1" step="0.01" placeholder="Ej: 40.00" style="font-size:16px;padding:12px;" oninput="updateCustomAmountPreview()">
-                <div id="customAmountPreview" class="custom-amount-cards" style="display:none;"></div>
-            </div>
-            
-            <button onclick="confirmCustomAmount()" class="btn-primary btn-full" style="margin-top:16px;padding:14px;font-size:15px;">
-                Continuar con el Pago
-            </button>
-
-            <p style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:12px;">
-              Presione aqui para actualizar el monto a realizar
-            </p>
-        </div>
-    `;
-}
-
-// ✅ FUNCIÓN MODIFICADA: Actualiza en tiempo real mientras escribe
-function updateCustomAmountPreview() {
-    const amount = parseFloat(document.getElementById('customAmount').value);
-    const preview = document.getElementById('customAmountPreview');
-    
-    if (amount > 0 && exchangeRate > 0) {
-        const bsAmount = amount * exchangeRate;
-        const solesAmount = amount * SOLES_PER_CREDIT;
-        
-        // ✅ Actualizar preview pequeño
-        preview.innerHTML = `
-            <div class="mini-card venezuela">
-                <img src="https://flagcdn.com/w40/ve.png" alt="Venezuela">
-                <span class="mini-value">Bs ${formatBs(bsAmount)}</span>
-            </div>
-            <div class="mini-card peru">
-                <img src="https://flagcdn.com/w40/pe.png" alt="Perú">
-                <span class="mini-value">S/ ${solesAmount.toFixed(2)}</span>
-            </div>
-        `;
-        preview.style.display = 'grid';
-        
-        // ✅ ACTUALIZAR TAMBIÉN LAS VENTANITAS PRINCIPALES EN TIEMPO REAL
-        updatePaymentAmountLive(amount, bsAmount, solesAmount);
-        
-    } else {
-        preview.style.display = 'none';
-    }
-}
-
-// ✅ NUEVA FUNCIÓN: Actualizar monto en tiempo real mientras escribe
-function updatePaymentAmountLive(amount, bsAmount, solesAmount) {
-    // Actualizar el monto principal
-    document.getElementById('paymentAmount').textContent = `$${amount.toFixed(2)}`;
-    document.getElementById('creditsAmount').textContent = amount.toFixed(2);
-    
-    // Actualizar ventanitas principales
-    document.getElementById('paymentAmountBs').textContent = `Bs ${formatBs(bsAmount)}`;
-    document.getElementById('paymentAmountSoles').textContent = `S/ ${solesAmount.toFixed(2)}`;
-    
-    // Actualizar cálculo detallado
-    if (exchangeRate > 0) {
-        const breakdown = document.getElementById('calculationBreakdown');
-        if (breakdown) {
-            breakdown.style.display = 'block';
-            document.getElementById('calcCredits').textContent = amount.toFixed(2);
-            document.getElementById('calcRate').textContent = `Bs ${formatBs(exchangeRate)}`;
-            document.getElementById('calcTotal').textContent = `Bs ${formatBs(bsAmount)}`;
-            document.getElementById('calcSoles').textContent = `S/ ${solesAmount.toFixed(2)}`;
-        }
-    }
-    
-    // Actualizar el cuadro de monto a pagar (USDT/Soles/Bs)
-    updatePaymentByMethodLive(amount, bsAmount, solesAmount);
-}
-
-// ✅ Actualizar cuadro de pago según método seleccionado (en tiempo real)
-function updatePaymentByMethodLive(amount, bsAmount, solesAmount) {
-    const usdtBox = document.getElementById('usdtToPayBox');
-    const solesBox = document.getElementById('solesToPayBox');
-    const bsBox = document.getElementById('bsToPayBox');
-    
-    // Ocultar todos primero
-    if (usdtBox) usdtBox.style.display = 'none';
-    if (solesBox) solesBox.style.display = 'none';
-    if (bsBox) bsBox.style.display = 'none';
-    
-    // Mostrar solo el del método seleccionado
-    if (selectedPaymentMethod === 'binance') {
-        if (usdtBox) {
-            document.getElementById('usdtToPay').textContent = amount.toFixed(2);
-            usdtBox.style.display = 'block';
-        }
-    } else if (selectedPaymentMethod === 'plin') {
-        if (solesBox) {
-            document.getElementById('solesToPay').textContent = solesAmount.toFixed(2);
-            solesBox.style.display = 'block';
-        }
-    } else if (selectedPaymentMethod === 'pagomovil') {
-        if (bsBox) {
-            document.getElementById('bsToPay').textContent = formatBs(bsAmount);
-            bsBox.style.display = 'block';
-        }
-    }
-}
-
-function selectAmount(amount) {
-    document.getElementById('customAmount').value = amount;
-    updatePaymentDisplay(amount);
-}
-
-function confirmCustomAmount() {
-    const amount = parseFloat(document.getElementById('customAmount').value);
-    
-    if (!amount || amount <= 0) {
-        showToast('⚠️ Ingresa un monto válido', 'error');
-        return;
-    }
-    
-    updatePaymentDisplay(amount);
-    document.querySelector('.checkout-container').children[1].scrollIntoView({ behavior: 'smooth' });
-}
-
-function updatePaymentDisplay(amount) {
-    paymentAmount = amount;
-    document.getElementById('paymentAmount').textContent = `$${amount.toFixed(2)}`;
-    document.getElementById('creditsAmount').textContent = amount.toFixed(2);
-    
-    updateAllAmounts();
-}
-
-// ============================================
-// ✅ SELECCIONAR MÉTODO DE PAGO
-// ============================================
-
-function selectPaymentMethod(method) {
-    selectedPaymentMethod = method;
-    
-    document.querySelectorAll('.payment-method-option').forEach(option => {
-        option.classList.remove('active');
-        const radio = option.querySelector('input[type="radio"]');
-        if (radio && radio.value === method) {
-            option.classList.add('active');
-            radio.checked = true;
-        }
-    });
-    
-    document.querySelectorAll('.payment-content').forEach(content => {
-        content.classList.remove('active');
-    });
-    
-    const selectedContent = document.getElementById(method + 'Payment');
-    if (selectedContent) {
-        selectedContent.classList.add('active');
-    }
-    
-    updatePaymentByMethod();
-}
-
-// ============================================
-// ✅ MOSTRAR DETALLES DE PAGO (QR Y FORMULARIO)
-// ============================================
-
-function showPaymentDetails(method) {
-    // Ocultar el botón de "CONTINUAR CON EL PAGO"
-    const buttonId = 'show' + method.charAt(0).toUpperCase() + method.slice(1) + 'Details';
-    const button = document.getElementById(buttonId);
-    if (button) {
-        button.style.display = 'none';
-    }
-    
-    // Mostrar los detalles del pago (QR y formulario)
-    const detailsId = method + 'PaymentDetails';
-    const details = document.getElementById(detailsId);
-    if (details) {
-        details.style.display = 'block';
-        details.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-// ============================================
-// ✅ CONFIRMAR PAGO
-// ============================================
-
-async function confirmPayment(method) {
-    const amountBs = paymentAmount * exchangeRate;
-    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
-    
-    let paymentData = {
-        userId: currentUser.uid,
-        userEmail: currentUser.email,
-        userName: userProfile.name || 'Usuario',
-        type: 'deposit',
-        amount: paymentAmount,
-        amountBs: amountBs,
-        amountSoles: amountSoles,
-        exchangeRate: exchangeRate,
-        paymentMethod: method,
-        status: 'pending',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    
-    if (method === 'binance') {
-        const txid = document.getElementById('txidInput').value.trim();
-        
-        if (!txid) {
-            showToast('⚠️ Por favor ingresa el ID de transacción', 'error');
-            return;
-        }
-        
-        if (txid.length < 5) {
-            showToast('⚠️ El ID parece inválido', 'error');
-            return;
-        }
-        
-        paymentData.txid = txid;
-        paymentData.payId = BINANCE_PAY_ID;
-        
-    } else if (method === 'plin') {
-        const operationNumber = document.getElementById('plinOperationNumber').value.trim();
-        
-        if (!operationNumber) {
-            showToast('⚠️ Por favor ingresa el número de operación', 'error');
-            return;
-        }
-        
-        paymentData.operationNumber = operationNumber;
-        paymentData.notes = `Plin: ${operationNumber}`;
-        
-    } else if (method === 'pagomovil') {
-        const lastDigits = document.getElementById('pagomovilLastDigits').value.trim();
-        const bank = document.getElementById('pagomovilBank').value;
-        
-        if (!lastDigits || !bank) {
-            showToast('⚠️ Por favor completa todos los campos', 'error');
-            return;
-        }
-        
-        paymentData.operationNumber = lastDigits;
-        paymentData.bank = bank;
-        paymentData.notes = `Pago Móvil - ${bank} - ***${lastDigits}`;
-    }
-    
-    try {
-        const transactionRef = await db.collection('transactions').add(paymentData);
-        
-        await notifyNewDeposit(paymentData);
-        
-        showToast('✅ Pago registrado. Esperando verificación...', 'success');
-        
-        setTimeout(() => {
-            window.location.href = `pago-confirmado.html?tx=${transactionRef.id}`;
-        }, 2000);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        showToast('❌ Error al registrar pago: ' + error.message, 'error');
-    }
 }
 
 // ============================================

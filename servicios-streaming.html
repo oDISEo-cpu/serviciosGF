@@ -118,9 +118,7 @@
     -ms-overflow-style: none;
   }
   
-  .category-tabs-container::-webkit-scrollbar {
-    display: none;
-  }
+  .category-tabs-container::-webkit-scrollbar { display: none; }
   
   .category-tabs {
     display: flex;
@@ -165,12 +163,11 @@
     padding: 40px;
   }
 
-  /* ✅ BARRA DE BÚSQUEDA */
   .services-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 20px;
   }
@@ -246,9 +243,7 @@
     background: rgba(255,68,85,0.1);
   }
 
-  .search-clear.visible {
-    display: block;
-  }
+  .search-clear.visible { display: block; }
 
   .search-results-info {
     margin-top: 8px;
@@ -258,13 +253,119 @@
     display: none;
   }
 
-  .search-results-info.visible {
-    display: block;
+  .search-results-info.visible { display: block; }
+  .search-results-info .count { color: var(--purple); font-weight: 700; }
+
+  /* ✅ NUEVO: FILTROS POR PLATAFORMA */
+  .brand-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
-  .search-results-info .count {
+  .brand-filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .brand-pill {
+    background: var(--surface);
+    border: 1px solid var(--purple-border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-pill:hover {
+    background: var(--purple-glow);
+    border-color: var(--purple);
     color: var(--purple);
+  }
+
+  .brand-pill.active {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: white;
     font-weight: 700;
+  }
+
+  .brand-pill .pill-count {
+    background: rgba(0,0,0,0.2);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .brand-pill.active .pill-count {
+    background: rgba(0,0,0,0.3);
+    color: white;
+  }
+
+  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sort-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sort-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .sort-select {
+    background: var(--surface);
+    border: 1px solid var(--purple-border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .sort-select:hover, .sort-select:focus {
+    border-color: var(--purple);
+    background: var(--dark3);
+  }
+
+  .sort-select option {
+    background: var(--dark2);
+    color: var(--text);
   }
 
   .services-grid {
@@ -281,12 +382,70 @@
     position: relative;
     transition: all 0.3s;
     background: linear-gradient(135deg, var(--surface) 0%, rgba(138,43,226,0.05) 100%);
+    overflow: hidden;
   }
 
   .service-card:hover {
     border-color: var(--purple);
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(138, 43, 226, 0.25);
+  }
+
+  /* ✅ NUEVO: CINTA */
+  .service-ribbon {
+    position: absolute;
+    top: 14px;
+    left: -10px;
+    padding: 5px 14px 5px 18px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 0 4px 4px 0;
+    z-index: 3;
+    color: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .service-ribbon.bestseller {
+    background: linear-gradient(135deg, #ff6b35, #ffcc00);
+    color: var(--dark);
+  }
+
+  .service-ribbon.new {
+    background: linear-gradient(135deg, #00ff88, #00e5ff);
+    color: var(--dark);
+  }
+
+  .service-ribbon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: rgba(0,0,0,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+  }
+
+  /* ✅ NUEVO: ICONO DE PLATAFORMA */
+  .brand-icon-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--dark3);
+    border: 1px solid var(--purple-border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
 
   .service-category {
@@ -308,6 +467,7 @@
     font-weight: 700;
     color: var(--purple);
     margin-bottom: 8px;
+    padding-right: 50px;
   }
 
   .service-card p {
@@ -494,10 +654,7 @@
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
     border-color: var(--purple);
   }
-  .form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
   .btn-full { width: 100%; padding: 14px; font-size: 15px; }
   .btn-purple {
     background: var(--purple);
@@ -613,9 +770,10 @@
   .service-actions {
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 64px;
     display: flex;
     gap: 8px;
+    z-index: 3;
   }
   .btn-edit, .btn-delete {
     background: var(--dark3);
@@ -651,6 +809,9 @@
     .modal { width: 95vw; padding: 24px; }
     .services-header { flex-direction: column; align-items: stretch; }
     .search-container { max-width: 100%; }
+    .service-actions { right: 10px; top: 60px; }
+    .brand-icon-badge { width: 34px; height: 34px; font-size: 18px; }
+    .service-card h3 { padding-right: 40px; }
   }
 </style>
 </head>
@@ -699,7 +860,6 @@
     <button class="btn-add-service" onclick="openAddServiceModal()">➕ AGREGAR SERVICIO</button>
   </div>
 
-  <!-- ✅ BARRA DE BÚSQUEDA -->
   <div class="services-header">
     <div class="search-container">
       <div class="search-input-wrapper">
@@ -717,6 +877,25 @@
       <div class="search-results-info" id="searchResultsInfo">
         Mostrando <span class="count" id="searchResultsCount">0</span> de <span class="count" id="searchTotalCount">0</span> servicios
       </div>
+    </div>
+  </div>
+
+  <!-- ✅ NUEVO: FILTROS POR PLATAFORMA -->
+  <div class="brand-filters" id="brandFilters">
+    <span class="brand-filter-label">🏷️ Filtrar por plataforma:</span>
+  </div>
+
+  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
+  <div class="controls-row">
+    <div class="sort-container">
+      <span class="sort-label">📊 Ordenar:</span>
+      <select class="sort-select" id="sortSelect" onchange="handleSort()">
+        <option value="recent">Más recientes</option>
+        <option value="price-asc">Precio ↑ (menor a mayor)</option>
+        <option value="price-desc">Precio ↓ (mayor a menor)</option>
+        <option value="popular">Más vendidos</option>
+        <option value="name">Nombre A-Z</option>
+      </select>
     </div>
   </div>
 
@@ -856,10 +1035,9 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ✅ CONFIGURACIÓN DE TELEGRAM CORREGIDA
   const telegramConfig = {
     botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['1461150518', '8225719154'], // ✅ Array de chat IDs (admins)
+    chatIds: ['1461150518', '8225719154'],
     enabled: true
   };
 
@@ -870,53 +1048,206 @@
   let allCategories = [];
   let currentStreamingService = null;
   let searchQuery = '';
+  let currentBrandFilter = 'all';
+  let currentSort = 'recent';
 
-  // ✅ FUNCIÓN DE TELEGRAM CORREGIDA (envía a múltiples chats)
-  async function sendTelegramMessage(message) {
-    if (!telegramConfig.enabled) {
-      console.log('🔕 Notificaciones de Telegram desactivadas');
-      return false;
+  // ✅ NUEVO: PARSEAR TAGS (FIX BUG)
+  function parseTags(tags) {
+    if (!tags) return [];
+    if (Array.isArray(tags)) return tags.filter(t => typeof t === 'string' && t.trim() !== '');
+    if (typeof tags === 'string') {
+      try {
+        const parsed = JSON.parse(tags);
+        if (Array.isArray(parsed)) return parsed.filter(t => typeof t === 'string' && t.trim() !== '');
+      } catch (e) {}
+      let cleaned = tags.replace(/[\[\]"]/g, '').replace(/\\n/g, ',').trim();
+      return cleaned.split(',').map(t => t.trim()).filter(t => t && t.length > 0);
+    }
+    return [];
+  }
+
+  // ✅ NUEVO: DETECTAR PLATAFORMA
+  function detectBrand(service) {
+    const text = [
+      service.name || '',
+      service.description || '',
+      parseTags(service.tags).join(' ')
+    ].join(' ').toLowerCase();
+    
+    const platforms = [
+      { name: 'Netflix', keywords: ['netflix'] },
+      { name: 'Disney+', keywords: ['disney', 'disney+', 'disney plus'] },
+      { name: 'Spotify', keywords: ['spotify'] },
+      { name: 'HBO Max', keywords: ['hbo', 'hbo max', 'max'] },
+      { name: 'Prime Video', keywords: ['prime video', 'amazon prime', 'prime'] },
+      { name: 'YouTube', keywords: ['youtube', 'yt premium'] },
+      { name: 'Apple TV+', keywords: ['apple tv', 'appletv'] },
+      { name: 'Crunchyroll', keywords: ['crunchyroll'] },
+      { name: 'Paramount+', keywords: ['paramount'] },
+      { name: 'Star+', keywords: ['star+'] },
+      { name: 'Vix', keywords: ['vix'] },
+      { name: 'Claro Video', keywords: ['claro video', 'claro'] },
+      { name: 'Deezer', keywords: ['deezer'] },
+      { name: 'Tidal', keywords: ['tidal'] }
+    ];
+    
+    for (const platform of platforms) {
+      for (const keyword of platform.keywords) {
+        if (text.includes(keyword)) return platform.name;
+      }
+    }
+    return null;
+  }
+
+  // ✅ NUEVO: ICONO DE PLATAFORMA
+  function getBrandIcon(brand) {
+    const icons = {
+      'Netflix': '🎬',
+      'Disney+': '🏰',
+      'Spotify': '🎵',
+      'HBO Max': '🎭',
+      'Prime Video': '📦',
+      'YouTube': '▶️',
+      'Apple TV+': '🍎',
+      'Crunchyroll': '🍥',
+      'Paramount+': '⛰️',
+      'Star+': '⭐',
+      'Vix': '📺',
+      'Claro Video': '📡',
+      'Deezer': '🎶',
+      'Tidal': '🌊'
+    };
+    return icons[brand] || '📺';
+  }
+
+  // ✅ NUEVO: MÁS VENDIDO
+  function isBestSeller(service) {
+    const name = (service.name || '').toLowerCase();
+    const bestSellers = ['netflix', 'spotify', 'disney', 'hbo', 'prime'];
+    return bestSellers.some(bs => name.includes(bs));
+  }
+
+  // ✅ NUEVO: NUEVO
+  function isNew(service) {
+    if (!service.createdAt) return false;
+    const created = new Date(service.createdAt);
+    const now = new Date();
+    const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+    return diffDays <= 7;
+  }
+
+  // ✅ NUEVO: EXTRAER PLATAFORMAS
+  function extractBrands(services) {
+    const brandCount = {};
+    services.forEach(service => {
+      const brand = detectBrand(service);
+      if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+    });
+    return brandCount;
+  }
+
+  // ✅ NUEVO: RENDERIZAR FILTROS
+  function renderBrandFilters() {
+    const container = document.getElementById('brandFilters');
+    const brandCount = extractBrands(allServices);
+    const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]);
+    
+    let html = '<span class="brand-filter-label">🏷️ Filtrar por plataforma:</span>';
+    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">Todas <span class="pill-count">${allServices.length}</span></button>`;
+    
+    brands.forEach(([brand, count]) => {
+      const icon = getBrandIcon(brand);
+      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">${icon} ${brand} <span class="pill-count">${count}</span></button>`;
+    });
+    
+    container.innerHTML = html;
+  }
+
+  function filterByBrand(brand) {
+    currentBrandFilter = brand;
+    applyFiltersAndSort();
+    renderBrandFilters();
+  }
+
+  function handleSort() {
+    currentSort = document.getElementById('sortSelect').value;
+    applyFiltersAndSort();
+  }
+
+  function applyFiltersAndSort() {
+    let result = [...allServices];
+    
+    if (searchQuery) {
+      result = result.filter(service => {
+        const name = (service.name || '').toLowerCase();
+        const description = (service.description || '').toLowerCase();
+        const tags = parseTags(service.tags).join(' ').toLowerCase();
+        return name.includes(searchQuery) || description.includes(searchQuery) || tags.includes(searchQuery);
+      });
     }
     
-    let allSuccess = true;
+    if (currentBrandFilter !== 'all') {
+      result = result.filter(service => detectBrand(service) === currentBrandFilter);
+    }
     
-    // ✅ Enviar a cada chat ID
+    switch (currentSort) {
+      case 'price-asc':
+        result.sort((a, b) => (a.price || a.credits || 0) - (b.price || b.credits || 0));
+        break;
+      case 'price-desc':
+        result.sort((a, b) => (b.price || b.credits || 0) - (a.price || a.credits || 0));
+        break;
+      case 'popular':
+        result.sort((a, b) => (isBestSeller(b) ? 1 : 0) - (isBestSeller(a) ? 1 : 0));
+        break;
+      case 'name':
+        result.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        break;
+      case 'recent':
+      default:
+        result.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+          return dateB - dateA;
+        });
+    }
+    
+    filteredServices = result;
+    renderServices();
+    
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    if (searchQuery || currentBrandFilter !== 'all') {
+      resultsInfo.classList.add('visible');
+      document.getElementById('searchResultsCount').textContent = filteredServices.length;
+      document.getElementById('searchTotalCount').textContent = allServices.length;
+    } else {
+      resultsInfo.classList.remove('visible');
+    }
+  }
+
+  async function sendTelegramMessage(message) {
+    if (!telegramConfig.enabled) return false;
+    let allSuccess = true;
     for (const chatId of telegramConfig.chatIds) {
       try {
         const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
-        
         const response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id: chatId, // ✅ Usa el chatId del loop
-            text: message,
-            parse_mode: 'HTML'
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
         });
-        
         const data = await response.json();
-        
-        if (data.ok) {
-          console.log(`✅ Notificación enviada a chat ${chatId}`);
-        } else {
-          console.error(`❌ Error enviando a chat ${chatId}:`, data.description);
-          allSuccess = false;
-        }
+        if (data.ok) console.log(`✅ Notificación enviada a chat ${chatId}`);
+        else { console.error(`❌ Error enviando a chat ${chatId}:`, data.description); allSuccess = false; }
       } catch (error) {
         console.error(`❌ Error de conexión con chat ${chatId}:`, error);
         allSuccess = false;
       }
     }
-    
     return allSuccess;
   }
 
-  // ✅ FUNCIÓN MODIFICADA: Notifica al admin Y al cliente
   async function notifyStreamingOrder(orderData) {
-    // 1️⃣ MENSAJE PARA EL ADMIN (como ya lo tenías)
     const adminMessage = `
 📺 <b>NUEVO PEDIDO DE STREAMING</b>
 
@@ -934,7 +1265,6 @@
     
     await sendTelegramMessage(adminMessage);
     
-    // 2️⃣ NUEVO: Enviar confirmación al CLIENTE
     try {
       const userDoc = await db.collection('profiles').doc(orderData.userId).get();
       const userData = userDoc.data();
@@ -959,24 +1289,15 @@ Te contactaremos pronto con los datos de acceso.
 ¡Gracias por tu compra! 🎉
         `.trim();
         
-        // Enviar al cliente directamente
         const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: clientChatId,
-            text: clientMessage,
-            parse_mode: 'HTML'
-          })
+          body: JSON.stringify({ chat_id: clientChatId, text: clientMessage, parse_mode: 'HTML' })
         });
-        
         const data = await response.json();
-        if (data.ok) {
-          console.log(`✅ Notificación enviada al cliente: ${clientChatId}`);
-        } else {
-          console.error(`❌ Error enviando al cliente:`, data.description);
-        }
+        if (data.ok) console.log(`✅ Notificación enviada al cliente: ${clientChatId}`);
+        else console.error(`❌ Error enviando al cliente:`, data.description);
       } else {
         console.log('⚠️ El cliente no tiene telegramChatId configurado');
       }
@@ -989,9 +1310,7 @@ Te contactaremos pronto con los datos de acceso.
     if (user) {
       currentUser = user;
       const profileDoc = await db.collection('profiles').doc(user.uid).get();
-      if (profileDoc.exists) {
-        userProfile = profileDoc.data();
-      }
+      if (profileDoc.exists) userProfile = profileDoc.data();
       checkAdminButtons();
     }
     await loadServices();
@@ -1019,27 +1338,15 @@ Te contactaremos pronto con los datos de acceso.
   }
 
   function logout() {
-    auth.signOut().then(() => {
-      window.location.href = 'index.html';
-    });
+    auth.signOut().then(() => { window.location.href = 'index.html'; });
   }
 
   async function loadServices() {
     try {
-      const servicesSnap = await db.collection('services')
-        .where('category', '==', 'streaming')
-        .get();
-      
+      const servicesSnap = await db.collection('services').where('category', '==', 'streaming').get();
       allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
-      allServices.sort((a, b) => {
-        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-        return dateB - dateA;
-      });
-      
-      filteredServices = [...allServices];
-      renderServices();
+      renderBrandFilters();
+      applyFiltersAndSort();
     } catch (error) {
       console.error('Error cargando servicios:', error);
       document.getElementById('servicesGrid').innerHTML = `
@@ -1051,41 +1358,13 @@ Te contactaremos pronto con los datos de acceso.
     }
   }
 
-  // ✅ FUNCIÓN DE BÚSQUEDA
   function handleSearch() {
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('searchClear');
-    const resultsInfo = document.getElementById('searchResultsInfo');
-    
     searchQuery = input.value.trim().toLowerCase();
-    
-    if (searchQuery) {
-      clearBtn.classList.add('visible');
-    } else {
-      clearBtn.classList.remove('visible');
-    }
-    
-    if (searchQuery === '') {
-      filteredServices = [...allServices];
-      resultsInfo.classList.remove('visible');
-    } else {
-      filteredServices = allServices.filter(service => {
-        const name = (service.name || '').toLowerCase();
-        const description = (service.description || '').toLowerCase();
-        const tags = service.tags ? 
-          (Array.isArray(service.tags) ? service.tags.join(' ').toLowerCase() : service.tags.toLowerCase()) : '';
-        
-        return name.includes(searchQuery) || 
-               description.includes(searchQuery) || 
-               tags.includes(searchQuery);
-      });
-      
-      resultsInfo.classList.add('visible');
-      document.getElementById('searchResultsCount').textContent = filteredServices.length;
-      document.getElementById('searchTotalCount').textContent = allServices.length;
-    }
-    
-    renderServices();
+    if (searchQuery) clearBtn.classList.add('visible');
+    else clearBtn.classList.remove('visible');
+    applyFiltersAndSort();
   }
 
   function clearSearch() {
@@ -1093,8 +1372,7 @@ Te contactaremos pronto con los datos de acceso.
     document.getElementById('searchClear').classList.remove('visible');
     document.getElementById('searchResultsInfo').classList.remove('visible');
     searchQuery = '';
-    filteredServices = [...allServices];
-    renderServices();
+    applyFiltersAndSort();
     document.getElementById('searchInput').focus();
   }
 
@@ -1106,7 +1384,9 @@ Te contactaremos pronto con los datos de acceso.
     const grid = document.getElementById('servicesGrid');
     
     if (filteredServices.length === 0) {
-      if (searchQuery) {
+      if (searchQuery || currentBrandFilter !== 'all') {
+        const filterText = currentBrandFilter !== 'all' ? `de <strong style="color:var(--purple);">${currentBrandFilter}</strong>` : '';
+        const searchText = searchQuery ? `"<strong style="color:var(--purple);">${searchQuery}</strong>"` : '';
         grid.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1114,16 +1394,12 @@ Te contactaremos pronto con los datos de acceso.
               <path d="m21 21-4.35-4.35"></path>
             </svg>
             <p style="color:var(--purple);font-size:18px;margin-bottom:8px;">No se encontraron resultados</p>
-            <p style="color:var(--text-dim);">No hay servicios que coincidan con "<strong style="color:var(--purple);">${searchQuery}</strong>"</p>
-            <button onclick="clearSearch()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar búsqueda</button>
+            <p style="color:var(--text-dim);">No hay servicios que coincidan ${filterText} ${searchText}</p>
+            <button onclick="clearAllFilters()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar filtros</button>
           </div>
         `;
       } else {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <p>No hay servicios de streaming disponibles</p>
-          </div>
-        `;
+        grid.innerHTML = `<div class="empty-state"><p>No hay servicios de streaming disponibles</p></div>`;
       }
       return;
     }
@@ -1131,21 +1407,34 @@ Te contactaremos pronto con los datos de acceso.
     const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
     
     grid.innerHTML = filteredServices.map(service => {
-      const tags = service.tags ? (Array.isArray(service.tags) ? service.tags : service.tags.split(',').map(t => t.trim())) : [];
+      const tags = parseTags(service.tags);
+      const brand = detectBrand(service);
+      const brandIcon = brand ? getBrandIcon(brand) : null;
+      const bestSeller = isBestSeller(service);
+      const newService = isNew(service);
       const price = service.price || service.credits || 0;
       
-      // Resaltar coincidencias
       let highlightedName = service.name;
       if (searchQuery) {
         const regex = new RegExp(`(${escapeRegExp(searchQuery)})`, 'gi');
         highlightedName = service.name.replace(regex, '<mark style="background:var(--purple);color:white;padding:0 2px;border-radius:2px;">$1</mark>');
       }
       
+      let ribbonHTML = '';
+      if (bestSeller) ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
+      else if (newService) ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
+      
+      let brandIconHTML = '';
+      if (brandIcon) brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Plataforma'}">${brandIcon}</div>`;
+      
       return `
         <div class="service-card">
+          ${ribbonHTML}
+          ${brandIconHTML}
+          
           ${isAdmin ? `
             <div class="service-actions">
-              <button class="btn-edit" onclick="editService('${service.id}')">✏️ Editar</button>
+              <button class="btn-edit" onclick="editService('${service.id}')">✏️</button>
               <button class="btn-delete" onclick="deleteService('${service.id}')">🗑️</button>
             </div>
           ` : ''}
@@ -1174,6 +1463,18 @@ Te contactaremos pronto con los datos de acceso.
     }).join('');
   }
 
+  function clearAllFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    document.getElementById('searchResultsInfo').classList.remove('visible');
+    document.getElementById('sortSelect').value = 'recent';
+    searchQuery = '';
+    currentBrandFilter = 'all';
+    currentSort = 'recent';
+    renderBrandFilters();
+    applyFiltersAndSort();
+  }
+
   function openStreamingModal(serviceId) {
     currentStreamingService = allServices.find(s => s.id === serviceId);
     if (!currentStreamingService) return;
@@ -1196,14 +1497,11 @@ Te contactaremos pronto con los datos de acceso.
 
   async function submitStreamingOrder(e) {
     e.preventDefault();
-    
     if (!currentStreamingService) return;
     
     if (!currentUser) {
       showToast('⚠️ Debes iniciar sesión para solicitar este servicio', 'error');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
+      setTimeout(() => { window.location.href = 'index.html'; }, 2000);
       return;
     }
     
@@ -1228,13 +1526,8 @@ Te contactaremos pronto con los datos de acceso.
       if (userBalance < price) {
         const shortfall = price - userBalance;
         const confirmRecarga = confirm(
-          `❌ Saldo Insuficiente\n\n` +
-          `Saldo actual: $${userBalance.toFixed(2)}\n` +
-          `Precio del servicio: $${price.toFixed(2)}\n` +
-          `Te falta: $${shortfall.toFixed(2)}\n\n` +
-          `¿Deseas recargar saldo ahora?`
+          `❌ Saldo Insuficiente\n\nSaldo actual: $${userBalance.toFixed(2)}\nPrecio del servicio: $${price.toFixed(2)}\nTe falta: $${shortfall.toFixed(2)}\n\n¿Deseas recargar saldo ahora?`
         );
-        
         if (confirmRecarga) {
           closeStreamingModal();
           window.location.href = `recargar-saldo.html?amount=${shortfall}`;
@@ -1243,14 +1536,7 @@ Te contactaremos pronto con los datos de acceso.
       }
       
       const confirmPurchase = confirm(
-        `✅ Confirmar Pedido de Streaming\n\n` +
-        `Servicio: ${currentStreamingService.name}\n` +
-        `Precio: $${price.toFixed(2)}\n` +
-        `Nombre del perfil: ${profileName}\n` +
-        `PIN: ${pin}\n` +
-        `WhatsApp: ${whatsapp}\n\n` +
-        `Se descontará de tu saldo actual.\n` +
-        `¿Confirmas el pedido?`
+        `✅ Confirmar Pedido de Streaming\n\nServicio: ${currentStreamingService.name}\nPrecio: $${price.toFixed(2)}\nNombre del perfil: ${profileName}\nPIN: ${pin}\nWhatsApp: ${whatsapp}\n\nSe descontará de tu saldo actual.\n¿Confirmas el pedido?`
       );
       
       if (!confirmPurchase) return;
@@ -1272,8 +1558,6 @@ Te contactaremos pronto con los datos de acceso.
       };
       
       await db.collection('streamingOrders').add(streamingOrder);
-      
-      // ✅ Enviar notificación al admin Y al cliente
       await notifyStreamingOrder(streamingOrder);
       
       const newBalance = userBalance - price;
@@ -1297,15 +1581,10 @@ Te contactaremos pronto con los datos de acceso.
       });
       
       userProfile.balance = newBalance;
-      
       showToast(`✅ ¡Pedido de streaming solicitado! Te contactaremos en 24-48 horas`, 'success');
-      
       closeStreamingModal();
       
-      setTimeout(() => {
-        window.location.href = 'mis-pedidos.html';
-      }, 2000);
-      
+      setTimeout(() => { window.location.href = 'mis-pedidos.html'; }, 2000);
     } catch (error) {
       console.error('Error creando pedido de streaming:', error);
       showToast('❌ Error al crear el pedido: ' + error.message, 'error');
@@ -1320,15 +1599,11 @@ Te contactaremos pronto con los datos de acceso.
       toastContainer.className = 'toast-container';
       document.body.appendChild(toastContainer);
     }
-    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    
     const icon = type === 'success' ? '✅' : '⚠️';
     toast.innerHTML = `<span>${icon}</span> ${message}`;
-    
     toastContainer.appendChild(toast);
-    
     setTimeout(() => {
       toast.style.animation = 'fadeOut 0.3s ease forwards';
       setTimeout(() => toast.remove(), 300);
@@ -1367,7 +1642,6 @@ Te contactaremos pronto con los datos de acceso.
     const name = document.getElementById('newCategoryName').value.trim().toLowerCase();
     if (!name) return showToast('⚠️ Ingresa un nombre', 'error');
     if (allCategories.includes(name)) return showToast('⚠️ Ya existe', 'error');
-    
     try {
       await db.collection('categories').doc(name).set({ name, createdAt: new Date().toISOString() });
       allCategories.push(name);
@@ -1407,14 +1681,15 @@ Te contactaremos pronto con los datos de acceso.
     document.getElementById('servicePrice').value = service.price || service.credits || 0;
     document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
     document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
-    document.getElementById('serviceTags').value = service.tags ? (Array.isArray(service.tags) ? service.tags.join(', ') : service.tags) : '';
+    // ✅ FIX: Mostrar tags correctamente
+    const tags = parseTags(service.tags);
+    document.getElementById('serviceTags').value = tags.join(', ');
     
     document.getElementById('serviceModal').classList.add('open');
   }
   
   async function deleteService(serviceId) {
     if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
-    
     try {
       await db.collection('services').doc(serviceId).delete();
       showToast('🗑️ Servicio eliminado', 'success');
@@ -1460,7 +1735,6 @@ Te contactaremos pronto con los datos de acceso.
   document.getElementById('categoryModal')?.addEventListener('click', e => e.target.id === 'categoryModal' && closeCategoryModal());
   document.getElementById('serviceModal')?.addEventListener('click', e => e.target.id === 'serviceModal' && closeServiceModal());
 
-  // ✅ Atajos de teclado
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
       e.preventDefault();

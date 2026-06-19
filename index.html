@@ -104,6 +104,12 @@
         <strong>Unlock · Flash Auth · FRP · Bypass · Licencias · Remotos.</strong><br>
         Tecnología avanzada, precios competitivos y soporte 24/7 para técnicos en todo el mundo.
       </p>
+      
+      <!-- ✅ BADGE SERVIDOR ACTIVO -->
+      <div class="server-status">
+        <span class="status-dot"></span>
+        <span class="status-text">● ONLINE — Tiempo de respuesta: ~3 min</span>
+      </div>
     </div>
     <div class="hero-visual">
       <div class="hero-logo-container">
@@ -115,6 +121,31 @@
         <div class="hero-particle"></div>
         <img src="logo.png" alt="Servicios GF" class="hero-logo">
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ MÉTODOS DE PAGO -->
+<div class="payment-methods">
+  <div class="payment-title">
+    <span>💳 Métodos de Pago Aceptados</span>
+  </div>
+  <div class="payment-logos">
+    <div class="payment-item">
+      <div class="payment-icon">◈</div>
+      <span>USDT</span>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">⬡</div>
+      <span>Binance Pay</span>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">💰</div>
+      <span>Pago movil</span>
+    </div>
+    <div class="payment-item">
+      <div class="payment-icon">🔵</div>
+      <span>Plin</span>
     </div>
   </div>
 </div>
@@ -201,12 +232,24 @@
   </div>
 </div>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stat-item"><span class="stat-num">500+</span><span class="stat-label">Servicios Disponibles</span></div>
-  <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Soporte Activo</span></div>
-  <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Garantía Reembolso</span></div>
-  <div class="stat-item"><span class="stat-num">150+</span><span class="stat-label">Países Cubiertos</span></div>
+<!-- ✅ STATS CON ANIMACIÓN DE CONTADORES -->
+<div class="stats-bar" id="statsBar">
+  <div class="stat-item">
+    <span class="stat-num" data-target="500" data-suffix="+">0</span>
+    <span class="stat-label">Servicios Disponibles</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="24" data-suffix="/7">0</span>
+    <span class="stat-label">Soporte Activo</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="100" data-suffix="%">0</span>
+    <span class="stat-label">Garantía Reembolso</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="150" data-suffix="+">0</span>
+    <span class="stat-label">Países Cubiertos</span>
+  </div>
 </div>
 
 <!-- TICKER -->
@@ -222,6 +265,42 @@
   </div>
 </div>
 
+<!-- ✅ CÓMO FUNCIONA - 3 PASOS -->
+<section class="how-it-works">
+  <div class="section-header">
+    <span class="section-tag">// Proceso Simple</span>
+    <h2 class="section-title">¿Cómo <span class="hl">funciona</span>?</h2>
+    <p class="section-desc">Tres simples pasos para obtener tus servicios GSM</p>
+  </div>
+  
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-icon">👤</div>
+      <h3>Regístrate</h3>
+      <p>Crea tu cuenta gratis en menos de 2 minutos. Solo necesitas un email válido.</p>
+    </div>
+    
+    <div class="step-arrow">→</div>
+    
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-icon">💰</div>
+      <h3>Carga Saldo</h3>
+      <p>Añade saldo mediante criptomonedas, transferencia o métodos locales. Aprobación inmediata.</p>
+    </div>
+    
+    <div class="step-arrow">→</div>
+    
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-icon">🚀</div>
+      <h3>Solicita tu Servicio</h3>
+      <p>Elige el servicio que necesitas, ingresa los datos y recibe tu pedido en minutos.</p>
+    </div>
+  </div>
+</section>
+
 <!-- SERVICIOS -->
 <section>
   <div class="section-header">
@@ -234,37 +313,185 @@
       <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
       <h3>Registros IMEI / SN</h3>
       <p>Desbloqueo oficial vía IMEI y número de serie para las principales marcas del mercado global.</p>
-      <div class="service-tags"><span class="tag">Samsung</span><span class="tag">Xiaomi</span><span class="tag">Honor</span><span class="tag">FRP</span></div>
+      <div class="service-tags">
+        <span class="tag">Samsung</span>
+        <span class="tag">Xiaomi</span>
+        <span class="tag">Honor</span>
+        <span class="tag">FRP</span>
+      </div>
+      <div class="service-time-badge time-minutes">
+        <span class="time-icon">⏱️</span>
+        <span>1-5 min</span>
+      </div>
     </div>
+    
     <div class="service-card">
       <div class="service-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
       <h3>Flash Auth</h3>
       <p>Autenticación Qualcomm V5/V6 para flash y reparación de firmware en dispositivos Xiaomi y más.</p>
-      <div class="service-tags"><span class="tag">Qcom</span><span class="tag">V5/V6</span><span class="tag">FDL</span><span class="tag">EDL</span></div>
+      <div class="service-tags">
+        <span class="tag">Qcom</span>
+        <span class="tag">V5/V6</span>
+        <span class="tag">FDL</span>
+        <span class="tag">EDL</span>
+      </div>
+      <div class="service-time-badge time-minutes">
+        <span class="time-icon">⏱️</span>
+        <span>5-15 min</span>
+      </div>
     </div>
+    
     <div class="service-card">
       <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></div>
       <h3>Licencias & Créditos</h3>
       <p>Activación y recarga de licencias oficiales: UnlockTool, HydraTool, Octoplus y más.</p>
-      <div class="service-tags"><span class="tag">UnlockTool</span><span class="tag">Hydra</span><span class="tag">Octoplus</span></div>
+      <div class="service-tags">
+        <span class="tag">UnlockTool</span>
+        <span class="tag">Hydra</span>
+        <span class="tag">Octoplus</span>
+      </div>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
+      </div>
     </div>
+    
     <div class="service-card">
       <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
       <h3>Bypass & FRP</h3>
       <p>Bypass de cuenta Mi, Google FRP, KG lock Samsung y pantalla Hello iPhone con soporte completo.</p>
-      <div class="service-tags"><span class="tag">Mi Account</span><span class="tag">KG Bypass</span><span class="tag">iRemoval</span></div>
+      <div class="service-tags">
+        <span class="tag">Mi Account</span>
+        <span class="tag">KG Bypass</span>
+        <span class="tag">iRemoval</span>
+      </div>
+      <div class="service-time-badge time-minutes">
+        <span class="time-icon">⏱️</span>
+        <span>10-30 min</span>
+      </div>
     </div>
+    
     <div class="service-card">
       <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
       <h3>Remotos & Rent Tools</h3>
       <p>Sesiones remotas y alquiler mensual de herramientas para reparación sin compra de licencia completa.</p>
-      <div class="service-tags"><span class="tag">Remoto</span><span class="tag">3 meses</span><span class="tag">6 meses</span><span class="tag">12 meses</span></div>
+      <div class="service-tags">
+        <span class="tag">Remoto</span>
+        <span class="tag">3 meses</span>
+        <span class="tag">6 meses</span>
+        <span class="tag">12 meses</span>
+      </div>
+      <div class="service-time-badge time-hours">
+        <span class="time-icon">🕐</span>
+        <span>24-48h</span>
+      </div>
     </div>
+    
     <div class="service-card">
       <div class="service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
       <h3>Repair & Schematics</h3>
       <p>Acceso a esquemas PCB, repair tools y soluciones para Motorola, Tecno, Infinix, Realme y más.</p>
-      <div class="service-tags"><span class="tag">Borneo</span><span class="tag">Orion</span><span class="tag">DZKJ</span><span class="tag">PCB</span></div>
+      <div class="service-tags">
+        <span class="tag">Borneo</span>
+        <span class="tag">Orion</span>
+        <span class="tag">DZKJ</span>
+        <span class="tag">PCB</span>
+      </div>
+      <div class="service-time-badge time-hours">
+        <span class="time-icon">🕐</span>
+        <span>1-2 horas</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ✅ FAQ VISUAL DESPLEGABLE -->
+<section class="faq-section">
+  <div class="section-header">
+    <span class="section-tag">// Preguntas Frecuentes</span>
+    <h2 class="section-title">¿Tienes <span class="hl">dudas</span>?</h2>
+    <p class="section-desc">Resolvemos tus preguntas más comunes</p>
+  </div>
+  
+  <div class="faq-container">
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>¿Cómo recargo saldo en mi cuenta?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Puedes recargar saldo mediante:</p>
+        <ul>
+          <li>💳 <strong>Criptomonedas:</strong> USDT, Bitcoin, Binance Pay</li>
+          <li>🏦 <strong>Transferencia bancaria:</strong> Aprobación en 15-30 min</li>
+          <li>📱 <strong>Métodos locales:</strong> Pago móvil, Plin (según país)</li>
+        </ul>
+        <p>Una vez realizado el pago, envía el comprobante por WhatsApp y acreditaremos tu saldo inmediatamente.</p>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>¿Qué pasa si el servicio falla?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>Ofrecemos <strong>garantía de reembolso del 100%</strong>:</p>
+        <ul>
+          <li>Si el servicio no se completa, recibes un reembolso total en créditos</li>
+          <li>El reembolso se procesa automáticamente en menos de 24 horas</li>
+          <li>Puedes usar los créditos para otro servicio o solicitarlo nuevamente</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>¿Cuánto tarda un Samsung FRP?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>El tiempo de entrega varía según el servicio:</p>
+        <ul>
+          <li>⚡ <strong>Samsung FRP via IMEI:</strong> 1-5 minutos (automático)</li>
+          <li>⏱️ <strong>Xiaomi Mi Account:</strong> 5-30 minutos</li>
+          <li>🎯 <strong>Honor FRP Key:</strong> Instantáneo</li>
+          <li>🕐 <strong>Servicios complejos:</strong> 1-2 horas máximo</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>¿Necesito experiencia técnica?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p><strong>No necesariamente.</strong> Nuestro sistema está diseñado para ser fácil de usar:</p>
+        <ul>
+          <li>📚 Proporcionamos tutoriales paso a paso</li>
+          <li>💬 Soporte técnico 24/7 vía WhatsApp y Telegram</li>
+          <li>🎓 Guías detalladas en cada servicio</li>
+        </ul>
+        <p>Sin embargo, recomendamos conocimientos básicos de GSM para aprovechar mejor los servicios.</p>
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>¿Puedo revender los servicios?</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        <p>¡Sí! Tenemos <strong>planes especiales para revendedores</strong>:</p>
+        <ul>
+          <li>💰 Descuentos especiales por volumen</li>
+          <li>🎯 Precios personalizados según tu nivel</li>
+          <li>📊 Panel de estadísticas avanzado</li>
+          <li>🚀 Soporte prioritario</li>
+        </ul>
+        <p>Contáctanos por WhatsApp para más información sobre nuestro programa de revendedores.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -338,8 +565,45 @@
   </div>
 </section>
 
-<!-- ✅ CSS ADICIONAL PARA PRECIOS ROTATIVOS -->
+<!-- ✅ CSS ADICIONAL PARA PRECIOS ROTATIVOS Y CONTADORES -->
 <style>
+  
+  /* FIX para que las tarjetas no desaparezcan */
+  .price-card {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  .price-card.active {
+    opacity: 1 !important;
+    transform: translateX(-50%) scale(1) !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Asegurar que el container tenga altura */
+  .prices-rotating-container {
+    position: relative;
+    min-height: 280px;
+    margin-bottom: 24px;
+    overflow: visible;
+  }
+  
+  /* Dots siempre visibles */
+  .price-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    z-index: 20;
+  }
+
   .accessible-prices-container {
     background: linear-gradient(135deg, var(--dark3) 0%, var(--surface) 100%);
     border: 2px solid var(--cyan-border);
@@ -557,49 +821,437 @@
       flex-direction: column;
     }
   }
+
+  /* ✅ NUEVO: ANIMACIÓN DE CONTADORES DE ESTADÍSTICAS */
+  .stats-bar {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+  }
+
+  .stats-bar.animated {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stat-num {
+    display: inline-block;
+    font-family: 'Orbitron', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--cyan), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s ease;
+  }
+
+  .stat-num.counting {
+    animation: counterPulse 0.5s ease-in-out;
+  }
+
+  @keyframes counterPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  @media (max-width: 768px) {
+    .stat-num {
+      font-size: 32px;
+    }
+  }
+
+  /* ✅ BADGE SERVIDOR ACTIVO */
+  .server-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 8px 16px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    animation: serverPulse 2s ease-in-out infinite;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulseDot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { 
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
+    }
+    50% { 
+      opacity: 0.7;
+      transform: scale(1.2);
+      box-shadow: 0 0 0 6px rgba(0, 255, 136, 0);
+    }
+  }
+
+  @keyframes serverPulse {
+    0%, 100% { 
+      box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4);
+    }
+    50% { 
+      box-shadow: 0 0 20px 0 rgba(0, 255, 136, 0.2);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .server-status {
+      font-size: 11px;
+      padding: 6px 12px;
+    }
+  }
+
+  /* ✅ CÓMO FUNCIONA - 3 PASOS */
+  .how-it-works {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, rgba(0,229,255,0.03) 0%, rgba(0,255,136,0.03) 100%);
+  }
+
+  .steps-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .step-card {
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    background: var(--dark3);
+    border: 2px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .step-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--cyan);
+    box-shadow: 0 10px 40px rgba(0,229,255,0.2);
+  }
+
+  .step-number {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--cyan), var(--green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .step-icon {
+    font-size: 48px;
+    margin: 20px 0 15px;
+  }
+
+  .step-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    color: var(--cyan);
+    margin-bottom: 12px;
+  }
+
+  .step-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .step-arrow {
+    font-size: 48px;
+    color: var(--cyan);
+    opacity: 0.5;
+    animation: arrowBounce 2s ease-in-out infinite;
+  }
+
+  @keyframes arrowBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+  }
+
+  @media (max-width: 900px) {
+    .steps-container {
+      flex-direction: column;
+    }
+    
+    .step-arrow {
+      transform: rotate(90deg);
+    }
+    
+    @keyframes arrowBounce {
+      0%, 100% { transform: rotate(90deg) translateY(0); }
+      50% { transform: rotate(90deg) translateY(10px); }
+    }
+  }
+
+  /* ✅ BADGES DE TIEMPO DE SERVICIO */
+  .service-time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 12px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .time-icon {
+    font-size: 14px;
+  }
+
+  .time-instant {
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--green);
+    border: 1px solid var(--green);
+  }
+
+  .time-minutes {
+    background: rgba(255, 204, 0, 0.15);
+    color: var(--yellow);
+    border: 1px solid var(--yellow);
+  }
+
+  .time-hours {
+    background: rgba(136, 136, 136, 0.15);
+    color: #888;
+    border: 1px solid #888;
+  }
+
+  /* ✅ FAQ VISUAL DESPLEGABLE */
+  .faq-section {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, rgba(0,229,255,0.03) 0%, rgba(0,255,136,0.03) 100%);
+  }
+
+  .faq-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .faq-item:hover {
+    border-color: var(--cyan);
+  }
+
+  .faq-question {
+    width: 100%;
+    padding: 20px 24px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .faq-question:hover {
+    color: var(--cyan);
+  }
+
+  .faq-icon {
+    font-size: 24px;
+    color: var(--cyan);
+    transition: transform 0.3s ease;
+  }
+
+  .faq-item.active .faq-icon {
+    transform: rotate(45deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+
+  .faq-item.active .faq-answer {
+    max-height: 500px;
+    padding: 0 24px 20px;
+  }
+
+  .faq-answer p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .faq-answer ul {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+  }
+
+  .faq-answer li {
+    color: var(--text-muted);
+    padding: 6px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+
+  .faq-answer li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--cyan);
+  }
+
+  .faq-answer strong {
+    color: var(--cyan);
+  }
+
+  @media (max-width: 768px) {
+    .faq-question {
+      font-size: 14px;
+      padding: 16px 20px;
+    }
+    
+    .faq-answer {
+      font-size: 13px;
+    }
+  }
 </style>
 
-<!-- ✅ JAVASCRIPT PARA ROTACIÓN DE PRECIOS -->
+<!-- ✅ JAVASCRIPT PARA FAQ -->
+<script>
+// FAQ Accordion
+document.addEventListener('DOMContentLoaded', () => {
+  const faqItems = document.querySelectorAll('.faq-item');
+  
+  faqItems.forEach(item => {
+    const question = item.querySelector('.faq-question');
+    
+    question.addEventListener('click', () => {
+      const isActive = item.classList.contains('active');
+      
+      // Cerrar todos los items
+      faqItems.forEach(i => i.classList.remove('active'));
+      
+      // Abrir el item clickeado si no estaba activo
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    });
+  });
+});
+</script>
+
+<!-- ✅ JAVASCRIPT PARA ROTACIÓN DE PRECIOS (CORREGIDO) -->
 <script>
   let currentPriceIndex = 0;
   let priceInterval;
   let allPrices = [];
+  let isRotating = false;
 
   // Inicializar rotación de precios
   function initPriceRotation() {
     loadAccessiblePrices();
-    startPriceRotation();
   }
 
-  // Cargar precios desde la API o Firebase
+  // Cargar precios desde Firebase a través de NexaGSM
   async function loadAccessiblePrices() {
     try {
-      // Intentar cargar desde la API de DHru si está disponible
-      const response = await fetch('/.netlify/functions/dhru-services');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.SUCCESS && data.SUCCESS[0] && data.SUCCESS[0].services) {
-          allPrices = data.SUCCESS[0].services
-            .filter(service => service.price && parseFloat(service.price) > 0)
-            .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
-            .slice(0, 5)
-            .map(service => ({
-              name: service.name || 'Servicio',
-              price: `$${parseFloat(service.price).toFixed(2)}`,
-              time: service.time || 'N/A',
-              badge: getBadgeForPrice(parseFloat(service.price))
-            }));
-          
+      // Esperar a que NexaGSM cargue los datos
+      await waitForNexaGSM();
+      
+      if (NexaGSM.state.prices && NexaGSM.state.prices.length > 0) {
+        // Usar precios de Firebase
+        allPrices = NexaGSM.state.prices
+          .filter(p => p.status === 'active' && parseFloat(p.amount) > 0)
+          .sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount))
+          .slice(0, 5)
+          .map(price => {
+            const service = NexaGSM.state.services.find(s => s.id === price.service_id);
+            return {
+              name: service ? service.name : 'Servicio',
+              price: `$${parseFloat(price.amount).toFixed(2)}`,
+              time: price.time || 'N/A',
+              badge: getBadgeForPrice(parseFloat(price.amount))
+            };
+          });
+        
+        if (allPrices.length > 0) {
           updatePriceCards();
+          startPriceRotation();
+          return;
         }
-      } else {
-        // Usar precios de ejemplo si la API no está disponible
-        loadExamplePrices();
       }
+      
+      // Si no hay precios en Firebase, usar ejemplos
+      loadExamplePrices();
+      startPriceRotation();
+      
     } catch (error) {
       console.error('Error cargando precios:', error);
       loadExamplePrices();
+      startPriceRotation();
     }
+  }
+
+  // Esperar a que NexaGSM esté listo
+  function waitForNexaGSM() {
+    return new Promise((resolve) => {
+      if (typeof NexaGSM !== 'undefined' && NexaGSM.state.services.length > 0) {
+        resolve();
+        return;
+      }
+      
+      const checkInterval = setInterval(() => {
+        if (typeof NexaGSM !== 'undefined' && NexaGSM.state.services.length > 0) {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 100);
+      
+      // Timeout de 3 segundos
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        resolve();
+      }, 3000);
+    });
   }
 
   // Cargar precios de ejemplo
@@ -622,21 +1274,25 @@
     return '🌟 PREMIUM';
   }
 
-  // Actualizar tarjetas de precios
+  // Actualizar tarjetas de precios (CORREGIDO)
   function updatePriceCards() {
     const container = document.querySelector('.prices-rotating-container');
     const dotsContainer = document.getElementById('priceDots');
     
-    if (!container || !dotsContainer) return;
+    if (!container || !dotsContainer || allPrices.length === 0) return;
     
     // Limpiar contenido actual
     container.innerHTML = '';
     dotsContainer.innerHTML = '';
     
+    // Resetear índice
+    currentPriceIndex = 0;
+    
     // Crear tarjetas
     allPrices.forEach((price, index) => {
       const card = document.createElement('div');
-      card.className = `price-card ${index === 0 ? 'active' : ''}`;
+      card.className = 'price-card';
+      if (index === 0) card.classList.add('active');
       card.dataset.index = index;
       card.innerHTML = `
         <div class="price-badge">${price.badge}</div>
@@ -649,54 +1305,84 @@
       
       // Crear dot
       const dot = document.createElement('div');
-      dot.className = `price-dot ${index === 0 ? 'active' : ''}`;
+      dot.className = 'price-dot';
+      if (index === 0) dot.classList.add('active');
       dot.onclick = () => goToPrice(index);
       dotsContainer.appendChild(dot);
     });
   }
 
-  // Cambiar precio
+  // Cambiar precio (CORREGIDO con validaciones)
   function changePrice(direction) {
+    if (isRotating || allPrices.length === 0) return;
+    
     const cards = document.querySelectorAll('.price-card');
     const dots = document.querySelectorAll('.price-dot');
     
-    if (cards.length === 0) return;
+    if (cards.length === 0 || dots.length === 0) return;
+    
+    // Validar índice actual
+    if (currentPriceIndex >= cards.length) {
+      currentPriceIndex = 0;
+    }
+    
+    isRotating = true;
     
     // Remover clases activas
     cards[currentPriceIndex].classList.remove('active');
-    dots[currentPriceIndex].classList.remove('active');
+    if (dots[currentPriceIndex]) {
+      dots[currentPriceIndex].classList.remove('active');
+    }
     
     // Calcular nuevo índice
     currentPriceIndex = (currentPriceIndex + direction + allPrices.length) % allPrices.length;
     
     // Agregar clases activas
     cards[currentPriceIndex].classList.add('active');
-    dots[currentPriceIndex].classList.add('active');
+    if (dots[currentPriceIndex]) {
+      dots[currentPriceIndex].classList.add('active');
+    }
     
-    // Resetear intervalo
-    resetPriceInterval();
+    // Permitir siguiente cambio después de la animación
+    setTimeout(() => {
+      isRotating = false;
+    }, 500);
   }
 
-  // Ir a precio específico
+  // Ir a precio específico (CORREGIDO)
   function goToPrice(index) {
+    if (isRotating || index >= allPrices.length) return;
+    
     const cards = document.querySelectorAll('.price-card');
     const dots = document.querySelectorAll('.price-dot');
     
-    if (cards.length === 0) return;
+    if (cards.length === 0 || dots.length === 0) return;
+    
+    isRotating = true;
     
     cards[currentPriceIndex].classList.remove('active');
-    dots[currentPriceIndex].classList.remove('active');
+    if (dots[currentPriceIndex]) {
+      dots[currentPriceIndex].classList.remove('active');
+    }
     
     currentPriceIndex = index;
     
     cards[currentPriceIndex].classList.add('active');
-    dots[currentPriceIndex].classList.add('active');
+    if (dots[currentPriceIndex]) {
+      dots[currentPriceIndex].classList.add('active');
+    }
     
     resetPriceInterval();
+    
+    setTimeout(() => {
+      isRotating = false;
+    }, 500);
   }
 
   // Iniciar rotación automática
   function startPriceRotation() {
+    if (priceInterval) clearInterval(priceInterval);
+    
     priceInterval = setInterval(() => {
       changePrice(1);
     }, 5000); // Cambiar cada 5 segundos
@@ -797,14 +1483,6 @@
         <li><a href="registros-imei.html">Registros IMEI / SN</a></li>
         <li><a href="licencias-creditos.html">Licencias & Créditos</a></li>
         <li><a href="remotos-rent-tools.html">Remotos & Rent Tools</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Recursos</h4>
-      <ul>
-        <li><a href="#">Descargas de Tools</a></li>
-        <li><a href="#">Checkers Free</a></li>
-        <li><a href="#">Generador IMEI</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -1196,6 +1874,52 @@
       }
     }
   });
+</script>
+
+<!-- ✅ NUEVO: ANIMACIÓN DE CONTADORES DE ESTADÍSTICAS -->
+<script>
+// Animación de contadores de estadísticas
+function animateStats() {
+  const statsBar = document.getElementById('statsBar');
+  const statNums = document.querySelectorAll('.stat-num');
+  
+  if (!statsBar || statNums.length === 0) return;
+  
+  // Verificar si ya se animó
+  if (statsBar.classList.contains('animated')) return;
+  
+  // Verificar si está visible en pantalla
+  const rect = statsBar.getBoundingClientRect();
+  const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+  
+  if (isVisible) {
+    statsBar.classList.add('animated');
+    
+    statNums.forEach(stat => {
+      const target = parseInt(stat.getAttribute('data-target'));
+      const suffix = stat.getAttribute('data-suffix') || '';
+      const duration = 2000; // 2 segundos
+      const step = target / (duration / 16); // 60fps
+      let current = 0;
+      
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        
+        stat.textContent = Math.floor(current) + suffix;
+        stat.classList.add('counting');
+        setTimeout(() => stat.classList.remove('counting'), 500);
+      }, 16);
+    });
+  }
+}
+
+// Ejecutar al cargar y al hacer scroll
+window.addEventListener('load', animateStats);
+window.addEventListener('scroll', animateStats);
 </script>
 
 <script src="telegram-notifications.js"></script>

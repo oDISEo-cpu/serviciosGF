@@ -15,7 +15,7 @@ const db = firebase.firestore();
 // ✅ CONFIGURACIÓN DE TELEGRAM
 const telegramConfig = {
     botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['8225719154', '1461150518'],
+    chatIds: [, '1461150518'],
     enabled: true
 };
 
@@ -27,56 +27,474 @@ const BINANCE_PAY_ID = '1246101499';
 let currentUser = null;
 let userProfile = null;
 let paymentAmount = 0;
-let selectedPaymentMethod = 'binance'; // Método seleccionado por defecto
-let exchangeRate = 0; // Tasa Bs por crédito (se actualiza desde Firebase)
+let selectedPaymentMethod = 'binance';
+let exchangeRate = 0;
 let rateLastUpdate = null;
+let currentStep = 1; // ✅ NUEVO: Paso actual del stepper
+let uploadedReceipt = null; // ✅ NUEVO: Comprobante de pago
 
 // ============================================
-// ✅ FUNCIONES DHRU (USANDO NETLIFY FUNCTIONS)
+// ✅ STEPPER - NAVEGACIÓN ENTRE PASOS
 // ============================================
 
-async function checkDhruBalance() {
-    try {
-        const response = await fetch('/.netlify/functions/dhru-balance');
-        const data = await response.json();
-        console.log('💰 Saldo DHru:', data);
-        return data;
-    } catch (error) {
-        console.error('❌ Error consultando saldo DHru:', error);
-        return null;
+function goToStep(step) {
+    // Validaciones antes de avanzar
+    if (step > currentStep) {
+        if (currentStep === 1 && paymentAmount <= 0) {
+            showToast('⚠️ Selecciona o ingresa un monto', 'error');
+            return;
+        }
+        if (currentStep === 2 && !selectedPaymentMethod) {
+            showToast('⚠️ Selecciona un método de pago', 'error');
+            return;
+        }
+    }
+    
+    currentStep = step;
+    
+    // Actualizar stepper visual
+    document.querySelectorAll('.step').forEach((stepEl, index) => {
+        const stepNum = index + 1;
+        stepEl.classList.remove('active', 'completed');
+        if (stepNum < currentStep) stepEl.classList.add('completed');
+        else if (stepNum === currentStep) stepEl.classList.add('active');
+    });
+    
+    // Actualizar barra de progreso
+    const progress = ((currentStep - 1) / 3) * 100;
+    document.getElementById('stepperProgress').style.width = progress + '%';
+    
+    // Mostrar contenido del paso actual
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`step${step}Content`).classList.add('active');
+    
+    // Actualizar contenido específico del paso
+    if (step === 2) updateStep2Content();
+    if (step === 3) updateStep3Content();
+    if (step === 4) updateStep4Content();
+    
+    // Scroll arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// ✅ PASO 1: SELECCIONAR MONTO
+// ============================================
+
+function selectPresetAmount(amount, btn) {
+    paymentAmount = amount;
+    
+    // Quitar selección de otros botones
+    document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    
+    // Limpiar input personalizado
+    document.getElementById('customAmount').value = '';
+    
+    updateAmountPreview();
+    document.getElementById('btnStep1Next').disabled = false;
+}
+
+function updateCustomPreview() {
+    const amount = parseFloat(document.getElementById('customAmount').value);
+    
+    // Quitar selección de presets
+    document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
+    
+    if (amount > 0) {
+        paymentAmount = amount;
+        updateAmountPreview();
+        document.getElementById('btnStep1Next').disabled = false;
+    } else {
+        paymentAmount = 0;
+        document.getElementById('amountPreview').style.display = 'none';
+        document.getElementById('btnStep1Next').disabled = true;
     }
 }
 
-async function getDhruServices() {
-    try {
-        const response = await fetch('/.netlify/functions/dhru-services');
-        const data = await response.json();
-        console.log('📦 Servicios DHru:', data);
-        return data;
-    } catch (error) {
-        console.error('❌ Error obteniendo servicios DHru:', error);
-        return null;
-    }
+function updateAmountPreview() {
+    if (paymentAmount <= 0 || exchangeRate <= 0) return;
+    
+    const bsAmount = paymentAmount * exchangeRate;
+    const solesAmount = paymentAmount * SOLES_PER_CREDIT;
+    
+    document.getElementById('previewBs').textContent = `Bs ${formatBs(bsAmount)}`;
+    document.getElementById('previewSoles').textContent = `S/ ${solesAmount.toFixed(2)}`;
+    document.getElementById('amountPreview').style.display = 'grid';
 }
 
-async function createDhruOrder(imei, serviceId) {
-    try {
-        const response = await fetch('/.netlify/functions/dhru-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ imei, serviceId })
-        });
-        const data = await response.json();
-        console.log('📦 Pedido DHru creado:', data);
-        return data;
-    } catch (error) {
-        console.error('❌ Error creando pedido DHru:', error);
-        return null;
+// ============================================
+// ✅ PASO 2: SELECCIONAR MÉTODO
+// ============================================
+
+function updateStep2Content() {
+    document.getElementById('step2Amount').textContent = `$${paymentAmount.toFixed(2)}`;
+    document.getElementById('step2AmountBs').textContent = `Bs ${formatBs(paymentAmount * exchangeRate)}`;
+    document.getElementById('step2AmountSoles').textContent = `S/ ${(paymentAmount * SOLES_PER_CREDIT).toFixed(2)}`;
+}
+
+function selectPaymentMethod(method, element) {
+    selectedPaymentMethod = method;
+    
+    document.querySelectorAll('.payment-method-option').forEach(opt => {
+        opt.classList.remove('active');
+        const radio = opt.querySelector('input[type="radio"]');
+        if (radio) radio.checked = false;
+    });
+    
+    element.classList.add('active');
+    element.querySelector('input[type="radio"]').checked = true;
+}
+
+// ============================================
+// ✅ PASO 3: REALIZAR PAGO
+// ============================================
+
+function updateStep3Content() {
+    const content = document.getElementById('paymentMethodContent');
+    const summaryBox = document.getElementById('paymentSummaryBox');
+    const amountDisplay = document.getElementById('paymentAmountDisplay');
+    const title = document.getElementById('step3Title');
+    const subtitle = document.getElementById('step3Subtitle');
+    
+    summaryBox.className = 'payment-summary-box';
+    
+    if (selectedPaymentMethod === 'binance') {
+        summaryBox.classList.add('binance');
+        amountDisplay.textContent = `${paymentAmount.toFixed(2)} USDT`;
+        title.innerHTML = '💰 Pago con Binance';
+        subtitle.textContent = 'Escanea el QR en la app de Binance';
+        
+        content.innerHTML = `
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <img src="qr-binance.png" alt="QR Binance Pay">
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de Binance</p>
+            </div>
+            
+            <div class="pay-id-box">
+                <div class="pay-id-label">Binance Pay ID</div>
+                <div class="pay-id-value">${BINANCE_PAY_ID}</div>
+            </div>
+            
+            <div class="instructions-box">
+                <div>
+                    <strong>📝 Instrucciones:</strong><br>
+                    1. Abre la app de Binance y ve a Pay<br>
+                    2. Ingresa el Pay ID: <strong>${BINANCE_PAY_ID}</strong> o escanea el QR<br>
+                    3. Envía exactamente <strong>${paymentAmount.toFixed(2)} USDT</strong><br>
+                    4. Copia el ID de transacción (TXID) del pago<br>
+                    5. Haz clic en "Ya realicé el pago"
+                </div>
+            </div>
+            
+            <div style="background:rgba(240,185,11,0.1);border:1px solid var(--binance);border-radius:6px;padding:12px;text-align:center;">
+                <div style="font-size:11px;color:var(--text-dim);">⚠️ IMPORTANTE</div>
+                <div style="font-size:13px;color:var(--binance);font-weight:600;margin-top:4px;">
+                    Envía exactamente ${paymentAmount.toFixed(2)} USDT en la red TRC20
+                </div>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'plin') {
+        const solesAmount = paymentAmount * SOLES_PER_CREDIT;
+        summaryBox.classList.add('plin');
+        amountDisplay.textContent = `S/ ${solesAmount.toFixed(2)}`;
+        title.innerHTML = '<img src="https://flagcdn.com/w40/pe.png" alt="Perú" style="width:24px;height:16px;vertical-align:middle;margin-right:8px;">Pago con Plin';
+        subtitle.textContent = 'Escanea el QR desde la app de Plin';
+        
+        content.innerHTML = `
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <img src="qr-plin.png" alt="QR Plin">
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de Plin</p>
+            </div>
+            
+            <div class="instructions-box">
+                <div>
+                    <strong>📝 Instrucciones:</strong><br>
+                    1. Abre la app de tu banco con Plin<br>
+                    2. Escanea el código QR<br>
+                    3. Confirma el pago de <strong>S/ ${solesAmount.toFixed(2)}</strong><br>
+                    4. Guarda el número de operación<br>
+                    5. Haz clic en "Ya realicé el pago"
+                </div>
+            </div>
+            
+            <div style="background:rgba(217,20,63,0.1);border:1px solid var(--peru);border-radius:6px;padding:12px;text-align:center;">
+                <div style="font-size:11px;color:var(--text-dim);">⚠️ IMPORTANTE</div>
+                <div style="font-size:13px;color:var(--peru);font-weight:600;margin-top:4px;">
+                    Envía exactamente S/ ${solesAmount.toFixed(2)} vía Plin
+                </div>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'pagomovil') {
+        const bsAmount = paymentAmount * exchangeRate;
+        summaryBox.classList.add('pagomovil');
+        amountDisplay.textContent = `Bs ${formatBs(bsAmount)}`;
+        title.innerHTML = '<img src="https://flagcdn.com/w40/ve.png" alt="Venezuela" style="width:24px;height:16px;vertical-align:middle;margin-right:8px;">Pago Móvil';
+        subtitle.textContent = 'Escanea el QR desde la app de tu banco';
+        
+        content.innerHTML = `
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <img src="qr-pagomovil.png" alt="QR Pago Móvil">
+                </div>
+                <p style="font-size:12px;color:var(--text-dim);">📱 Escanea con la app de tu banco</p>
+            </div>
+            
+            <div class="instructions-box">
+                <div>
+                    <strong>📝 Instrucciones:</strong><br>
+                    1. Abre la app de tu banco<br>
+                    2. Selecciona "Pago Móvil"<br>
+                    3. Escanea el código QR<br>
+                    4. Confirma la transferencia de <strong>Bs ${formatBs(bsAmount)}</strong><br>
+                    5. Guarda los datos de la transacción<br>
+                    6. Haz clic en "Ya realicé el pago"
+                </div>
+            </div>
+            
+            <div style="background:rgba(252,209,22,0.1);border:1px solid var(--venezuela);border-radius:6px;padding:12px;text-align:center;">
+                <div style="font-size:11px;color:var(--text-dim);">⚠️ IMPORTANTE</div>
+                <div style="font-size:13px;color:var(--venezuela);font-weight:600;margin-top:4px;">
+                    Envía exactamente Bs ${formatBs(bsAmount)} vía Pago Móvil
+                </div>
+            </div>
+        `;
     }
 }
 
 // ============================================
-// ✅ TELEGRAM
+// ✅ PASO 4: CONFIRMAR PAGO
+// ============================================
+
+function updateStep4Content() {
+    // Actualizar resumen
+    document.getElementById('confirmAmount').textContent = `$${paymentAmount.toFixed(2)}`;
+    document.getElementById('confirmCredits').textContent = paymentAmount.toFixed(2);
+    
+    const methodNames = {
+        'binance': '💰 Binance Pay',
+        'plin': '🇵🇪 Plin',
+        'pagomovil': '🇻🇪 Pago Móvil'
+    };
+    document.getElementById('confirmMethod').textContent = methodNames[selectedPaymentMethod];
+    
+    // Generar campos dinámicos según método
+    const fields = document.getElementById('confirmationFields');
+    
+    if (selectedPaymentMethod === 'binance') {
+        fields.innerHTML = `
+            <div class="form-group">
+                <label>🔗 ID de Transacción (TXID) *</label>
+                <input type="text" id="txidInput" placeholder="Ej: a1b2c3d4e5f6g7h8i9j0..." style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Lo encuentras en el historial de transacciones de Binance</small>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'plin') {
+        fields.innerHTML = `
+            <div class="form-group">
+                <label>🔢 Número de Operación *</label>
+                <input type="text" id="plinOperationNumber" placeholder="Ej: 123456789" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Número de operación que aparece en tu app de Plin</small>
+            </div>
+        `;
+    } else if (selectedPaymentMethod === 'pagomovil') {
+        fields.innerHTML = `
+            <div class="form-group">
+                <label>🔢 Últimos 4 dígitos de la cuenta de origen *</label>
+                <input type="text" id="pagomovilLastDigits" placeholder="Ej: 1234" maxlength="4" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Últimos 4 dígitos de la cuenta desde donde pagaste</small>
+            </div>
+            
+            <div class="form-group">
+                <label>🏦 Banco de origen *</label>
+                <select id="pagomovilBank" style="font-size:14px;">
+                    <option value="">Selecciona tu banco</option>
+                    <option value="Banesco">Banesco (0134)</option>
+                    <option value="Mercantil">Mercantil (0105)</option>
+                    <option value="BOD">BOD (0171)</option>
+                    <option value="Provincial">BBVA Provincial (0108)</option>
+                    <option value="Venezuela">Banco de Venezuela (0102)</option>
+                    <option value="BBVA">BBVA (0177)</option>
+                    <option value="Banco de la Gente">Banco de la Gente (0146)</option>
+                    <option value="Bancaribe">Bancaribe (0114)</option>
+                    <option value="Exterior">Banco Exterior (0115)</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>📄 Número de referencia (opcional)</label>
+                <input type="text" id="pagomovilReference" placeholder="Ej: 123456789" style="font-family:'Share Tech Mono',monospace;font-size:13px;">
+                <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Si aparece en tu comprobante</small>
+            </div>
+        `;
+    }
+}
+
+// ============================================
+// ✅ SUBIDA DE COMPROBANTE
+// ============================================
+
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Validar tamaño (máx 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('⚠️ El archivo es muy grande (máx. 5MB)', 'error');
+        return;
+    }
+    
+    // Validar tipo
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+        showToast('⚠️ Solo se permiten imágenes o PDF', 'error');
+        return;
+    }
+    
+    // Convertir a base64
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedReceipt = e.target.result;
+        
+        const uploadSection = document.getElementById('uploadSection');
+        const preview = document.getElementById('uploadPreview');
+        const previewImg = document.getElementById('previewImage');
+        
+        uploadSection.classList.add('has-file');
+        uploadSection.querySelector('.upload-text').textContent = '✅ Archivo cargado: ' + file.name;
+        
+        if (file.type.startsWith('image/')) {
+            previewImg.src = uploadedReceipt;
+            preview.style.display = 'block';
+        } else {
+            previewImg.src = '';
+            preview.style.display = 'none';
+            uploadSection.querySelector('.upload-text').textContent = '✅ PDF cargado: ' + file.name;
+        }
+        
+        showToast('✅ Comprobante cargado', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeFile(event) {
+    event.stopPropagation();
+    uploadedReceipt = null;
+    document.getElementById('receiptFile').value = '';
+    document.getElementById('uploadSection').classList.remove('has-file');
+    document.getElementById('uploadSection').querySelector('.upload-text').textContent = 'Haz clic para subir captura del comprobante';
+    document.getElementById('uploadPreview').style.display = 'none';
+}
+
+// ============================================
+// ✅ CONFIRMAR PAGO (MODIFICADO)
+// ============================================
+
+async function confirmPayment() {
+    const amountBs = paymentAmount * exchangeRate;
+    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
+    
+    let paymentData = {
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile.name || 'Usuario',
+        type: 'deposit',
+        amount: paymentAmount,
+        amountBs: amountBs,
+        amountSoles: amountSoles,
+        exchangeRate: exchangeRate,
+        paymentMethod: selectedPaymentMethod,
+        status: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    // Validar y agregar datos según método
+    if (selectedPaymentMethod === 'binance') {
+        const txid = document.getElementById('txidInput')?.value.trim();
+        
+        if (!txid) {
+            showToast('⚠️ Por favor ingresa el ID de transacción', 'error');
+            return;
+        }
+        
+        if (txid.length < 5) {
+            showToast('⚠️ El ID parece inválido', 'error');
+            return;
+        }
+        
+        paymentData.txid = txid;
+        paymentData.payId = BINANCE_PAY_ID;
+        
+    } else if (selectedPaymentMethod === 'plin') {
+        const operationNumber = document.getElementById('plinOperationNumber')?.value.trim();
+        
+        if (!operationNumber) {
+            showToast('⚠️ Por favor ingresa el número de operación', 'error');
+            return;
+        }
+        
+        paymentData.operationNumber = operationNumber;
+        paymentData.notes = `Plin: ${operationNumber}`;
+        
+    } else if (selectedPaymentMethod === 'pagomovil') {
+        const lastDigits = document.getElementById('pagomovilLastDigits')?.value.trim();
+        const bank = document.getElementById('pagomovilBank')?.value;
+        const reference = document.getElementById('pagomovilReference')?.value.trim();
+        
+        if (!lastDigits || !bank) {
+            showToast('⚠️ Por favor completa los campos obligatorios', 'error');
+            return;
+        }
+        
+        paymentData.operationNumber = lastDigits;
+        paymentData.bank = bank;
+        if (reference) paymentData.reference = reference;
+        paymentData.notes = `Pago Móvil - ${bank} - ***${lastDigits}${reference ? ' - Ref: ' + reference : ''}`;
+    }
+    
+    // ✅ Agregar comprobante si se subió
+    if (uploadedReceipt) {
+        paymentData.receipt = uploadedReceipt;
+    }
+    
+    // ✅ Agregar notas adicionales
+    const notes = document.getElementById('paymentNotes')?.value.trim();
+    if (notes) {
+        paymentData.userNotes = notes;
+    }
+    
+    // Deshabilitar botón
+    const btn = document.getElementById('btnConfirmPayment');
+    btn.disabled = true;
+    btn.textContent = '⏳ Enviando...';
+    
+    try {
+        const transactionRef = await db.collection('transactions').add(paymentData);
+        
+        await notifyNewDeposit(paymentData);
+        
+        showToast('✅ ¡Pago registrado! Esperando verificación...', 'success');
+        
+        setTimeout(() => {
+            window.location.href = `pago-confirmado.html?tx=${transactionRef.id}`;
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('❌ Error al registrar pago: ' + error.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '✅ Confirmar y Enviar';
+    }
+}
+
+// ============================================
+// ✅ TELEGRAM (MODIFICADO PARA INCLUIR COMPROBANTE)
 // ============================================
 
 async function sendTelegramMessage(message) {
@@ -119,13 +537,12 @@ async function sendTelegramMessage(message) {
 }
 
 async function notifyNewDeposit(depositData) {
-    // Determinar el método y la moneda
     let methodText = '';
     let amountText = '';
     
     if (depositData.paymentMethod === 'binance') {
         methodText = '💰 Binance Pay';
-        amountText = `$${(depositData.amount || 0).toFixed(2)} USDT`;
+        amountText = `${(depositData.amount || 0).toFixed(2)} USDT`;
     } else if (depositData.paymentMethod === 'plin') {
         methodText = '🇵🇪 Plin';
         amountText = `S/ ${(depositData.amountSoles || 0).toFixed(2)}`;
@@ -145,7 +562,7 @@ async function notifyNewDeposit(depositData) {
 💳 <b>Método:</b> ${methodText}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
 
-${depositData.txid ? `🔗 <b>TXID:</b> <code>${depositData.txid}</code>\n` : ''}${depositData.operationNumber ? `🔢 <b>N° Operación:</b> <code>${depositData.operationNumber}</code>\n` : ''}${depositData.notes ? `📝 <b>Notas:</b> ${depositData.notes}\n` : ''}
+${depositData.txid ? `🔗 <b>TXID:</b> <code>${depositData.txid}</code>\n` : ''}${depositData.operationNumber ? `🔢 <b>N° Operación:</b> <code>${depositData.operationNumber}</code>\n` : ''}${depositData.receipt ? `📸 <b>Comprobante:</b> Adjunto\n` : ''}${depositData.userNotes ? `📝 <b>Notas:</b> ${depositData.userNotes}\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de verificación
     `.trim();
     
@@ -153,7 +570,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> <code>${depositData.txid}</code>\n` : ''
 }
 
 // ============================================
-// ✅ TASA DE CAMBIO (DESDE FIREBASE)
+// ✅ TASA DE CAMBIO
 // ============================================
 
 async function loadExchangeRate() {
@@ -173,19 +590,17 @@ async function loadExchangeRate() {
         
         rateLastUpdate = new Date();
         updateRateDisplay();
-        updateAllAmounts(); // ✅ Actualizar TODOS los montos
+        
+        if (paymentAmount > 0) updateAmountPreview();
         
         showToast('✅ Tasa actualizada', 'success');
         
     } catch (error) {
         console.error('Error cargando tasa:', error);
-        
         exchangeRate = 850.00;
         rateLastUpdate = new Date();
         updateRateDisplay();
-        updateAllAmounts();
-        
-        showToast('⚠️ Usando tasa por defecto (850.00)', 'warning');
+        showToast('⚠️ Usando tasa por defecto (850.00)', 'error');
     }
 }
 
@@ -204,83 +619,6 @@ function updateRateDisplay() {
     }
 }
 
-// ✅ ACTUALIZAR TODOS LOS MONTOS (Bs, Soles, USD)
-function updateAllAmounts() {
-    if (exchangeRate <= 0) return;
-    
-    // Calcular equivalentes
-    const amountBs = paymentAmount * exchangeRate;
-    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
-    
-    // Actualizar saldo actual
-    const currentBalance = parseFloat(userProfile?.balance || 0);
-    const currentBalanceBs = currentBalance * exchangeRate;
-    document.getElementById('currentBalanceBs').textContent = `≈ Bs ${formatBs(currentBalanceBs)}`;
-    
-    // ✅ ACTUALIZAR SOLO EL MONTO DEL MÉTODO SELECCIONADO
-    updatePaymentByMethod();
-}
-
-// ✅ FUNCIÓN CLAVE: MUESTRA SOLO EL MONTO DEL MÉTODO SELECCIONADO
-function updatePaymentByMethod() {
-    const amountBs = paymentAmount * exchangeRate;
-    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
-    
-    // Ocultar todos los cuadros de monto primero
-    const usdtBox = document.getElementById('usdtToPayBox');
-    const solesBox = document.getElementById('solesToPayBox');
-    const bsBox = document.getElementById('bsToPayBox');
-    
-    if (usdtBox) usdtBox.style.display = 'none';
-    if (solesBox) solesBox.style.display = 'none';
-    if (bsBox) bsBox.style.display = 'none';
-    
-    // Mostrar solo el del método seleccionado
-    if (selectedPaymentMethod === 'binance') {
-        if (usdtBox) {
-            document.getElementById('usdtToPay').textContent = paymentAmount.toFixed(2);
-            usdtBox.style.display = 'block';
-        }
-    } else if (selectedPaymentMethod === 'plin') {
-        if (solesBox) {
-            document.getElementById('solesToPay').textContent = amountSoles.toFixed(2);
-            solesBox.style.display = 'block';
-        }
-    } else if (selectedPaymentMethod === 'pagomovil') {
-        if (bsBox) {
-            document.getElementById('bsToPay').textContent = formatBs(amountBs);
-            bsBox.style.display = 'block';
-        }
-    }
-    
-    // Actualizar también el equivalente en Bs del resumen
-    document.getElementById('paymentAmountBs').textContent = `Bs ${formatBs(amountBs)}`;
-    
-    // Actualizar cálculo detallado
-    updateCalculationBreakdown();
-}
-
-// ✅ ACTUALIZAR CÁLCULO DETALLADO
-function updateCalculationBreakdown() {
-    const breakdown = document.getElementById('calculationBreakdown');
-    if (!breakdown) return;
-    
-    if (paymentAmount > 0 && exchangeRate > 0) {
-        breakdown.style.display = 'block';
-        
-        const credits = paymentAmount;
-        const totalBs = paymentAmount * exchangeRate;
-        const totalSoles = paymentAmount * SOLES_PER_CREDIT;
-        
-        document.getElementById('calcCredits').textContent = credits.toFixed(2);
-        document.getElementById('calcRate').textContent = `Bs ${formatBs(exchangeRate)}`;
-        document.getElementById('calcTotal').textContent = `Bs ${formatBs(totalBs)}`;
-        document.getElementById('calcSoles').textContent = `S/ ${totalSoles.toFixed(2)}`;
-    } else {
-        breakdown.style.display = 'none';
-    }
-}
-
 function formatBs(amount) {
     return amount.toLocaleString('es-VE', {
         minimumFractionDigits: 2,
@@ -289,7 +627,7 @@ function formatBs(amount) {
 }
 
 // ============================================
-// ✅ AUTENTICACIÓN
+// ✅ AUTENTICACIÓN (MODIFICADO)
 // ============================================
 
 auth.onAuthStateChanged(async (user) => {
@@ -309,15 +647,15 @@ auth.onAuthStateChanged(async (user) => {
     
     await loadExchangeRate();
     
-    setInterval(loadExchangeRate, 5 * 60 * 1000);
-    
+    // Verificar si viene con monto de URL
     const urlParams = new URLSearchParams(window.location.search);
-    paymentAmount = parseFloat(urlParams.get('amount')) || 0;
+    const urlAmount = parseFloat(urlParams.get('amount'));
     
-    if (paymentAmount > 0) {
-        updatePaymentDisplay(paymentAmount);
-    } else {
-        showAmountSelector();
+    if (urlAmount > 0) {
+        paymentAmount = urlAmount;
+        document.getElementById('customAmount').value = urlAmount;
+        updateAmountPreview();
+        document.getElementById('btnStep1Next').disabled = false;
     }
     
     updateNav();
@@ -342,188 +680,6 @@ function logout() {
     auth.signOut().then(() => {
         window.location.href = 'index.html';
     });
-}
-
-// ============================================
-// ✅ SELECTOR DE MONTOS
-// ============================================
-
-function showAmountSelector() {
-    const summaryDiv = document.querySelector('.checkout-card');
-    
-    summaryDiv.innerHTML += `
-        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cyan-border);">
-            <h3 style="font-family:'Orbitron',monospace;font-size:16px;color:var(--cyan);margin-bottom:16px;">💵 Selecciona un Monto</h3>
-            
-            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
-                <button onclick="selectAmount(10)" class="btn-ghost" style="padding:16px;font-size:15px;">$10</button>
-                <button onclick="selectAmount(25)" class="btn-ghost" style="padding:16px;font-size:15px;">$25</button>
-                <button onclick="selectAmount(50)" class="btn-ghost" style="padding:16px;font-size:15px;">$50</button>
-                <button onclick="selectAmount(100)" class="btn-ghost" style="padding:16px;font-size:15px;">$100</button>
-            </div>
-            
-            <div class="form-group" style="margin-top:16px;">
-                <label>O ingresa un monto personalizado</label>
-                <input type="number" id="customAmount" min="1" step="0.01" placeholder="Ej: 40.00" style="font-size:16px;padding:12px;" oninput="updateCustomAmountPreview()">
-                <div id="customAmountPreview" style="margin-top:8px;font-size:13px;color:var(--orange);font-family:'Orbitron',monospace;display:none;"></div>
-            </div>
-            
-            <button onclick="confirmCustomAmount()" class="btn-primary btn-full" style="margin-top:16px;padding:14px;font-size:15px;">
-                Continuar con el Pago
-            </button>
-        </div>
-    `;
-}
-
-function updateCustomAmountPreview() {
-    const amount = parseFloat(document.getElementById('customAmount').value);
-    const preview = document.getElementById('customAmountPreview');
-    
-    if (amount > 0 && exchangeRate > 0) {
-        const bsAmount = amount * exchangeRate;
-        const solesAmount = amount * SOLES_PER_CREDIT;
-        preview.innerHTML = `≈ Bs ${formatBs(bsAmount)} | S/ ${solesAmount.toFixed(2)}`;
-        preview.style.display = 'block';
-    } else {
-        preview.style.display = 'none';
-    }
-}
-
-function selectAmount(amount) {
-    document.getElementById('customAmount').value = amount;
-    updatePaymentDisplay(amount);
-}
-
-function confirmCustomAmount() {
-    const amount = parseFloat(document.getElementById('customAmount').value);
-    
-    if (!amount || amount <= 0) {
-        showToast('⚠️ Ingresa un monto válido', 'error');
-        return;
-    }
-    
-    updatePaymentDisplay(amount);
-    document.querySelector('.checkout-container').children[1].scrollIntoView({ behavior: 'smooth' });
-}
-
-function updatePaymentDisplay(amount) {
-    paymentAmount = amount;
-    document.getElementById('paymentAmount').textContent = `$${amount.toFixed(2)}`;
-    document.getElementById('creditsAmount').textContent = amount.toFixed(2);
-    
-    // Actualizar todos los montos (incluyendo el del método seleccionado)
-    updateAllAmounts();
-}
-
-// ============================================
-// ✅ SELECCIONAR MÉTODO DE PAGO (LA FUNCIÓN CLAVE)
-// ============================================
-
-function selectPaymentMethod(method) {
-    selectedPaymentMethod = method;
-    
-    // Actualizar radio buttons visuales
-    document.querySelectorAll('.payment-method-option').forEach(option => {
-        option.classList.remove('active');
-        const radio = option.querySelector('input[type="radio"]');
-        if (radio && radio.value === method) {
-            option.classList.add('active');
-            radio.checked = true;
-        }
-    });
-    
-    // Mostrar/ocultar contenido de pago
-    document.querySelectorAll('.payment-content').forEach(content => {
-        content.classList.remove('active');
-    });
-    
-    const selectedContent = document.getElementById(method + 'Payment');
-    if (selectedContent) {
-        selectedContent.classList.add('active');
-    }
-    
-    // ✅ ACTUALIZAR EL MONTO SEGÚN EL MÉTODO SELECCIONADO
-    updatePaymentByMethod();
-}
-
-// ============================================
-// ✅ CONFIRMAR PAGO
-// ============================================
-
-async function confirmPayment(method) {
-    const amountBs = paymentAmount * exchangeRate;
-    const amountSoles = paymentAmount * SOLES_PER_CREDIT;
-    
-    let paymentData = {
-        userId: currentUser.uid,
-        userEmail: currentUser.email,
-        userName: userProfile.name || 'Usuario',
-        type: 'deposit',
-        amount: paymentAmount,
-        amountBs: amountBs,
-        amountSoles: amountSoles,
-        exchangeRate: exchangeRate,
-        paymentMethod: method,
-        status: 'pending',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    
-    if (method === 'binance') {
-        const txid = document.getElementById('txidInput').value.trim();
-        
-        if (!txid) {
-            showToast('⚠️ Por favor ingresa el ID de transacción', 'error');
-            return;
-        }
-        
-        if (txid.length < 5) {
-            showToast('⚠️ El ID parece inválido', 'error');
-            return;
-        }
-        
-        paymentData.txid = txid;
-        paymentData.payId = BINANCE_PAY_ID;
-        
-    } else if (method === 'plin') {
-        const operationNumber = document.getElementById('plinOperationNumber').value.trim();
-        
-        if (!operationNumber) {
-            showToast('⚠️ Por favor ingresa el número de operación', 'error');
-            return;
-        }
-        
-        paymentData.operationNumber = operationNumber;
-        paymentData.notes = `Plin: ${operationNumber}`;
-        
-    } else if (method === 'pagomovil') {
-        const lastDigits = document.getElementById('pagomovilLastDigits').value.trim();
-        const bank = document.getElementById('pagomovilBank').value;
-        
-        if (!lastDigits || !bank) {
-            showToast('⚠️ Por favor completa todos los campos', 'error');
-            return;
-        }
-        
-        paymentData.operationNumber = lastDigits;
-        paymentData.bank = bank;
-        paymentData.notes = `Pago Móvil - ${bank} - ***${lastDigits}`;
-    }
-    
-    try {
-        const transactionRef = await db.collection('transactions').add(paymentData);
-        
-        await notifyNewDeposit(paymentData);
-        
-        showToast('✅ Pago registrado. Esperando verificación...', 'success');
-        
-        setTimeout(() => {
-            window.location.href = `pago-confirmado.html?tx=${transactionRef.id}`;
-        }, 2000);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        showToast('❌ Error al registrar pago: ' + error.message, 'error');
-    }
 }
 
 // ============================================

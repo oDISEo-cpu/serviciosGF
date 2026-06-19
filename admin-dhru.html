@@ -381,6 +381,7 @@
     <li><a href="admin-pedidos.html">Admin Pedidos</a></li>
     <li><a href="admin-streaming.html">Admin Streaming</a></li>
     <li><a href="admin-recargas.html">Admin Recargas</a></li>
+    <li><a href="admin-tasa.html" class="active">Admin Tasa</a></li>
     <li><a href="admin-dhru.html" class="active">Admin DHru</a></li>
   </ul>
   <div class="nav-actions" id="navAuth"></div>
@@ -564,40 +565,28 @@ function logout() {
 
 // ✅ CARGAR SALDO (CON MEJOR MANEJO DE ERRORES)
 async function loadBalance() {
-  const balanceElement = document.getElementById('balanceValue');
-  
-  try {
-    const response = await fetch('/.netlify/functions/dhru-balance');
-    const data = await response.json();
-    
-    console.log('📊 Respuesta de DHru:', data);
-    
-    // ✅ MANEJO DE ERRORES MEJORADO
-    if (!response.ok) {
-      throw new Error(data.error || 'Error al consultar saldo');
+    try {
+        const response = await fetch('/.netlify/functions/dhru-balance');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('💰 Respuesta de DHru:', data);
+        
+        // Verificar si hay saldo
+        if (data.balance !== undefined) {
+            document.getElementById('dhruBalance').textContent = `$${data.balance.toFixed(2)}`;
+        } else {
+            throw new Error('No hay balance en la respuesta');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error en loadBalance:', error);
+        document.getElementById('dhruBalance').textContent = 'Error';
+        showToast('Error cargando saldo DHru: ' + error.message, 'error');
     }
-
-    if (data.ERROR) {
-      throw new Error(data.ERROR);
-    }
-
-    // ✅ EXTRAER SALDO DE DIFERENTES FORMATOS
-    const balance = data.balance || data.CreditBalance || data.credit || 0;
-    
-    if (balance > 0) {
-      balanceElement.textContent = `$${parseFloat(balance).toFixed(2)}`;
-      balanceElement.style.color = 'var(--green)';
-    } else {
-      balanceElement.textContent = `$${parseFloat(balance).toFixed(2)}`;
-      balanceElement.style.color = 'var(--yellow)';
-    }
-    
-  } catch (error) {
-    console.error('❌ Error en loadBalance:', error);
-    balanceElement.textContent = 'Error';
-    balanceElement.style.color = 'var(--red)';
-    showToast('⚠️ No se pudo cargar el saldo de DHru', 'error');
-  }
 }
 
 // ✅ CARGAR SERVICIOS (CON MEJOR MANEJO DE ERRORES)

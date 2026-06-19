@@ -119,9 +119,7 @@
     -ms-overflow-style: none;
   }
   
-  .category-tabs-container::-webkit-scrollbar {
-    display: none;
-  }
+  .category-tabs-container::-webkit-scrollbar { display: none; }
   
   .category-tabs {
     display: flex;
@@ -170,7 +168,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 20px;
   }
@@ -246,9 +244,7 @@
     background: rgba(255,68,85,0.1);
   }
 
-  .search-clear.visible {
-    display: block;
-  }
+  .search-clear.visible { display: block; }
 
   .search-results-info {
     margin-top: 8px;
@@ -258,13 +254,119 @@
     display: none;
   }
 
-  .search-results-info.visible {
-    display: block;
+  .search-results-info.visible { display: block; }
+  .search-results-info .count { color: var(--orange); font-weight: 700; }
+
+  /* ✅ NUEVO: FILTROS POR MARCA */
+  .brand-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
-  .search-results-info .count {
+  .brand-filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .brand-pill {
+    background: var(--surface);
+    border: 1px solid var(--orange-border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-pill:hover {
+    background: var(--orange-glow);
+    border-color: var(--orange);
     color: var(--orange);
+  }
+
+  .brand-pill.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: white;
     font-weight: 700;
+  }
+
+  .brand-pill .pill-count {
+    background: rgba(0,0,0,0.2);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .brand-pill.active .pill-count {
+    background: rgba(0,0,0,0.3);
+    color: white;
+  }
+
+  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sort-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sort-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .sort-select {
+    background: var(--surface);
+    border: 1px solid var(--orange-border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .sort-select:hover, .sort-select:focus {
+    border-color: var(--orange);
+    background: var(--dark3);
+  }
+
+  .sort-select option {
+    background: var(--dark2);
+    color: var(--text);
   }
 
   .admin-buttons {
@@ -310,12 +412,70 @@
     position: relative;
     transition: all 0.3s;
     background: linear-gradient(135deg, var(--surface) 0%, rgba(255,136,0,0.05) 100%);
+    overflow: hidden;
   }
 
   .service-card:hover {
     border-color: var(--orange);
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(255, 136, 0, 0.25);
+  }
+
+  /* ✅ NUEVO: CINTA "MÁS VENDIDO" / "NUEVO" */
+  .service-ribbon {
+    position: absolute;
+    top: 14px;
+    left: -10px;
+    padding: 5px 14px 5px 18px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 0 4px 4px 0;
+    z-index: 3;
+    color: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .service-ribbon.bestseller {
+    background: linear-gradient(135deg, #ff6b35, #ffcc00);
+    color: var(--dark);
+  }
+
+  .service-ribbon.new {
+    background: linear-gradient(135deg, #00ff88, #00e5ff);
+    color: var(--dark);
+  }
+
+  .service-ribbon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: rgba(0,0,0,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+  }
+
+  /* ✅ NUEVO: ICONO DE MARCA */
+  .brand-icon-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--dark3);
+    border: 1px solid var(--orange-border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
 
   .service-category {
@@ -337,6 +497,7 @@
     font-weight: 700;
     color: var(--orange);
     margin-bottom: 8px;
+    padding-right: 50px;
   }
 
   .service-card p {
@@ -426,9 +587,10 @@
   .service-actions {
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 64px;
     display: flex;
     gap: 8px;
+    z-index: 3;
   }
 
   .btn-edit, .btn-delete {
@@ -503,9 +665,7 @@
     padding: 20px;
   }
 
-  .modal-overlay.open {
-    display: flex;
-  }
+  .modal-overlay.open { display: flex; }
 
   .modal {
     background: var(--surface);
@@ -537,9 +697,7 @@
     transition: color 0.2s;
   }
 
-  .modal-close:hover {
-    color: var(--orange);
-  }
+  .modal-close:hover { color: var(--orange); }
 
   .modal h2 {
     font-family: 'Orbitron', monospace;
@@ -554,9 +712,7 @@
     margin-bottom: 24px;
   }
 
-  .form-group {
-    margin-bottom: 18px;
-  }
+  .form-group { margin-bottom: 18px; }
 
   .form-group label {
     display: block;
@@ -590,10 +746,7 @@
     border-color: var(--orange);
   }
 
-  .form-group textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
+  .form-group textarea { resize: vertical; min-height: 80px; }
 
   .form-row {
     display: grid;
@@ -643,9 +796,7 @@
     align-items: center;
   }
 
-  .download-link-item input {
-    flex: 1;
-  }
+  .download-link-item input { flex: 1; }
 
   .download-link-item .link-number {
     background: var(--orange);
@@ -658,11 +809,7 @@
     text-align: center;
   }
 
-  .btn-full {
-    width: 100%;
-    padding: 14px;
-    font-size: 15px;
-  }
+  .btn-full { width: 100%; padding: 14px; font-size: 15px; }
 
   .btn-save {
     background: var(--orange);
@@ -730,14 +877,8 @@
     border-bottom: 1px solid var(--orange-border);
   }
 
-  .summary-item:last-child {
-    border-bottom: none;
-  }
-
-  .summary-item span:first-child {
-    color: var(--text-muted);
-    font-size: 14px;
-  }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item span:first-child { color: var(--text-muted); font-size: 14px; }
 
   .summary-item .price {
     font-family: 'Orbitron', monospace;
@@ -764,9 +905,7 @@
     line-height: 1.6;
   }
 
-  .info-box strong {
-    color: var(--orange);
-  }
+  .info-box strong { color: var(--orange); }
 
   .service-info-panel {
     background: var(--dark3);
@@ -791,18 +930,9 @@
     font-size: 13px;
   }
 
-  .service-info-item:last-child {
-    border-bottom: none;
-  }
-
-  .service-info-item .label {
-    color: var(--text-muted);
-  }
-
-  .service-info-item .value {
-    color: var(--text);
-    font-weight: 600;
-  }
+  .service-info-item:last-child { border-bottom: none; }
+  .service-info-item .label { color: var(--text-muted); }
+  .service-info-item .value { color: var(--text); font-weight: 600; }
 
   .checkbox-container {
     display: flex;
@@ -840,9 +970,7 @@
     display: none;
   }
 
-  .error-message.show {
-    display: block;
-  }
+  .error-message.show { display: block; }
 
   .toast-container {
     position: fixed;
@@ -853,11 +981,12 @@
     flex-direction: column;
     gap: 10px;
   }
+
   a[href*="ping.eu"]:hover {
-  background: var(--orange) !important;
-  color: white !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 136, 0, 0.3);
+    background: var(--orange) !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 136, 0, 0.3);
   }
 
   .toast {
@@ -912,6 +1041,9 @@
     .order-grid { grid-template-columns: 1fr !important; }
     .services-header { flex-direction: column; align-items: stretch; }
     .search-container { max-width: 100%; }
+    .service-actions { right: 10px; top: 60px; }
+    .brand-icon-badge { width: 34px; height: 34px; font-size: 18px; }
+    .service-card h3 { padding-right: 40px; }
   }
 </style>
 </head>
@@ -978,6 +1110,25 @@
       <button class="btn-add-service" onclick="openAddModal()">
         ➕ Agregar Servicio
       </button>
+    </div>
+  </div>
+
+  <!-- ✅ NUEVO: FILTROS POR MARCA/HERRAMIENTA -->
+  <div class="brand-filters" id="brandFilters">
+    <span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>
+  </div>
+
+  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
+  <div class="controls-row">
+    <div class="sort-container">
+      <span class="sort-label">📊 Ordenar:</span>
+      <select class="sort-select" id="sortSelect" onchange="handleSort()">
+        <option value="recent">Más recientes</option>
+        <option value="price-asc">Precio ↑ (menor a mayor)</option>
+        <option value="price-desc">Precio ↓ (mayor a menor)</option>
+        <option value="popular">Más vendidos</option>
+        <option value="name">Nombre A-Z</option>
+      </select>
     </div>
   </div>
 
@@ -1129,7 +1280,6 @@
             <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">Ingrese Cantidad Permitida 1 - 99</small>
           </div>
           
-          <!-- ✅ CAMPOS DINÁMICOS (se generan según configuración del servicio) -->
           <div id="dynamicFields"></div>
           
           <div class="checkbox-container" style="margin: 16px 0;">
@@ -1172,12 +1322,9 @@
           <div style="font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700; color: var(--green);" id="orderBalance">$0.00</div>
         </div>
         
-        <!-- ✅ BOTONES DE DESCARGA MÚLTIPLES (DINÁMICOS) -->
         <div id="downloadButtonsContainer" style="display: none; margin: 16px 0;">
           <div style="font-size: 11px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; font-weight: 700;">📥 Enlaces de Descarga:</div>
-          <div class="download-buttons-grid" id="downloadButtonsGrid">
-            <!-- Los botones se generan dinámicamente según cantidad de enlaces -->
-          </div>
+          <div class="download-buttons-grid" id="downloadButtonsGrid"></div>
         </div>
         
         <div id="infoAdditionalContainer" style="display: none; text-align: left; background: var(--dark3); border-radius: 8px; padding: 12px; margin: 12px 0;">
@@ -1231,7 +1378,7 @@
 
   const telegramConfig = {
     botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['1461150518', '8225719154'],
+    chatIds: ['1461150518'],
     enabled: true
   };
 
@@ -1242,43 +1389,210 @@
   let currentOrderService = null;
   let currentQuantity = 1;
   let searchQuery = '';
+  let currentBrandFilter = 'all';
+  let currentSort = 'recent';
 
-  async function sendTelegramMessage(message) {
-    if (!telegramConfig.enabled) {
-      console.log('🔕 Notificaciones de Telegram desactivadas');
-      return false;
+  // ✅ NUEVO: FUNCIÓN PARA PARSEAR TAGS (FIX DEL BUG)
+  function parseTags(tags) {
+    if (!tags) return [];
+    if (Array.isArray(tags)) {
+      return tags.filter(t => typeof t === 'string' && t.trim() !== '');
+    }
+    if (typeof tags === 'string') {
+      try {
+        const parsed = JSON.parse(tags);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(t => typeof t === 'string' && t.trim() !== '');
+        }
+      } catch (e) {}
+      let cleaned = tags.replace(/[\[\]"]/g, '').replace(/\\n/g, ',').trim();
+      return cleaned.split(',').map(t => t.trim()).filter(t => t && t.length > 0);
+    }
+    return [];
+  }
+
+  // ✅ NUEVO: DETECTAR HERRAMIENTA/MARCA
+  function detectBrand(service) {
+    const text = [
+      service.name || '',
+      service.description || '',
+      parseTags(service.tags).join(' ')
+    ].join(' ').toLowerCase();
+    
+    const brands = [
+      { name: 'AnyDesk', keywords: ['anydesk'] },
+      { name: 'TeamViewer', keywords: ['teamviewer'] },
+      { name: 'UltraViewer', keywords: ['ultraviewer'] },
+      { name: 'Chimera', keywords: ['chimera'] },
+      { name: 'UnlockTool', keywords: ['unlocktool', 'unlock tool'] },
+      { name: 'HydraTool', keywords: ['hydratool', 'hydra tool'] },
+      { name: 'Octoplus', keywords: ['octoplus'] },
+      { name: 'Z3X', keywords: ['z3x'] },
+      { name: 'UMT', keywords: ['umt'] },
+      { name: 'MRT', keywords: ['mrt'] },
+      { name: 'EFT', keywords: ['eft'] },
+      { name: 'SigmaKey', keywords: ['sigma'] },
+      { name: 'DC-Unlocker', keywords: ['dc-unlocker', 'dc unlocker'] },
+      { name: 'Miracle', keywords: ['miracle'] },
+      { name: 'Pandora', keywords: ['pandora'] },
+      { name: 'FGM', keywords: ['fgm'] }
+    ];
+    
+    for (const brand of brands) {
+      for (const keyword of brand.keywords) {
+        if (text.includes(keyword)) return brand.name;
+      }
+    }
+    return null;
+  }
+
+  // ✅ NUEVO: OBTENER ICONO
+  function getBrandIcon(brand) {
+    const icons = {
+      'AnyDesk': '🔴',
+      'TeamViewer': '🔷',
+      'UltraViewer': '🟢',
+      'Chimera': '🦁',
+      'UnlockTool': '🔓',
+      'HydraTool': '🐉',
+      'Octoplus': '🐙',
+      'Z3X': '🔷',
+      'UMT': '🔶',
+      'EFT': '⚡',
+      'MRT': '🔑',
+      'SigmaKey': 'Σ',
+      'DC-Unlocker': '🔓',
+      'Miracle': '✨',
+      'Pandora': '📦',
+      'FGM': '🔧'
+    };
+    return icons[brand] || '🛜';
+  }
+
+  // ✅ NUEVO: VERIFICAR MÁS VENDIDO
+  function isBestSeller(service) {
+    const name = (service.name || '').toLowerCase();
+    const bestSellers = ['unlock', 'frp', 'bypass', 'remote', 'rent'];
+    return bestSellers.some(bs => name.includes(bs));
+  }
+
+  // ✅ NUEVO: VERIFICAR NUEVO
+  function isNew(service) {
+    if (!service.createdAt) return false;
+    const created = new Date(service.createdAt);
+    const now = new Date();
+    const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+    return diffDays <= 7;
+  }
+
+  // ✅ NUEVO: EXTRAER MARCAS
+  function extractBrands(services) {
+    const brandCount = {};
+    services.forEach(service => {
+      const brand = detectBrand(service);
+      if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+    });
+    return brandCount;
+  }
+
+  // ✅ NUEVO: RENDERIZAR FILTROS
+  function renderBrandFilters() {
+    const container = document.getElementById('brandFilters');
+    const brandCount = extractBrands(allServices);
+    const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]);
+    
+    let html = '<span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>';
+    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">Todos <span class="pill-count">${allServices.length}</span></button>`;
+    
+    brands.forEach(([brand, count]) => {
+      const icon = getBrandIcon(brand);
+      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">${icon} ${brand} <span class="pill-count">${count}</span></button>`;
+    });
+    
+    container.innerHTML = html;
+  }
+
+  function filterByBrand(brand) {
+    currentBrandFilter = brand;
+    applyFiltersAndSort();
+    renderBrandFilters();
+  }
+
+  function handleSort() {
+    currentSort = document.getElementById('sortSelect').value;
+    applyFiltersAndSort();
+  }
+
+  function applyFiltersAndSort() {
+    let result = [...allServices];
+    
+    if (searchQuery) {
+      result = result.filter(service => {
+        const name = (service.name || '').toLowerCase();
+        const description = (service.description || '').toLowerCase();
+        const tags = parseTags(service.tags).join(' ').toLowerCase();
+        return name.includes(searchQuery) || description.includes(searchQuery) || tags.includes(searchQuery);
+      });
     }
     
-    let allSuccess = true;
+    if (currentBrandFilter !== 'all') {
+      result = result.filter(service => detectBrand(service) === currentBrandFilter);
+    }
     
+    switch (currentSort) {
+      case 'price-asc':
+        result.sort((a, b) => (a.price || a.credits || 0) - (b.price || b.credits || 0));
+        break;
+      case 'price-desc':
+        result.sort((a, b) => (b.price || b.credits || 0) - (a.price || a.credits || 0));
+        break;
+      case 'popular':
+        result.sort((a, b) => (isBestSeller(b) ? 1 : 0) - (isBestSeller(a) ? 1 : 0));
+        break;
+      case 'name':
+        result.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        break;
+      case 'recent':
+      default:
+        result.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+          return dateB - dateA;
+        });
+    }
+    
+    filteredServices = result;
+    renderServices();
+    
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    if (searchQuery || currentBrandFilter !== 'all') {
+      resultsInfo.classList.add('visible');
+      document.getElementById('searchResultsCount').textContent = filteredServices.length;
+      document.getElementById('searchTotalCount').textContent = allServices.length;
+    } else {
+      resultsInfo.classList.remove('visible');
+    }
+  }
+
+  async function sendTelegramMessage(message) {
+    if (!telegramConfig.enabled) return false;
+    let allSuccess = true;
     for (const chatId of telegramConfig.chatIds) {
       try {
         const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
-        
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'HTML'
-          })
+          body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
         });
-        
         const data = await response.json();
-        
-        if (data.ok) {
-          console.log(`✅ Notificación enviada a chat ${chatId}`);
-        } else {
-          console.error(`❌ Error enviando a chat ${chatId}:`, data.description);
-          allSuccess = false;
-        }
+        if (data.ok) console.log(`✅ Notificación enviada a chat ${chatId}`);
+        else { console.error(`❌ Error enviando a chat ${chatId}:`, data.description); allSuccess = false; }
       } catch (error) {
         console.error(`❌ Error de conexión con chat ${chatId}:`, error);
         allSuccess = false;
       }
     }
-    
     return allSuccess;
   }
 
@@ -1297,7 +1611,6 @@
 ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de procesamiento remoto
     `.trim();
-    
     return await sendTelegramMessage(message);
   }
 
@@ -1337,27 +1650,15 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
   }
 
   function logout() {
-    auth.signOut().then(() => {
-      window.location.href = 'index.html';
-    });
+    auth.signOut().then(() => { window.location.href = 'index.html'; });
   }
 
   async function loadServices() {
     try {
-      const servicesSnap = await db.collection('services')
-        .where('category', '==', 'remote')
-        .get();
-      
+      const servicesSnap = await db.collection('services').where('category', '==', 'remote').get();
       allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
-      allServices.sort((a, b) => {
-        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-        return dateB - dateA;
-      });
-      
-      filteredServices = [...allServices];
-      renderServices();
+      renderBrandFilters();
+      applyFiltersAndSort();
     } catch (error) {
       console.error('Error cargando servicios:', error);
       document.getElementById('servicesGrid').innerHTML = `
@@ -1372,37 +1673,10 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
   function handleSearch() {
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('searchClear');
-    const resultsInfo = document.getElementById('searchResultsInfo');
-    
     searchQuery = input.value.trim().toLowerCase();
-    
-    if (searchQuery) {
-      clearBtn.classList.add('visible');
-    } else {
-      clearBtn.classList.remove('visible');
-    }
-    
-    if (searchQuery === '') {
-      filteredServices = [...allServices];
-      resultsInfo.classList.remove('visible');
-    } else {
-      filteredServices = allServices.filter(service => {
-        const name = (service.name || '').toLowerCase();
-        const description = (service.description || '').toLowerCase();
-        const tags = service.tags ? 
-          (Array.isArray(service.tags) ? service.tags.join(' ').toLowerCase() : service.tags.toLowerCase()) : '';
-        
-        return name.includes(searchQuery) || 
-               description.includes(searchQuery) || 
-               tags.includes(searchQuery);
-      });
-      
-      resultsInfo.classList.add('visible');
-      document.getElementById('searchResultsCount').textContent = filteredServices.length;
-      document.getElementById('searchTotalCount').textContent = allServices.length;
-    }
-    
-    renderServices();
+    if (searchQuery) clearBtn.classList.add('visible');
+    else clearBtn.classList.remove('visible');
+    applyFiltersAndSort();
   }
 
   function clearSearch() {
@@ -1410,8 +1684,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     document.getElementById('searchClear').classList.remove('visible');
     document.getElementById('searchResultsInfo').classList.remove('visible');
     searchQuery = '';
-    filteredServices = [...allServices];
-    renderServices();
+    applyFiltersAndSort();
     document.getElementById('searchInput').focus();
   }
 
@@ -1423,7 +1696,9 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     const grid = document.getElementById('servicesGrid');
     
     if (filteredServices.length === 0) {
-      if (searchQuery) {
+      if (searchQuery || currentBrandFilter !== 'all') {
+        const filterText = currentBrandFilter !== 'all' ? `de <strong style="color:var(--orange);">${currentBrandFilter}</strong>` : '';
+        const searchText = searchQuery ? `"<strong style="color:var(--orange);">${searchQuery}</strong>"` : '';
         grid.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1431,8 +1706,8 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
               <path d="m21 21-4.35-4.35"></path>
             </svg>
             <p style="color:var(--orange);font-size:18px;margin-bottom:8px;">No se encontraron resultados</p>
-            <p style="color:var(--text-dim);">No hay servicios que coincidan con "<strong style="color:var(--orange);">${searchQuery}</strong>"</p>
-            <button onclick="clearSearch()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar búsqueda</button>
+            <p style="color:var(--text-dim);">No hay servicios que coincidan ${filterText} ${searchText}</p>
+            <button onclick="clearAllFilters()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar filtros</button>
           </div>
         `;
       } else {
@@ -1451,7 +1726,11 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
     
     grid.innerHTML = filteredServices.map(service => {
-      const tags = service.tags ? (Array.isArray(service.tags) ? service.tags : service.tags.split(',').map(t => t.trim())) : [];
+      const tags = parseTags(service.tags);
+      const brand = detectBrand(service);
+      const brandIcon = brand ? getBrandIcon(brand) : null;
+      const bestSeller = isBestSeller(service);
+      const newService = isNew(service);
       
       let highlightedName = service.name;
       if (searchQuery) {
@@ -1459,11 +1738,21 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
         highlightedName = service.name.replace(regex, '<mark style="background:var(--orange);color:var(--dark);padding:0 2px;border-radius:2px;">$1</mark>');
       }
       
+      let ribbonHTML = '';
+      if (bestSeller) ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
+      else if (newService) ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
+      
+      let brandIconHTML = '';
+      if (brandIcon) brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Herramienta'}">${brandIcon}</div>`;
+      
       return `
         <div class="service-card">
+          ${ribbonHTML}
+          ${brandIconHTML}
+          
           ${isAdmin ? `
             <div class="service-actions">
-              <button class="btn-edit" onclick="editService('${service.id}')">✏️ Editar</button>
+              <button class="btn-edit" onclick="editService('${service.id}')">✏️</button>
               <button class="btn-delete" onclick="deleteService('${service.id}')">🗑️</button>
             </div>
           ` : ''}
@@ -1492,6 +1781,18 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     }).join('');
   }
 
+  function clearAllFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    document.getElementById('searchResultsInfo').classList.remove('visible');
+    document.getElementById('sortSelect').value = 'recent';
+    searchQuery = '';
+    currentBrandFilter = 'all';
+    currentSort = 'recent';
+    renderBrandFilters();
+    applyFiltersAndSort();
+  }
+
   function openAddModal() {
     document.getElementById('modalTitle').textContent = '➕ Agregar Servicio';
     document.getElementById('serviceForm').reset();
@@ -1518,22 +1819,20 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
     document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
     document.getElementById('serviceProcessTime').value = service.processTime || '';
-    document.getElementById('serviceTags').value = service.tags ? (Array.isArray(service.tags) ? service.tags.join(', ') : service.tags) : '';
+    // ✅ FIX: Mostrar tags correctamente
+    const tags = parseTags(service.tags);
+    document.getElementById('serviceTags').value = tags.join(', ');
     document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
     document.getElementById('serviceIP').value = service.ip || '';
     
-    // Campos requeridos
     document.getElementById('requireIMEI').checked = service.requireIMEI !== false;
     document.getElementById('requireIP').checked = service.requireIP !== false;
     document.getElementById('requireSN').checked = service.requireSN !== false;
     
-    // Enlaces de descarga
     const downloadUrls = service.downloadUrls || [];
     for (let i = 1; i <= 5; i++) {
       const input = document.getElementById(`downloadUrl${i}`);
-      if (input) {
-        input.value = downloadUrls[i-1] || '';
-      }
+      if (input) input.value = downloadUrls[i-1] || '';
     }
     
     document.getElementById('serviceModal').classList.add('open');
@@ -1546,13 +1845,10 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     const tagsRaw = document.getElementById('serviceTags').value;
     const tagsArray = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(t => t) : [];
     
-    // Recoger enlaces de descarga
     const downloadUrls = [];
     for (let i = 1; i <= 5; i++) {
       const url = document.getElementById(`downloadUrl${i}`).value.trim();
-      if (url) {
-        downloadUrls.push(url);
-      }
+      if (url) downloadUrls.push(url);
     }
     
     const serviceData = {
@@ -1584,7 +1880,6 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
         await db.collection('services').add(serviceData);
         showToast('✅ Servicio agregado', 'success');
       }
-      
       closeServiceModal();
       await loadServices();
     } catch (error) {
@@ -1594,7 +1889,6 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
 
   async function deleteService(serviceId) {
     if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
-    
     try {
       await db.collection('services').doc(serviceId).delete();
       showToast('🗑️ Servicio eliminado', 'success');
@@ -1607,9 +1901,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
   function selectService(serviceId) {
     if (!currentUser) {
       showToast('⚠️ Debes iniciar sesión para comprar', 'error');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
+      setTimeout(() => { window.location.href = 'index.html'; }, 2000);
       return;
     }
     
@@ -1627,30 +1919,19 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     document.getElementById('orderBalance').textContent = '$' + balance.toFixed(2);
     document.getElementById('orderQuantity').value = '1';
     
-    if (service.processTime) {
-      document.getElementById('orderProcessTime').textContent = service.processTime;
-    } else {
-      document.getElementById('orderProcessTime').textContent = 'No especificado';
-    }
+    if (service.processTime) document.getElementById('orderProcessTime').textContent = service.processTime;
+    else document.getElementById('orderProcessTime').textContent = 'No especificado';
     
     document.getElementById('serviceLogo').textContent = '🛜';
     
     const badgesContainer = document.getElementById('serviceBadges');
     let badgesHTML = '';
-    if (service.stock) {
-      badgesHTML += '<span style="background: rgba(0,255,136,0.15); color: var(--green); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">✓ EN STOCK</span>';
-    } else {
-      badgesHTML += '<span style="background: rgba(255,68,85,0.15); color: var(--red); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">❌ AGOTADO</span>';
-    }
-    if (!service.autoServer) {
-      badgesHTML += '<span style="background: var(--orange-glow); color: var(--orange); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">👤 SOPORTE MANUAL BY ADMIN</span>';
-    }
+    if (service.stock) badgesHTML += '<span style="background: rgba(0,255,136,0.15); color: var(--green); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">✓ EN STOCK</span>';
+    else badgesHTML += '<span style="background: rgba(255,68,85,0.15); color: var(--red); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">❌ AGOTADO</span>';
+    if (!service.autoServer) badgesHTML += '<span style="background: var(--orange-glow); color: var(--orange); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">👤 SOPORTE MANUAL BY ADMIN</span>';
     badgesContainer.innerHTML = badgesHTML;
     
-    // Generar campos dinámicos según configuración
     generateDynamicFields(service);
-    
-    // Generar botones de descarga DINÁMICOS
     generateDownloadButtons(service);
     
     if (service.additionalInfo) {
@@ -1668,15 +1949,12 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     }
     
     hideError();
-    
     document.getElementById('orderModal').classList.add('open');
   }
 
   function generateDynamicFields(service) {
     const container = document.getElementById('dynamicFields');
-    let fieldsHTML = '';
-    
-    fieldsHTML += `
+    let fieldsHTML = `
       <div class="info-box">
         <strong>ℹ️ Información requerida:</strong><br>
         Completa los campos solicitados para procesar tu pedido remoto.
@@ -1723,7 +2001,6 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     container.innerHTML = fieldsHTML;
   }
 
-  // ✅ FUNCIÓN PARA GENERAR BOTONES DE DESCARGA DINÁMICOS
   function generateDownloadButtons(service) {
     const container = document.getElementById('downloadButtonsContainer');
     const grid = document.getElementById('downloadButtonsGrid');
@@ -1734,10 +2011,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       return;
     }
     
-    // Mostrar contenedor
     container.style.display = 'block';
-    
-    // Generar botones dinámicamente según cantidad de enlaces
     grid.innerHTML = downloadUrls.map((url, index) => `
       <button type="button" onclick="window.open('${url}', '_blank')" class="btn-download-link">
         ⬇️ Descargar Herramienta ${index + 1}
@@ -1768,9 +2042,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
 
   async function submitOrder(e) {
     e.preventDefault();
-    
     if (!currentOrderService || !currentUser) return;
-    
     hideError();
     
     const unitPrice = currentOrderService.price || currentOrderService.credits || 0;
@@ -1798,66 +2070,42 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
     
-    // Recoger campos según configuración
     let inputDataParts = [];
     
     if (currentOrderService.requireIMEI) {
       const imei = document.getElementById('orderIMEI')?.value.trim();
-      if (!imei) {
-        showError('⚠️ Por favor ingresa el IMEI');
-        return;
-      }
+      if (!imei) { showError('⚠️ Por favor ingresa el IMEI'); return; }
       orderData.imei = imei;
       inputDataParts.push(`IMEI: ${imei}`);
     }
     
     if (currentOrderService.requireIP) {
       const ip = document.getElementById('orderIP')?.value.trim();
-      if (!ip) {
-        showError('⚠️ Por favor ingresa la IP');
-        return;
-      }
+      if (!ip) { showError('⚠️ Por favor ingresa la IP'); return; }
       orderData.ip = ip;
       inputDataParts.push(`IP: ${ip}`);
     }
     
     if (currentOrderService.requireSN) {
       const sn = document.getElementById('orderSN')?.value.trim();
-      if (!sn) {
-        showError('⚠️ Por favor ingresa el SN');
-        return;
-      }
+      if (!sn) { showError('⚠️ Por favor ingresa el SN'); return; }
       orderData.sn = sn;
       inputDataParts.push(`SN: ${sn}`);
     }
     
     orderData.inputData = inputDataParts.join(' | ');
     
-    // Construir el mensaje de confirmación
-    let confirmMessage = `✅ Confirmar Pedido Remoto\n\n`;
-    confirmMessage += `Servicio: ${currentOrderService.name}\n`;
-
-    if (orderData.imei) {
-      confirmMessage += `IMEI: ${orderData.imei}\n`;
-    }
-    if (orderData.ip) {
-      confirmMessage += `IP: ${orderData.ip}\n`;
-    }
-    if (orderData.sn) {
-      confirmMessage += `SN: ${orderData.sn}\n`;
-    }
-
-    confirmMessage += `\nCantidad: ${currentQuantity}\n`;
-    confirmMessage += `Total: $${totalPrice.toFixed(2)}\n\n`;
-    confirmMessage += `¿Confirmas el pedido?`;
-
-    const confirmPurchase = confirm(confirmMessage);
+    let confirmMessage = `✅ Confirmar Pedido Remoto\n\nServicio: ${currentOrderService.name}\n`;
+    if (orderData.imei) confirmMessage += `IMEI: ${orderData.imei}\n`;
+    if (orderData.ip) confirmMessage += `IP: ${orderData.ip}\n`;
+    if (orderData.sn) confirmMessage += `SN: ${orderData.sn}\n`;
+    confirmMessage += `\nCantidad: ${currentQuantity}\nTotal: $${totalPrice.toFixed(2)}\n\n¿Confirmas el pedido?`;
     
+    const confirmPurchase = confirm(confirmMessage);
     if (!confirmPurchase) return;
     
     try {
       await db.collection('orders').add(orderData);
-      
       await notifyRemoteOrder(orderData);
       
       const newBalance = balance - totalPrice;
@@ -1881,15 +2129,10 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       });
       
       userProfile.balance = newBalance;
-      
       showToast('✅ ¡Pedido remoto creado exitosamente!', 'success');
-      
       closeOrderModal();
       
-      setTimeout(() => {
-        window.location.href = 'mis-pedidos.html';
-      }, 2000);
-      
+      setTimeout(() => { window.location.href = 'mis-pedidos.html'; }, 2000);
     } catch (error) {
       console.error('Error creando pedido:', error);
       showError('❌ Error al crear el pedido: ' + error.message);
@@ -1923,15 +2166,11 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       toastContainer.className = 'toast-container';
       document.body.appendChild(toastContainer);
     }
-    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    
     const icon = type === 'success' ? '✅' : '⚠️';
     toast.innerHTML = `<span>${icon}</span> ${message}`;
-    
     toastContainer.appendChild(toast);
-    
     setTimeout(() => {
       toast.style.animation = 'fadeOut 0.3s ease forwards';
       setTimeout(() => toast.remove(), 300);

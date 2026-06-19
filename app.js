@@ -41,18 +41,7 @@ const NexaGSM = {
 
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // ✅ VERIFICAR SI YA HAY UNA SESIÓN ACTIVA
-                const hasActiveSession = await this.checkActiveSession(user.uid);
-                
-                if (hasActiveSession) {
-                    // Ya hay una sesión activa, cerrar esta
-                    await auth.signOut();
-                    this.showToast('⚠️ Ya tienes una sesión activa en otro dispositivo. Ciérrala primero.', 'error');
-                    return;
-                }
-                
-                // No hay sesión activa, crear nueva
-                await this.createSession(user.uid);
+                // ✅ SIN VERIFICACIÓN DE SESIONES - Login directo
                 await this.handleSession(user);
                 
                 // ✅ Iniciar tracking de inactividad cuando hay sesión
@@ -194,80 +183,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         return await this.sendTelegramMessage(message);
     },
 
-    // ✅ VERIFICAR SI EXISTE UNA SESIÓN ACTIVA
-    async checkActiveSession(userId) {
-        try {
-            const sessionSnap = await db.collection('sessions')
-                .where('userId', '==', userId)
-                .where('active', '==', true)
-                .get();
-            
-            return !sessionSnap.empty;
-        } catch (error) {
-            console.error('Error verificando sesión activa:', error);
-            return false;
-        }
-    },
-
-    // ✅ CREAR NUEVA SESIÓN
-    async createSession(userId) {
-        try {
-            // Obtener información del dispositivo
-            const deviceInfo = this.getDeviceInfo();
-            const sessionId = `${userId}_${Date.now()}`;
-            
-            await db.collection('sessions').doc(sessionId).set({
-                userId: userId,
-                sessionId: sessionId,
-                deviceInfo: deviceInfo,
-                active: true,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            // Guardar el sessionId en localStorage para poder cerrarlo después
-            localStorage.setItem('currentSessionId', sessionId);
-            
-            console.log('✅ Sesión creada:', sessionId);
-        } catch (error) {
-            console.error('Error creando sesión:', error);
-        }
-    },
-
-    // ✅ CERRAR SESIÓN ACTIVA
-    async closeSession() {
-        try {
-            const sessionId = localStorage.getItem('currentSessionId');
-            
-            if (sessionId) {
-                await db.collection('sessions').doc(sessionId).update({
-                    active: false,
-                    closedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                localStorage.removeItem('currentSessionId');
-                console.log('✅ Sesión cerrada:', sessionId);
-            }
-        } catch (error) {
-            console.error('Error cerrando sesión:', error);
-        }
-    },
-
-    // ✅ ACTUALIZAR ÚLTIMA ACTIVIDAD
-    async updateSessionActivity() {
-        try {
-            const sessionId = localStorage.getItem('currentSessionId');
-            
-            if (sessionId) {
-                await db.collection('sessions').doc(sessionId).update({
-                    lastActivity: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-        } catch (error) {
-            console.error('Error actualizando actividad:', error);
-        }
-    },
-
     // ✅ SISTEMA DE TRACKING DE INACTIVIDAD
     startInactivityTracking() {
         console.log('🔒 Tracking de inactividad activado');
@@ -278,7 +193,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         activityEvents.forEach(event => {
             document.addEventListener(event, () => {
                 this.resetInactivityTimer();
-                this.updateSessionActivity();
             }, { passive: true });
         });
         
@@ -423,9 +337,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             this.state.countdownInterval = null;
         }
         
-        // ✅ Cerrar sesión en Firestore
-        await this.closeSession();
-        
         // Mostrar mensaje
         this.showToast('🔒 Sesión cerrada por inactividad', 'error');
         
@@ -507,7 +418,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         }
 
         function startAutoPlay() {
-            autoPlayInterval = setInterval(nextSlide, 4000);
+           // autoPlayInterval = setInterval(nextSlide, 4000);
         }
 
         function resetAutoPlay() {
@@ -817,18 +728,10 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     async login(email, password) {
         try {
-            // ✅ Verificar si ya hay una sesión activa antes de iniciar sesión
-            const tempUser = await auth.signInWithEmailAndPassword(email, password);
-            const hasActiveSession = await this.checkActiveSession(tempUser.user.uid);
+            // ✅ LOGIN DIRECTO - SIN VERIFICACIÓN DE SESIONES
+            await auth.signInWithEmailAndPassword(email, password);
             
-            if (hasActiveSession) {
-                // Cerrar el login temporal
-                await auth.signOut();
-                this.showToast('⚠️ Ya tienes una sesión activa en otro dispositivo. Ciérrala primero.', 'error');
-                return false;
-            }
-            
-            // No hay sesión activa, continuar con el login
+            // Cerrar modal de login
             setTimeout(() => {
                 const modal = document.getElementById('authModal');
                 if (modal) {
@@ -850,8 +753,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     async logout() {
         try {
-            // ✅ Cerrar sesión en Firestore antes de cerrar Firebase Auth
-            await this.closeSession();
             await auth.signOut();
         } catch (error) {
             console.error('Error en logout:', error);
