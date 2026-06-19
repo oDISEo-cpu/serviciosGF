@@ -27,7 +27,8 @@
     --gold-border: rgba(255,184,0,0.3);
     --red: #ff4455;
     --purple: #8a2be2;
-    --orange: #ff6b35;
+    --orange: #ff8800;
+    --whatsapp: #25D366;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
@@ -258,7 +259,6 @@
   .search-results-info.visible { display: block; }
   .search-results-info .count { color: var(--gold); font-weight: 700; }
 
-  /* ✅ NUEVO: FILTROS POR MARCA */
   .brand-filters {
     display: flex;
     gap: 8px;
@@ -320,7 +320,6 @@
     color: var(--dark);
   }
 
-  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
   .controls-row {
     display: flex;
     justify-content: space-between;
@@ -422,7 +421,6 @@
     box-shadow: 0 10px 30px rgba(255, 184, 0, 0.25);
   }
 
-  /* ✅ NUEVO: CINTA "MÁS VENDIDO" / "NUEVO" */
   .service-ribbon {
     position: absolute;
     top: 14px;
@@ -444,7 +442,7 @@
   }
 
   .service-ribbon.new {
-    background: linear-gradient(135deg, #FFB800, #FFD700);
+    background: linear-gradient(135deg, #00ff88, #00e5ff);
   }
 
   .service-ribbon::after {
@@ -459,7 +457,6 @@
     border-right-color: rgba(0,0,0,0.4);
   }
 
-  /* ✅ NUEVO: ICONO DE MARCA */
   .brand-icon-badge {
     position: absolute;
     top: 16px;
@@ -540,6 +537,56 @@
     border-radius: 4px;
     font-size: 11px;
     color: var(--text-muted);
+  }
+
+  /* ✅ NUEVO: BOTONES DE SOPORTE */
+  .support-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-support-tool {
+    background: rgba(0,229,255,0.15);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-support-tool:hover {
+    background: var(--cyan);
+    color: var(--dark);
+  }
+
+  .btn-support-page {
+    background: rgba(37,211,102,0.15);
+    border: 1px solid var(--whatsapp);
+    color: var(--whatsapp);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-support-page:hover {
+    background: var(--whatsapp);
+    color: white;
   }
 
   .service-footer {
@@ -999,7 +1046,6 @@
     .services-grid { grid-template-columns: 1fr; }
     .modal { width: 95vw; padding: 24px; }
     .form-row { grid-template-columns: 1fr; }
-    .order-grid { grid-template-columns: 1fr !important; }
     .services-header { flex-direction: column; align-items: stretch; }
     .search-container { max-width: 100%; }
     .service-actions { right: 10px; top: 60px; }
@@ -1074,12 +1120,10 @@
     </div>
   </div>
 
-  <!-- ✅ NUEVO: FILTROS POR MARCA -->
   <div class="brand-filters" id="brandFilters">
     <span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>
   </div>
 
-  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
   <div class="controls-row">
     <div class="sort-container">
       <span class="sort-label">📊 Ordenar:</span>
@@ -1152,6 +1196,13 @@
       <div class="form-group">
         <label>Tags (separados por coma)</label>
         <input type="text" id="serviceTags" placeholder="Ej: Chimera, License, Tool">
+      </div>
+      
+      <!-- ✅ NUEVO: URL DE SOPORTE DE LA HERRAMIENTA -->
+      <div class="form-group">
+        <label>🔧 URL de Soporte de la Herramienta (opcional)</label>
+        <input type="url" id="serviceSupportUrl" placeholder="Ej: https://t.me/chimera_support o https://chimera-tool.com/support">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">URL del soporte oficial de la herramienta (Telegram, web, etc.)</small>
       </div>
       
       <div class="form-group">
@@ -1279,9 +1330,12 @@
           <div style="font-size: 13px; color: var(--text); font-family: 'Share Tech Mono', monospace;" id="infoIP"></div>
         </div>
         
-        <div style="display: flex; gap: 12px; margin-top: 24px;">
-          <button type="button" onclick="showSupport()" style="flex: 1; background: var(--gold); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase;">
-            💬 Soporte
+        <div id="supportButtonsContainer" style="display: flex; gap: 12px; margin-top: 24px;">
+          <button type="button" id="btnToolSupport" onclick="openToolSupport()" style="flex: 1; background: var(--cyan); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase; display: none;">
+            🔧 Soporte Herramienta
+          </button>
+          <button type="button" onclick="showPageSupport()" style="flex: 1; background: var(--gold); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase;">
+            💬 Soporte Página
           </button>
         </div>
       </div>
@@ -1325,14 +1379,14 @@
   let currentBrandFilter = 'all';
   let currentSort = 'recent';
 
-  // ✅ NUEVO: FUNCIÓN PARA PARSEAR TAGS CORRECTAMENTE (FIX DEL BUG)
+  // ✅ URL DE SOPORTE DE LA PÁGINA (WhatsApp del admin)
+  const PAGE_SUPPORT_URL = 'https://wa.me/5213221938917';
+
   function parseTags(tags) {
     if (!tags) return [];
-    
     if (Array.isArray(tags)) {
       return tags.filter(t => typeof t === 'string' && t.trim() !== '');
     }
-    
     if (typeof tags === 'string') {
       try {
         const parsed = JSON.parse(tags);
@@ -1340,21 +1394,12 @@
           return parsed.filter(t => typeof t === 'string' && t.trim() !== '');
         }
       } catch (e) {}
-      
-      let cleaned = tags
-        .replace(/[\[\]"]/g, '')
-        .replace(/\\n/g, ',')
-        .trim();
-      
-      return cleaned.split(',')
-        .map(t => t.trim())
-        .filter(t => t && t.length > 0);
+      let cleaned = tags.replace(/[\[\]"]/g, '').replace(/\\n/g, ',').trim();
+      return cleaned.split(',').map(t => t.trim()).filter(t => t && t.length > 0);
     }
-    
     return [];
   }
 
-  // ✅ NUEVO: DETECTAR MARCA/HERRAMIENTA
   function detectBrand(service) {
     const text = [
       service.name || '',
@@ -1375,7 +1420,8 @@
       { name: 'SigmaKey', keywords: ['sigmakey', 'sigma key', 'sigma'] },
       { name: 'DC-Unlocker', keywords: ['dc-unlocker', 'dc unlocker', 'dcunlocker'] },
       { name: 'Miracle', keywords: ['miracle', 'miracle box'] },
-      { name: 'FGM', keywords: ['fgm'] }
+      { name: 'FGM', keywords: ['fgm'] },
+      { name: 'Ultra Auth', keywords: ['ultra auth', 'ultraauth'] }
     ];
     
     for (const brand of brands) {
@@ -1386,7 +1432,6 @@
     return null;
   }
 
-  // ✅ NUEVO: OBTENER ICONO DE MARCA
   function getBrandIcon(brand) {
     const icons = {
       'UnlockTool': '🔓',
@@ -1397,30 +1442,22 @@
       'UMT': '🔶',
       'EFT': '⚡',
       'MRT': '🔑',
-      'Pandora': '📦',
       'SigmaKey': 'Σ',
       'DC-Unlocker': '🔓',
       'Miracle': '✨',
-      'FGM': '🔧'
+      'Pandora': '📦',
+      'FGM': '🔧',
+      'Ultra Auth': '🛡️'
     };
     return icons[brand] || '🔧';
   }
 
-  // ✅ NUEVO: VERIFICAR SI ES MÁS VENDIDO
   function isBestSeller(service) {
     const name = (service.name || '').toLowerCase();
-    const bestSellers = [
-      'unlocktool',
-      'hydratool',
-      'octoplus',
-      'chimera',
-      'créditos',
-      'creditos'
-    ];
+    const bestSellers = ['unlock', 'frp', 'bypass', 'remote', 'rent'];
     return bestSellers.some(bs => name.includes(bs));
   }
 
-  // ✅ NUEVO: VERIFICAR SI ES NUEVO
   function isNew(service) {
     if (!service.createdAt) return false;
     const created = new Date(service.createdAt);
@@ -1429,54 +1466,42 @@
     return diffDays <= 7;
   }
 
-  // ✅ NUEVO: EXTRAER MARCAS ÚNICAS
   function extractBrands(services) {
     const brandCount = {};
     services.forEach(service => {
       const brand = detectBrand(service);
-      if (brand) {
-        brandCount[brand] = (brandCount[brand] || 0) + 1;
-      }
+      if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
     });
     return brandCount;
   }
 
-  // ✅ NUEVO: RENDERIZAR FILTROS DE MARCA
   function renderBrandFilters() {
     const container = document.getElementById('brandFilters');
     const brandCount = extractBrands(allServices);
     const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]);
     
     let html = '<span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>';
-    
-    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">
-      Todos <span class="pill-count">${allServices.length}</span>
-    </button>`;
+    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">Todos <span class="pill-count">${allServices.length}</span></button>`;
     
     brands.forEach(([brand, count]) => {
       const icon = getBrandIcon(brand);
-      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">
-        ${icon} ${brand} <span class="pill-count">${count}</span>
-      </button>`;
+      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">${icon} ${brand} <span class="pill-count">${count}</span></button>`;
     });
     
     container.innerHTML = html;
   }
 
-  // ✅ NUEVO: FILTRAR POR MARCA
   function filterByBrand(brand) {
     currentBrandFilter = brand;
     applyFiltersAndSort();
     renderBrandFilters();
   }
 
-  // ✅ NUEVO: MANEJAR ORDENAMIENTO
   function handleSort() {
     currentSort = document.getElementById('sortSelect').value;
     applyFiltersAndSort();
   }
 
-  // ✅ NUEVO: APLICAR FILTROS Y ORDENAMIENTO
   function applyFiltersAndSort() {
     let result = [...allServices];
     
@@ -1485,18 +1510,12 @@
         const name = (service.name || '').toLowerCase();
         const description = (service.description || '').toLowerCase();
         const tags = parseTags(service.tags).join(' ').toLowerCase();
-        
-        return name.includes(searchQuery) || 
-               description.includes(searchQuery) || 
-               tags.includes(searchQuery);
+        return name.includes(searchQuery) || description.includes(searchQuery) || tags.includes(searchQuery);
       });
     }
     
     if (currentBrandFilter !== 'all') {
-      result = result.filter(service => {
-        const brand = detectBrand(service);
-        return brand === currentBrandFilter;
-      });
+      result = result.filter(service => detectBrand(service) === currentBrandFilter);
     }
     
     switch (currentSort) {
@@ -1507,11 +1526,7 @@
         result.sort((a, b) => (b.price || b.credits || 0) - (a.price || a.credits || 0));
         break;
       case 'popular':
-        result.sort((a, b) => {
-          const aBest = isBestSeller(a) ? 1 : 0;
-          const bBest = isBestSeller(b) ? 1 : 0;
-          return bBest - aBest;
-        });
+        result.sort((a, b) => (isBestSeller(b) ? 1 : 0) - (isBestSeller(a) ? 1 : 0));
         break;
       case 'name':
         result.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -1540,37 +1555,23 @@
 
   async function sendTelegramMessage(message) {
     if (!telegramConfig.enabled) return false;
-    
     let allSuccess = true;
-    
     for (const chatId of telegramConfig.chatIds) {
       try {
         const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
-        
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: 'HTML'
-          })
+          body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
         });
-        
         const data = await response.json();
-        
-        if (data.ok) {
-          console.log(`✅ Notificación enviada a chat ${chatId}`);
-        } else {
-          console.error(`❌ Error enviando a chat ${chatId}:`, data.description);
-          allSuccess = false;
-        }
+        if (data.ok) console.log(`✅ Notificación enviada a chat ${chatId}`);
+        else { console.error(`❌ Error enviando a chat ${chatId}:`, data.description); allSuccess = false; }
       } catch (error) {
         console.error(`❌ Error de conexión con chat ${chatId}:`, error);
         allSuccess = false;
       }
     }
-    
     return allSuccess;
   }
 
@@ -1589,7 +1590,6 @@
 ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.username}</code>\n` : ''}${orderData.email ? `📧 <b>Email herramienta:</b> <code>${orderData.email}</code>\n` : ''}${orderData.inputData ? `📝 <b>Datos:</b> ${orderData.inputData}\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de procesamiento
     `.trim();
-    
     return await sendTelegramMessage(message);
   }
 
@@ -1603,9 +1603,12 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
           document.getElementById('adminButtons').style.display = 'flex';
         }
       }
+      await loadServices();
+      updateNav();
+    } else {
+      await loadServices();
+      updateNav();
     }
-    await loadServices();
-    updateNav();
   });
 
   function updateNav() {
@@ -1629,19 +1632,13 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
   }
 
   function logout() {
-    auth.signOut().then(() => {
-      window.location.href = 'index.html';
-    });
+    auth.signOut().then(() => { window.location.href = 'index.html'; });
   }
 
   async function loadServices() {
     try {
-      const servicesSnap = await db.collection('services')
-        .where('category', '==', 'license')
-        .get();
-      
+      const servicesSnap = await db.collection('services').where('category', '==', 'license').get();
       allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
       renderBrandFilters();
       applyFiltersAndSort();
     } catch (error) {
@@ -1658,15 +1655,9 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
   function handleSearch() {
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('searchClear');
-    
     searchQuery = input.value.trim().toLowerCase();
-    
-    if (searchQuery) {
-      clearBtn.classList.add('visible');
-    } else {
-      clearBtn.classList.remove('visible');
-    }
-    
+    if (searchQuery) clearBtn.classList.add('visible');
+    else clearBtn.classList.remove('visible');
     applyFiltersAndSort();
   }
 
@@ -1690,7 +1681,6 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
       if (searchQuery || currentBrandFilter !== 'all') {
         const filterText = currentBrandFilter !== 'all' ? `de <strong style="color:var(--gold);">${currentBrandFilter}</strong>` : '';
         const searchText = searchQuery ? `"<strong style="color:var(--gold);">${searchQuery}</strong>"` : '';
-        
         grid.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1718,7 +1708,6 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
     
     grid.innerHTML = filteredServices.map(service => {
-      // ✅ FIX: Usar parseTags
       const tags = parseTags(service.tags);
       const brand = detectBrand(service);
       const brandIcon = brand ? getBrandIcon(brand) : null;
@@ -1731,19 +1720,27 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
         highlightedName = service.name.replace(regex, '<mark style="background:var(--gold);color:var(--dark);padding:0 2px;border-radius:2px;">$1</mark>');
       }
       
-      // ✅ NUEVO: Cinta
       let ribbonHTML = '';
-      if (bestSeller) {
-        ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
-      } else if (newService) {
-        ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
-      }
+      if (bestSeller) ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
+      else if (newService) ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
       
-      // ✅ NUEVO: Icono de marca
       let brandIconHTML = '';
-      if (brandIcon) {
-        brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Herramienta'}">${brandIcon}</div>`;
+      if (brandIcon) brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Herramienta'}">${brandIcon}</div>`;
+      
+      // ✅ NUEVO: Botones de soporte
+      let supportButtonsHTML = '';
+      if (service.supportUrl) {
+        supportButtonsHTML += `
+          <a href="${service.supportUrl}" target="_blank" class="btn-support-tool" title="Soporte oficial de la herramienta">
+            🔧 Soporte ${brand || 'Herramienta'}
+          </a>
+        `;
       }
+      supportButtonsHTML += `
+        <a href="${PAGE_SUPPORT_URL}" target="_blank" class="btn-support-page" title="Soporte de ServiciosGF">
+          💬 Soporte Página
+        </a>
+      `;
       
       return `
         <div class="service-card">
@@ -1772,6 +1769,9 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
             </div>
           ` : ''}
           
+          <!-- ✅ NUEVO: Botones de soporte -->
+          ${supportButtonsHTML ? `<div class="support-buttons">${supportButtonsHTML}</div>` : ''}
+          
           <div class="service-footer">
             <div class="service-price">$${parseFloat(service.price || service.credits || 0).toFixed(2)} <span>créditos</span></div>
             <button class="btn-select" onclick="selectService('${service.id}')">Comprar</button>
@@ -1781,7 +1781,6 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     }).join('');
   }
 
-  // ✅ NUEVO: LIMPIAR TODOS LOS FILTROS
   function clearAllFilters() {
     document.getElementById('searchInput').value = '';
     document.getElementById('searchClear').classList.remove('visible');
@@ -1817,21 +1816,31 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
     document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
     document.getElementById('serviceProcessTime').value = service.processTime || '';
-    // ✅ FIX: Mostrar tags correctamente
     const tags = parseTags(service.tags);
     document.getElementById('serviceTags').value = tags.join(', ');
+    // ✅ NUEVO: Cargar URL de soporte
+    document.getElementById('serviceSupportUrl').value = service.supportUrl || '';
     document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
     document.getElementById('serviceIP').value = service.ip || '';
     
     const downloadUrls = service.downloadUrls || [];
     for (let i = 1; i <= 5; i++) {
       const input = document.getElementById(`downloadUrl${i}`);
-      if (input) {
-        input.value = downloadUrls[i-1] || '';
-      }
+      if (input) input.value = downloadUrls[i-1] || '';
     }
     
     document.getElementById('serviceModal').classList.add('open');
+  }
+
+  async function deleteService(serviceId) {
+    if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
+    try {
+      await db.collection('services').doc(serviceId).delete();
+      showToast('🗑️ Servicio eliminado', 'success');
+      await loadServices();
+    } catch (error) {
+      showToast('❌ Error al eliminar: ' + error.message, 'error');
+    }
   }
 
   async function saveService(event) {
@@ -1844,9 +1853,7 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     const downloadUrls = [];
     for (let i = 1; i <= 5; i++) {
       const url = document.getElementById(`downloadUrl${i}`).value.trim();
-      if (url) {
-        downloadUrls.push(url);
-      }
+      if (url) downloadUrls.push(url);
     }
     
     const serviceData = {
@@ -1859,6 +1866,8 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
       autoServer: document.getElementById('serviceAuto').value === 'true',
       processTime: document.getElementById('serviceProcessTime').value.trim(),
       tags: tagsArray,
+      // ✅ NUEVO: URL de soporte de la herramienta
+      supportUrl: document.getElementById('serviceSupportUrl').value.trim(),
       downloadUrls: downloadUrls,
       additionalInfo: document.getElementById('serviceAdditionalInfo').value.trim(),
       ip: document.getElementById('serviceIP').value.trim(),
@@ -1875,7 +1884,6 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
         await db.collection('services').add(serviceData);
         showToast('✅ Servicio agregado', 'success');
       }
-      
       closeServiceModal();
       await loadServices();
     } catch (error) {
@@ -1883,24 +1891,10 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     }
   }
 
-  async function deleteService(serviceId) {
-    if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
-    
-    try {
-      await db.collection('services').doc(serviceId).delete();
-      showToast('🗑️ Servicio eliminado', 'success');
-      await loadServices();
-    } catch (error) {
-      showToast('❌ Error al eliminar: ' + error.message, 'error');
-    }
-  }
-
   function selectService(serviceId) {
     if (!currentUser) {
       showToast('⚠️ Debes iniciar sesión para comprar', 'error');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
+      setTimeout(() => { window.location.href = 'index.html'; }, 2000);
       return;
     }
     
@@ -1963,7 +1957,18 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     }
     
     hideError();
-    
+
+    // ✅ NUEVO: Actualizar botones de soporte según el servicio
+    const btnToolSupport = document.getElementById('btnToolSupport');
+    if (service.supportUrl) {
+      btnToolSupport.style.display = 'block';
+      btnToolSupport.onclick = function() {
+        window.open(service.supportUrl, '_blank');
+      };
+    } else {
+      btnToolSupport.style.display = 'none';
+    }
+
     document.getElementById('orderModal').classList.add('open');
   }
 
@@ -2019,7 +2024,6 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     }
     
     container.style.display = 'block';
-    
     grid.innerHTML = downloadUrls.map((url, index) => `
       <button type="button" onclick="window.open('${url}', '_blank')" class="btn-download-link">
         ⬇️ Descargar Herramienta ${index + 1}
@@ -2044,15 +2048,23 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     }
   }
 
-  function showSupport() {
-    window.open('https://wa.me/5213221938917', '_blank');
+  // ✅ NUEVO: Soporte de la herramienta (URL específica)
+  function openToolSupport() {
+    if (currentOrderService && currentOrderService.supportUrl) {
+      window.open(currentOrderService.supportUrl, '_blank');
+    } else {
+      showToast('⚠️ Esta herramienta no tiene URL de soporte configurada', 'warning');
+    }
+  }
+
+  // ✅ NUEVO: Soporte de la página (WhatsApp del admin)
+  function showPageSupport() {
+    window.open(PAGE_SUPPORT_URL, '_blank');
   }
 
   async function submitOrder(e) {
     e.preventDefault();
-    
     if (!currentOrderService || !currentUser) return;
-    
     hideError();
     
     const unitPrice = currentOrderService.price || currentOrderService.credits || 0;
@@ -2112,7 +2124,6 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
     confirmMessage += `¿Confirmas la compra?`;
     
     const confirmPurchase = confirm(confirmMessage);
-    
     if (!confirmPurchase) return;
     
     try {
@@ -2181,15 +2192,11 @@ ${orderData.username ? `👤 <b>Username herramienta:</b> <code>${orderData.user
       toastContainer.className = 'toast-container';
       document.body.appendChild(toastContainer);
     }
-    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    
     const icon = type === 'success' ? '✅' : '⚠️';
     toast.innerHTML = `<span>${icon}</span> ${message}`;
-    
     toastContainer.appendChild(toast);
-    
     setTimeout(() => {
       toast.style.animation = 'fadeOut 0.3s ease forwards';
       setTimeout(() => toast.remove(), 300);

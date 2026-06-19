@@ -27,6 +27,7 @@
     --orange-border: rgba(255,136,0,0.3);
     --red: #ff4455;
     --purple: #8a2be2;
+    --whatsapp: #25D366;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
@@ -257,7 +258,6 @@
   .search-results-info.visible { display: block; }
   .search-results-info .count { color: var(--orange); font-weight: 700; }
 
-  /* ✅ NUEVO: FILTROS POR MARCA */
   .brand-filters {
     display: flex;
     gap: 8px;
@@ -319,7 +319,6 @@
     color: white;
   }
 
-  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
   .controls-row {
     display: flex;
     justify-content: space-between;
@@ -421,7 +420,6 @@
     box-shadow: 0 10px 30px rgba(255, 136, 0, 0.25);
   }
 
-  /* ✅ NUEVO: CINTA "MÁS VENDIDO" / "NUEVO" */
   .service-ribbon {
     position: absolute;
     top: 14px;
@@ -460,7 +458,6 @@
     border-right-color: rgba(0,0,0,0.4);
   }
 
-  /* ✅ NUEVO: ICONO DE MARCA */
   .brand-icon-badge {
     position: absolute;
     top: 16px;
@@ -542,6 +539,56 @@
     border-radius: 4px;
     font-size: 11px;
     color: var(--text-muted);
+  }
+
+  /* ✅ NUEVO: BOTONES DE SOPORTE */
+  .support-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-support-tool {
+    background: rgba(0,229,255,0.15);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-support-tool:hover {
+    background: var(--cyan);
+    color: var(--dark);
+  }
+
+  .btn-support-page {
+    background: rgba(37,211,102,0.15);
+    border: 1px solid var(--whatsapp);
+    color: var(--whatsapp);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-support-page:hover {
+    background: var(--whatsapp);
+    color: white;
   }
 
   .service-footer {
@@ -1113,12 +1160,10 @@
     </div>
   </div>
 
-  <!-- ✅ NUEVO: FILTROS POR MARCA/HERRAMIENTA -->
   <div class="brand-filters" id="brandFilters">
     <span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>
   </div>
 
-  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
   <div class="controls-row">
     <div class="sort-container">
       <span class="sort-label">📊 Ordenar:</span>
@@ -1193,19 +1238,38 @@
         <input type="text" id="serviceTags" placeholder="Ej: Xiaomi, FRP, Unlock">
       </div>
       
+      <!-- ✅ NUEVO: URL DE SOPORTE DE LA HERRAMIENTA -->
+      <div class="form-group">
+        <label>🔧 URL de Soporte de la Herramienta (opcional)</label>
+        <input type="url" id="serviceSupportUrl" placeholder="Ej: https://t.me/chimera_support o https://chimera-tool.com/support">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">URL del soporte oficial de la herramienta (Telegram, web, etc.)</small>
+      </div>
+      
       <div class="form-group">
         <label>📋 Campos Requeridos para el Pedido</label>
         <div class="checkbox-group">
           <div class="checkbox-item">
-            <input type="checkbox" id="requireIMEI" checked>
+            <input type="checkbox" id="requireModel">
+            <label for="requireModel">📱 Modelo del dispositivo (requerido)</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="requireAnyDesk">
+            <label for="requireAnyDesk">🖥️ AnyDesk ID (requerido)</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="requireUltraViewer">
+            <label for="requireUltraViewer">💻 UltraViewer ID (requerido)</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="requireIMEI">
             <label for="requireIMEI">🔢 IMEI a poner (requerido)</label>
           </div>
           <div class="checkbox-item">
-            <input type="checkbox" id="requireIP" checked>
+            <input type="checkbox" id="requireIP">
             <label for="requireIP">🌐 IP (requerido)</label>
           </div>
           <div class="checkbox-item">
-            <input type="checkbox" id="requireSN" checked>
+            <input type="checkbox" id="requireSN">
             <label for="requireSN">📱 SN - Serial Number (requerido)</label>
           </div>
         </div>
@@ -1346,9 +1410,13 @@
           </div>
         </div>
         
-        <div style="display: flex; gap: 12px; margin-top: 24px;">
-          <button type="button" onclick="showSupport()" style="flex: 1; background: var(--cyan); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase;">
-            💬 Soporte
+        <!-- ✅ NUEVO: DOS BOTONES DE SOPORTE -->
+        <div id="supportButtonsContainer" style="display: flex; gap: 12px; margin-top: 24px;">
+          <button type="button" id="btnToolSupport" onclick="openToolSupport()" style="flex: 1; background: var(--cyan); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase; display: none;">
+            🔧 Soporte Herramienta
+          </button>
+          <button type="button" onclick="showPageSupport()" style="flex: 1; background: var(--orange); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase;">
+            💬 Soporte Página
           </button>
         </div>
       </div>
@@ -1382,6 +1450,9 @@
     enabled: true
   };
 
+  // ✅ URL DE SOPORTE DE LA PÁGINA (WhatsApp del admin)
+  const PAGE_SUPPORT_URL = 'https://wa.me/5213221938917';
+
   let currentUser = null;
   let userProfile = null;
   let allServices = [];
@@ -1392,7 +1463,6 @@
   let currentBrandFilter = 'all';
   let currentSort = 'recent';
 
-  // ✅ NUEVO: FUNCIÓN PARA PARSEAR TAGS (FIX DEL BUG)
   function parseTags(tags) {
     if (!tags) return [];
     if (Array.isArray(tags)) {
@@ -1411,7 +1481,6 @@
     return [];
   }
 
-  // ✅ NUEVO: DETECTAR HERRAMIENTA/MARCA
   function detectBrand(service) {
     const text = [
       service.name || '',
@@ -1446,7 +1515,6 @@
     return null;
   }
 
-  // ✅ NUEVO: OBTENER ICONO
   function getBrandIcon(brand) {
     const icons = {
       'AnyDesk': '🔴',
@@ -1469,14 +1537,12 @@
     return icons[brand] || '🛜';
   }
 
-  // ✅ NUEVO: VERIFICAR MÁS VENDIDO
   function isBestSeller(service) {
     const name = (service.name || '').toLowerCase();
     const bestSellers = ['unlock', 'frp', 'bypass', 'remote', 'rent'];
     return bestSellers.some(bs => name.includes(bs));
   }
 
-  // ✅ NUEVO: VERIFICAR NUEVO
   function isNew(service) {
     if (!service.createdAt) return false;
     const created = new Date(service.createdAt);
@@ -1485,7 +1551,6 @@
     return diffDays <= 7;
   }
 
-  // ✅ NUEVO: EXTRAER MARCAS
   function extractBrands(services) {
     const brandCount = {};
     services.forEach(service => {
@@ -1495,7 +1560,6 @@
     return brandCount;
   }
 
-  // ✅ NUEVO: RENDERIZAR FILTROS
   function renderBrandFilters() {
     const container = document.getElementById('brandFilters');
     const brandCount = extractBrands(allServices);
@@ -1608,7 +1672,7 @@
 💵 <b>Total:</b> $${(orderData.servicePrice || 0).toFixed(2)}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
 
-${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
+${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''}${orderData.anydesk ? `🖥️ <b>AnyDesk:</b> <code>${orderData.anydesk}</code>\n` : ''}${orderData.ultraViewer ? `💻 <b>UltraViewer:</b> <code>${orderData.ultraViewer}</code>\n` : ''}${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de procesamiento remoto
     `.trim();
     return await sendTelegramMessage(message);
@@ -1745,6 +1809,21 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       let brandIconHTML = '';
       if (brandIcon) brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Herramienta'}">${brandIcon}</div>`;
       
+      // ✅ NUEVO: Botones de soporte
+      let supportButtonsHTML = '';
+      if (service.supportUrl) {
+        supportButtonsHTML += `
+          <a href="${service.supportUrl}" target="_blank" class="btn-support-tool" title="Soporte oficial de la herramienta">
+            🔧 Soporte ${brand || 'Herramienta'}
+          </a>
+        `;
+      }
+      supportButtonsHTML += `
+        <a href="${PAGE_SUPPORT_URL}" target="_blank" class="btn-support-page" title="Soporte de ServiciosGF">
+          💬 Soporte Página
+        </a>
+      `;
+      
       return `
         <div class="service-card">
           ${ribbonHTML}
@@ -1771,6 +1850,9 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
               ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
             </div>
           ` : ''}
+          
+          <!-- ✅ NUEVO: Botones de soporte -->
+          ${supportButtonsHTML ? `<div class="support-buttons">${supportButtonsHTML}</div>` : ''}
           
           <div class="service-footer">
             <div class="service-price">$${parseFloat(service.price || service.credits || 0).toFixed(2)} <span>créditos</span></div>
@@ -1819,12 +1901,16 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
     document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
     document.getElementById('serviceProcessTime').value = service.processTime || '';
-    // ✅ FIX: Mostrar tags correctamente
     const tags = parseTags(service.tags);
     document.getElementById('serviceTags').value = tags.join(', ');
+    // ✅ NUEVO: Cargar URL de soporte
+    document.getElementById('serviceSupportUrl').value = service.supportUrl || '';
     document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
     document.getElementById('serviceIP').value = service.ip || '';
     
+    document.getElementById('requireModel').checked = service.requireModel || false;
+    document.getElementById('requireAnyDesk').checked = service.requireAnyDesk || false;
+    document.getElementById('requireUltraViewer').checked = service.requireUltraViewer || false;
     document.getElementById('requireIMEI').checked = service.requireIMEI !== false;
     document.getElementById('requireIP').checked = service.requireIP !== false;
     document.getElementById('requireSN').checked = service.requireSN !== false;
@@ -1861,6 +1947,11 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       autoServer: document.getElementById('serviceAuto').value === 'true',
       processTime: document.getElementById('serviceProcessTime').value.trim(),
       tags: tagsArray,
+      // ✅ NUEVO: URL de soporte de la herramienta
+      supportUrl: document.getElementById('serviceSupportUrl').value.trim(),
+      requireModel: document.getElementById('requireModel').checked,
+      requireAnyDesk: document.getElementById('requireAnyDesk').checked,
+      requireUltraViewer: document.getElementById('requireUltraViewer').checked,
       requireIMEI: document.getElementById('requireIMEI').checked,
       requireIP: document.getElementById('requireIP').checked,
       requireSN: document.getElementById('requireSN').checked,
@@ -1948,10 +2039,22 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       document.getElementById('infoIPContainer').style.display = 'none';
     }
     
+    // ✅ NUEVO: Actualizar botones de soporte según el servicio
+    const btnToolSupport = document.getElementById('btnToolSupport');
+    if (service.supportUrl) {
+      btnToolSupport.style.display = 'block';
+      btnToolSupport.onclick = function() {
+        window.open(service.supportUrl, '_blank');
+      };
+    } else {
+      btnToolSupport.style.display = 'none';
+    }
+    
     hideError();
     document.getElementById('orderModal').classList.add('open');
   }
 
+  // ✅ NUEVA FUNCIÓN: Generar campos dinámicos según los requisitos del servicio
   function generateDynamicFields(service) {
     const container = document.getElementById('dynamicFields');
     let fieldsHTML = `
@@ -1961,20 +2064,70 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       </div>
     `;
     
-    if (service.requireIMEI) {
+    // ✅ Campo Modelo (si está requerido)
+    if (service.requireModel) {
       fieldsHTML += `
         <div class="form-group">
-          <label>IMEI A PONER *</label>
-          <input type="text" id="orderIMEI" required placeholder="IMEI A PONER">
-          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Si no tienes coloca: Al Azar || Si es Dual indicarlo</small>
+          <label>📱 Modelo del Dispositivo *</label>
+          <input type="text" id="orderModel" required placeholder="Ej: Motorola Moto G9 Power">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Modelo exacto del dispositivo</small>
         </div>
       `;
     }
     
+    // ✅ Campo AnyDesk (si está requerido)
+    if (service.requireAnyDesk) {
+      fieldsHTML += `
+        <div class="form-group">
+          <label>🖥️ AnyDesk ID *</label>
+          <input type="text" id="orderAnyDesk" required placeholder="AnyDesk">
+          <div style="margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);cursor:pointer;">
+              <input type="checkbox" id="anydeskCheckbox" style="width:16px;height:16px;accent-color:var(--orange);">
+              Coloca tu anydesk
+            </label>
+          </div>
+        </div>
+      `;
+    }
+    
+    // ✅ Campo UltraViewer (si está requerido)
+    if (service.requireUltraViewer) {
+      fieldsHTML += `
+        <div class="form-group">
+          <label>💻 UltraViewer ID *</label>
+          <input type="text" id="orderUltraViewer" required placeholder="UltraViewer">
+          <div style="margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);cursor:pointer;">
+              <input type="checkbox" id="ultraviewerCheckbox" style="width:16px;height:16px;accent-color:var(--orange);">
+              Coloca tu UltraViewer
+            </label>
+          </div>
+        </div>
+      `;
+    }
+    
+    // ✅ Campo IMEI (si está requerido)
+    if (service.requireIMEI) {
+      fieldsHTML += `
+        <div class="form-group">
+          <label>🔢 IMEI A PONER *</label>
+          <input type="text" id="orderIMEI" required placeholder="IMEI A PONER">
+          <div style="margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);cursor:pointer;">
+              <input type="checkbox" id="imeiCheckbox" style="width:16px;height:16px;accent-color:var(--orange);">
+              Si no tienes coloca: AL AZAR
+            </label>
+          </div>
+        </div>
+      `;
+    }
+    
+    // ✅ Campo IP (si está requerido)
     if (service.requireIP) {
       fieldsHTML += `
         <div class="form-group">
-          <label>IP *</label>
+          <label>🌐 IP *</label>
           <input type="text" id="orderIP" required placeholder="IP">
           <a href="https://ping.eu/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; color: var(--orange); font-size: 11px; margin-top: 4px; text-decoration: none; font-weight: 700; padding: 4px 10px; background: var(--orange-glow); border: 1px solid var(--orange-border); border-radius: 4px; transition: all 0.2s;">
             🌐 Ver mi IP en ping.eu
@@ -1988,10 +2141,11 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       `;
     }
     
+    // ✅ Campo SN (si está requerido)
     if (service.requireSN) {
       fieldsHTML += `
         <div class="form-group">
-          <label>SN *</label>
+          <label>📱 SN *</label>
           <input type="text" id="orderSN" required placeholder="SN">
           <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">🔍 *#06# Ejemplo: ZY245PTG</small>
         </div>
@@ -1999,6 +2153,53 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     }
     
     container.innerHTML = fieldsHTML;
+    
+    // ✅ Agregar event listeners para los checkboxes
+    setTimeout(() => {
+      const imeiCheckbox = document.getElementById('imeiCheckbox');
+      const imeiInput = document.getElementById('orderIMEI');
+      if (imeiCheckbox && imeiInput) {
+        imeiCheckbox.addEventListener('change', function() {
+          if (this.checked) {
+            imeiInput.value = 'AL AZAR';
+            imeiInput.readOnly = true;
+          } else {
+            imeiInput.value = '';
+            imeiInput.readOnly = false;
+          }
+        });
+      }
+      
+      const anydeskCheckbox = document.getElementById('anydeskCheckbox');
+      const anydeskInput = document.getElementById('orderAnyDesk');
+      if (anydeskCheckbox && anydeskInput) {
+        anydeskCheckbox.addEventListener('change', function() {
+          if (this.checked) {
+            anydeskInput.readOnly = false;
+            anydeskInput.focus();
+          } else {
+            anydeskInput.value = '';
+            anydeskInput.readOnly = true;
+          }
+        });
+        anydeskInput.readOnly = true;
+      }
+      
+      const ultraviewerCheckbox = document.getElementById('ultraviewerCheckbox');
+      const ultraviewerInput = document.getElementById('orderUltraViewer');
+      if (ultraviewerCheckbox && ultraviewerInput) {
+        ultraviewerCheckbox.addEventListener('change', function() {
+          if (this.checked) {
+            ultraviewerInput.readOnly = false;
+            ultraviewerInput.focus();
+          } else {
+            ultraviewerInput.value = '';
+            ultraviewerInput.readOnly = true;
+          }
+        });
+        ultraviewerInput.readOnly = true;
+      }
+    }, 100);
   }
 
   function generateDownloadButtons(service) {
@@ -2036,8 +2237,18 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     }
   }
 
-  function showSupport() {
-    window.open('https://wa.me/5213221938917', '_blank');
+  // ✅ NUEVO: Soporte de la herramienta (URL específica)
+  function openToolSupport() {
+    if (currentOrderService && currentOrderService.supportUrl) {
+      window.open(currentOrderService.supportUrl, '_blank');
+    } else {
+      showToast('⚠️ Esta herramienta no tiene URL de soporte configurada', 'warning');
+    }
+  }
+
+  // ✅ NUEVO: Soporte de la página (WhatsApp del admin)
+  function showPageSupport() {
+    window.open(PAGE_SUPPORT_URL, '_blank');
   }
 
   async function submitOrder(e) {
@@ -2072,11 +2283,36 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     
     let inputDataParts = [];
     
+    // ✅ Validar y guardar campos dinámicos
+    if (currentOrderService.requireModel) {
+      const model = document.getElementById('orderModel')?.value.trim();
+      if (!model) { showError('⚠️ Por favor ingresa el modelo del dispositivo'); return; }
+      orderData.model = model;
+      inputDataParts.push(`Modelo: ${model}`);
+    }
+    
+    if (currentOrderService.requireAnyDesk) {
+      const anydesk = document.getElementById('orderAnyDesk')?.value.trim();
+      const anydeskChecked = document.getElementById('anydeskCheckbox')?.checked;
+      if (!anydesk && !anydeskChecked) { showError('⚠️ Por favor ingresa el AnyDesk ID o marca la casilla'); return; }
+      orderData.anydesk = anydeskChecked ? anydesk : 'No proporcionado';
+      inputDataParts.push(`AnyDesk: ${anydeskChecked ? anydesk : 'No proporcionado'}`);
+    }
+    
+    if (currentOrderService.requireUltraViewer) {
+      const ultraViewer = document.getElementById('orderUltraViewer')?.value.trim();
+      const ultraViewerChecked = document.getElementById('ultraviewerCheckbox')?.checked;
+      if (!ultraViewer && !ultraViewerChecked) { showError('⚠️ Por favor ingresa el UltraViewer ID o marca la casilla'); return; }
+      orderData.ultraViewer = ultraViewerChecked ? ultraViewer : 'No proporcionado';
+      inputDataParts.push(`UltraViewer: ${ultraViewerChecked ? ultraViewer : 'No proporcionado'}`);
+    }
+    
     if (currentOrderService.requireIMEI) {
       const imei = document.getElementById('orderIMEI')?.value.trim();
-      if (!imei) { showError('⚠️ Por favor ingresa el IMEI'); return; }
-      orderData.imei = imei;
-      inputDataParts.push(`IMEI: ${imei}`);
+      const imeiChecked = document.getElementById('imeiCheckbox')?.checked;
+      if (!imei && !imeiChecked) { showError('⚠️ Por favor ingresa el IMEI o marca la casilla'); return; }
+      orderData.imei = imeiChecked ? 'AL AZAR' : imei;
+      inputDataParts.push(`IMEI: ${imeiChecked ? 'AL AZAR' : imei}`);
     }
     
     if (currentOrderService.requireIP) {
@@ -2096,6 +2332,9 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     orderData.inputData = inputDataParts.join(' | ');
     
     let confirmMessage = `✅ Confirmar Pedido Remoto\n\nServicio: ${currentOrderService.name}\n`;
+    if (orderData.model) confirmMessage += `Modelo: ${orderData.model}\n`;
+    if (orderData.anydesk) confirmMessage += `AnyDesk: ${orderData.anydesk}\n`;
+    if (orderData.ultraViewer) confirmMessage += `UltraViewer: ${orderData.ultraViewer}\n`;
     if (orderData.imei) confirmMessage += `IMEI: ${orderData.imei}\n`;
     if (orderData.ip) confirmMessage += `IP: ${orderData.ip}\n`;
     if (orderData.sn) confirmMessage += `SN: ${orderData.sn}\n`;
