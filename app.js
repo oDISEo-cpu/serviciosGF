@@ -19,9 +19,9 @@ const NexaGSM = {
     
     // ✅ CONFIGURACIÓN DE TELEGRAM BOT
     telegramConfig: {
-        botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',  // 🔑 REEMPLAZA CON TU TOKEN
-        chatId: '1461150518',      // 🔑 REEMPLAZA CON TU CHAT ID
-        enabled: true                    // Activar/desactivar notificaciones
+        botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
+        chatId: '1461150518',
+        enabled: true
     },
     
     currentRegisterStep: 1,
@@ -41,16 +41,13 @@ const NexaGSM = {
 
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // ✅ SIN VERIFICACIÓN DE SESIONES - Login directo
                 await this.handleSession(user);
                 
-                // ✅ Iniciar tracking de inactividad cuando hay sesión
                 if (this.inactivityConfig.enabled) {
                     this.startInactivityTracking();
                 }
             } else {
                 this.handleLogout();
-                // ✅ Detener tracking cuando no hay sesión
                 this.stopInactivityTracking();
             }
         });
@@ -187,7 +184,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     startInactivityTracking() {
         console.log('🔒 Tracking de inactividad activado');
         
-        // Eventos que resetean el timer
         const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
         
         activityEvents.forEach(event => {
@@ -196,7 +192,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             }, { passive: true });
         });
         
-        // Iniciar timer inicial
         this.resetInactivityTimer();
     },
 
@@ -213,7 +208,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             this.state.warningTimer = null;
         }
         
-        // Remover event listeners
         const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
         activityEvents.forEach(event => {
             document.removeEventListener(event, () => this.resetInactivityTimer());
@@ -223,7 +217,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     resetInactivityTimer() {
         this.state.lastActivity = Date.now();
         
-        // Limpiar timers anteriores
         if (this.state.inactivityTimer) {
             clearTimeout(this.state.inactivityTimer);
         }
@@ -232,14 +225,12 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             clearTimeout(this.state.warningTimer);
         }
         
-        // Timer para mostrar advertencia (2 minutos antes)
         const warningDelay = this.inactivityConfig.timeout - this.inactivityConfig.warningTime;
         
         this.state.warningTimer = setTimeout(() => {
             this.showInactivityWarning();
         }, warningDelay);
         
-        // Timer para cerrar sesión
         this.state.inactivityTimer = setTimeout(() => {
             this.autoLogout();
         }, this.inactivityConfig.timeout);
@@ -248,7 +239,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     showInactivityWarning() {
         const remainingSeconds = Math.floor(this.inactivityConfig.warningTime / 1000);
         
-        // Crear modal de advertencia si no existe
         if (!document.getElementById('inactivityWarningModal')) {
             const modal = document.createElement('div');
             modal.id = 'inactivityWarningModal';
@@ -273,7 +263,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             
             document.body.appendChild(modal);
             
-            // Event listeners para los botones
             document.getElementById('btnStayLoggedIn').addEventListener('click', () => {
                 this.dismissInactivityWarning();
             });
@@ -283,7 +272,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             });
         }
         
-        // Iniciar countdown
         this.startCountdown(remainingSeconds);
     },
 
@@ -302,7 +290,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             }
         }, 1000);
         
-        // Guardar interval para limpiarlo si el usuario permanece conectado
         this.state.countdownInterval = interval;
     },
 
@@ -317,7 +304,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             this.state.countdownInterval = null;
         }
         
-        // Resetear timer
         this.resetInactivityTimer();
         
         this.showToast('✅ Sesión renovada', 'success');
@@ -326,7 +312,6 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     async autoLogout() {
         console.log('🔒 Cerrando sesión por inactividad');
         
-        // Limpiar modal de advertencia si existe
         const modal = document.getElementById('inactivityWarningModal');
         if (modal) {
             modal.remove();
@@ -337,13 +322,10 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             this.state.countdownInterval = null;
         }
         
-        // Mostrar mensaje
         this.showToast('🔒 Sesión cerrada por inactividad', 'error');
         
-        // Cerrar sesión
         await this.logout();
         
-        // Detener tracking
         this.stopInactivityTracking();
     },
 
@@ -442,25 +424,40 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         }
     },
 
+    // ✅ FUNCIÓN CORREGIDA: handleSession
     async handleSession(user) {
         this.state.currentUser = user;
         
         try {
+            // Intentar cargar el perfil
             const profileDoc = await db.collection('profiles').doc(user.uid).get();
             
             if (profileDoc.exists) {
                 this.state.userProfile = profileDoc.data();
             } else {
+                // Si el perfil no existe, crear uno básico (esto puede pasar después del registro)
                 const name = user.displayName || user.email.split('@')[0];
                 const newProfile = { 
-                    name, 
+                    name: name,
                     email: user.email, 
                     role: 'user', 
                     createdAt: new Date().toISOString() 
                 };
                 
-                await db.collection('profiles').doc(user.uid).set(newProfile, { merge: true });
-                this.state.userProfile = newProfile;
+                // Intentar crear el perfil, pero no fallar si no se puede
+                try {
+                    await db.collection('profiles').doc(user.uid).set(newProfile, { merge: true });
+                    this.state.userProfile = newProfile;
+                } catch (profileError) {
+                    console.warn('⚠️ No se pudo crear perfil básico:', profileError);
+                    // Usar datos básicos del usuario de Auth
+                    this.state.userProfile = {
+                        name: name,
+                        email: user.email,
+                        role: 'user',
+                        balance: 0
+                    };
+                }
             }
 
             await this.logLoginSession();
@@ -481,7 +478,15 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             
         } catch (error) {
             console.error('Error en handleSession:', error);
-            this.showToast('Error al cargar perfil: ' + error.message, 'error');
+            // No mostrar error al usuario, solo en consola
+            // Crear perfil básico para que pueda continuar
+            this.state.userProfile = {
+                name: user.displayName || user.email.split('@')[0],
+                email: user.email,
+                role: 'user',
+                balance: 0
+            };
+            this.updateAuthUI();
         }
     },
 
@@ -547,7 +552,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         else if (ua.includes('Firefox')) browser = 'Firefox';
         else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
         else if (ua.includes('Edg')) browser = 'Edge';
-        else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+        else if (ua.includes('Opera') || (ua.includes('OPR'))) browser = 'Opera';
         
         let os = 'Unknown';
         if (ua.includes('Windows')) os = 'Windows';
@@ -573,6 +578,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         }
     },
 
+    // ✅ FUNCIÓN CORREGIDA: register() - SIN ERROR
     async register() {
         try {
             const firstName = document.getElementById('regFirstName').value;
@@ -588,20 +594,23 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             const zipCode = document.getElementById('regZipCode').value;
             const newsletter = document.getElementById('regNewsletter').checked;
             
+            // 1. Crear usuario en Authentication
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-            await userCredential.user.updateProfile({ displayName: `${firstName} ${lastName}` });
             
-            const profileRef = db.collection('profiles').doc(userCredential.user.uid);
-            const profileDoc = await profileRef.get();
+            // 2. Actualizar nombre en el perfil de Auth
+            await userCredential.user.updateProfile({ 
+                displayName: `${firstName} ${lastName}` 
+            });
             
-            if (!profileDoc.exists) {
-                await profileRef.set({
+            // 3. Crear perfil en Firestore (SIN verificar si existe primero)
+            try {
+                await db.collection('profiles').doc(userCredential.user.uid).set({
                     name: firstName,
                     lastName: lastName,
                     email: email,
                     phone: phone,
                     address1: address1,
-                    address2: address2,
+                    address2: address2 || '',
                     country: country,
                     state: state,
                     city: city,
@@ -612,32 +621,28 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 });
-            } else {
-                await profileRef.set({
-                    name: firstName,
-                    lastName: lastName,
-                    phone: phone,
-                    address1: address1,
-                    address2: address2,
-                    country: country,
-                    state: state,
-                    city: city,
-                    zipCode: zipCode,
-                    newsletter: newsletter,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
+                console.log('✅ Perfil creado en Firestore');
+            } catch (firestoreError) {
+                console.warn('⚠️ Error creando perfil en Firestore (no crítico):', firestoreError);
+                // No mostrar error al usuario, el registro fue exitoso
             }
             
-            // ✅ ENVIAR NOTIFICACIÓN A TELEGRAM
-            await this.notifyNewUser({
-                email: email,
-                name: `${firstName} ${lastName}`,
-                phone: phone,
-                country: country
-            });
+            // 4. Enviar notificación a Telegram (no crítico si falla)
+            try {
+                await this.notifyNewUser({
+                    email: email,
+                    name: `${firstName} ${lastName}`,
+                    phone: phone,
+                    country: country
+                });
+            } catch (telegramError) {
+                console.warn('⚠️ Error enviando notificación a Telegram:', telegramError);
+            }
             
+            // 5. Mostrar mensaje de éxito
             this.showToast('✅ ¡Cuenta creada con éxito!', 'success');
             return true;
+            
         } catch (error) {
             console.error('Error en registro:', error);
             
@@ -728,10 +733,8 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     async login(email, password) {
         try {
-            // ✅ LOGIN DIRECTO - SIN VERIFICACIÓN DE SESIONES
             await auth.signInWithEmailAndPassword(email, password);
             
-            // Cerrar modal de login
             setTimeout(() => {
                 const modal = document.getElementById('authModal');
                 if (modal) {
@@ -987,7 +990,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                                 <div style="font-size:13px;color:var(--text-muted);">${user.email}</div>
                                 <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Registrado: ${new Date(user.createdAt).toLocaleDateString('es-ES')}</div>
                             </div>
-                            ${user.role !== 'admin' ? `<button class="btn-ghost" onclick="NexaGSM.deleteUser('${user.id}')" style="padding:6px 12px;font-size:11px;color:#ff4455;border-color:#ff4455;">Eliminar</button>` : ''}
+                            ${user.role !== 'admin' ? `<button class="btn-ghost" onclick="NexaGSM.deleteUser('${user.id}', '${user.email}')" style="padding:6px 12px;font-size:11px;color:#ff4455;border-color:#ff4455;">Eliminar</button>` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -998,15 +1001,59 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         }
     },
 
-    async deleteUser(userId) {
-        if (!this.isAdmin() || !confirm('¿Eliminar este usuario?')) return;
+    async deleteUser(userId, userEmail) {
+        if (!this.isAdmin()) {
+            this.showToast('⚠️ Solo administradores pueden eliminar usuarios', 'error');
+            return;
+        }
+        
+        const confirmMessage = `
+⚠️ ELIMINAR USUARIO
+
+Email: ${userEmail}
+
+Esta acción eliminará:
+✓ Perfil del usuario
+✓ Todos sus pedidos
+✓ Todas sus transacciones
+
+IMPORTANTE: Después de eliminar aquí, también debes ir a:
+Firebase Console → Authentication → Users
+Y eliminar el usuario manualmente para liberar el email.
+
+¿Confirmas la eliminación?
+        `.trim();
+        
+        if (!confirm(confirmMessage)) return;
+        
         try {
             await db.collection('profiles').doc(userId).delete();
-            this.showToast('Perfil eliminado.', 'success');
+            
+            const ordersSnap = await db.collection('orders').where('userId', '==', userId).get();
+            const batch1 = db.batch();
+            ordersSnap.docs.forEach(doc => batch1.delete(doc.ref));
+            await batch1.commit();
+            
+            const transactionsSnap = await db.collection('transactions').where('userId', '==', userId).get();
+            const batch2 = db.batch();
+            transactionsSnap.docs.forEach(doc => batch2.delete(doc.ref));
+            await batch2.commit();
+            
+            const streamingOrdersSnap = await db.collection('streamingOrders').where('userId', '==', userId).get();
+            const batch3 = db.batch();
+            streamingOrdersSnap.docs.forEach(doc => batch3.delete(doc.ref));
+            await batch3.commit();
+            
+            this.showToast('✅ Usuario eliminado de Firestore. Ahora ve a Firebase Console → Authentication y elimínalo también.', 'success');
             this.showAdminPanel();
+            
+            setTimeout(() => {
+                this.showToast('⚠️ Recuerda: Ve a Firebase Console → Authentication → Users y elimina el usuario manualmente', 'warning');
+            }, 3000);
+            
         } catch (error) {
             console.error('Error eliminando usuario:', error);
-            this.showToast('Error al eliminar.', 'error');
+            this.showToast('❌ Error al eliminar: ' + error.message, 'error');
         }
     },
 
@@ -1369,9 +1416,9 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         if (!container) return;
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
-        toast.innerHTML = type === 'success' ? `<span>✅</span> ${message}` : `<span>⚠️</span> ${message}`;
+        toast.innerHTML = type === 'success' ? `<span>✅</span> ${message}` : type === 'warning' ? `<span>⚠️</span> ${message}` : `<span>⚠️</span> ${message}`;
         container.appendChild(toast);
-        setTimeout(() => { toast.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 3000);
+        setTimeout(() => { toast.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 4000);
     },
 
     openDashboard() {

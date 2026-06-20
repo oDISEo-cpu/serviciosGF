@@ -366,6 +366,152 @@
     font-size: 13px;
   }
 
+  /* ✅ NUEVO: Estilos para credenciales entregadas */
+  .credentials-delivery {
+    background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,229,255,0.05) 100%);
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .credentials-delivery::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+  }
+  .credentials-delivery h4 {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .credentials-delivery h4::before {
+    content: '🔑';
+    font-size: 18px;
+  }
+  .credential-item {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+  .credential-item:hover {
+    border-color: var(--cyan);
+    background: var(--surface);
+  }
+  .credential-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .credential-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    word-break: break-all;
+    flex: 1;
+  }
+  .credential-value a {
+    color: var(--cyan);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .credential-value a:hover {
+    color: var(--green);
+    text-decoration: underline;
+  }
+  .btn-copy {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .btn-copy:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+  .btn-copy.copied {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--dark);
+  }
+  .btn-copy-all {
+    width: 100%;
+    background: var(--green);
+    border: 1px solid var(--green);
+    color: var(--dark);
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 12px;
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .btn-copy-all:hover {
+    background: #00cc6a;
+    box-shadow: 0 4px 16px rgba(0,255,136,0.3);
+  }
+  .credentials-notes {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .credentials-notes strong {
+    color: var(--cyan);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .credentials-notes p {
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .delivery-date {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: right;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
   .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -374,6 +520,41 @@
   .empty-state-icon {
     font-size: 64px;
     margin-bottom: 16px;
+  }
+
+  /* ✅ Toast para copiar */
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--green);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastSlideIn 0.3s ease;
+    min-width: 250px;
+    border-left: 4px solid var(--green);
+  }
+  @keyframes toastSlideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
   }
 
   footer {
@@ -392,6 +573,8 @@
     .page-hero { padding: 60px 20px 30px; }
     .orders-container { padding: 20px; }
     .order-header { flex-direction: column; }
+    .credential-item { flex-direction: column; align-items: flex-start; }
+    .btn-copy { width: 100%; margin-top: 8px; }
   }
 </style>
 </head>
@@ -452,6 +635,9 @@
 <footer>
   <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
 </footer>
+
+<!-- ✅ Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -545,6 +731,154 @@
            order.packageId || 
            order.category ||
            order.serviceId;
+  }
+
+  // ✅ NUEVO: Función para copiar al portapapeles
+  function copyToClipboard(text, btnElement) {
+    navigator.clipboard.writeText(text).then(() => {
+      // Cambiar el botón temporalmente
+      const originalText = btnElement.textContent;
+      btnElement.textContent = '✅ Copiado';
+      btnElement.classList.add('copied');
+      
+      // Mostrar toast
+      showToast('✅ Copiado al portapapeles');
+      
+      // Restaurar el botón después de 2 segundos
+      setTimeout(() => {
+        btnElement.textContent = originalText;
+        btnElement.classList.remove('copied');
+      }, 2000);
+    }).catch(err => {
+      console.error('Error al copiar:', err);
+      showToast('❌ Error al copiar');
+    });
+  }
+
+  // ✅ NUEVO: Función para copiar todas las credenciales
+  function copyAllCredentials(orderId) {
+    const order = allOrders.find(o => o.id === orderId);
+    if (!order || !order.credentials) return;
+    
+    const creds = order.credentials;
+    let text = '';
+    
+    if (creds.username) text += `Usuario: ${creds.username}\n`;
+    if (creds.password) text += `Contraseña: ${creds.password}\n`;
+    if (creds.email) text += `Email: ${creds.email}\n`;
+    if (creds.url) text += `URL: ${creds.url}\n`;
+    if (creds.notes) text += `\nNotas: ${creds.notes}`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('✅ Todas las credenciales copiadas');
+    }).catch(err => {
+      console.error('Error al copiar:', err);
+      showToast('❌ Error al copiar');
+    });
+  }
+
+  // ✅ NUEVO: Función para mostrar toast
+  function showToast(message) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
+  // ✅ NUEVO: Función para renderizar credenciales
+  function renderCredentials(order) {
+    if (!order.credentials) return '';
+    
+    const creds = order.credentials;
+    const hasAnyCredential = creds.username || creds.password || creds.email || creds.url;
+    
+    if (!hasAnyCredential) return '';
+    
+    let itemsHTML = '';
+    
+    if (creds.username) {
+      itemsHTML += `
+        <div class="credential-item">
+          <div style="flex:1;">
+            <div class="credential-label">👤 Usuario</div>
+            <div class="credential-value">${creds.username}</div>
+          </div>
+          <button class="btn-copy" onclick="copyToClipboard('${creds.username.replace(/'/g, "\\'")}', this)">📋 Copiar</button>
+        </div>
+      `;
+    }
+    
+    if (creds.password) {
+      itemsHTML += `
+        <div class="credential-item">
+          <div style="flex:1;">
+            <div class="credential-label">🔑 Contraseña</div>
+            <div class="credential-value">${creds.password}</div>
+          </div>
+          <button class="btn-copy" onclick="copyToClipboard('${creds.password.replace(/'/g, "\\'")}', this)">📋 Copiar</button>
+        </div>
+      `;
+    }
+    
+    if (creds.email) {
+      itemsHTML += `
+        <div class="credential-item">
+          <div style="flex:1;">
+            <div class="credential-label">📧 Email de la cuenta</div>
+            <div class="credential-value">${creds.email}</div>
+          </div>
+          <button class="btn-copy" onclick="copyToClipboard('${creds.email.replace(/'/g, "\\'")}', this)">📋 Copiar</button>
+        </div>
+      `;
+    }
+    
+    if (creds.url) {
+      itemsHTML += `
+        <div class="credential-item">
+          <div style="flex:1;">
+            <div class="credential-label">🔗 URL de acceso</div>
+            <div class="credential-value"><a href="${creds.url}" target="_blank" rel="noopener">${creds.url}</a></div>
+          </div>
+          <button class="btn-copy" onclick="copyToClipboard('${creds.url.replace(/'/g, "\\'")}', this)">📋 Copiar</button>
+        </div>
+      `;
+    }
+    
+    let notesHTML = '';
+    if (creds.notes) {
+      notesHTML = `
+        <div class="credentials-notes">
+          <strong>📝 Notas del administrador</strong>
+          <p>${creds.notes.replace(/\n/g, '<br>')}</p>
+        </div>
+      `;
+    }
+    
+    let deliveryDateHTML = '';
+    if (creds.deliveredAt) {
+      const deliveryDate = parseDate(creds.deliveredAt);
+      deliveryDateHTML = `
+        <div class="delivery-date">
+          Entregado el: ${deliveryDate.toLocaleString('es-ES')}
+        </div>
+      `;
+    }
+    
+    return `
+      <div class="credentials-delivery">
+        <h4>Credenciales de Acceso</h4>
+        ${itemsHTML}
+        ${notesHTML}
+        <button class="btn-copy-all" onclick="copyAllCredentials('${order.id}')">📋 Copiar Todas las Credenciales</button>
+        ${deliveryDateHTML}
+      </div>
+    `;
   }
 
   auth.onAuthStateChanged(async (user) => {
@@ -758,7 +1092,11 @@
       }
       
       let deliveryContent = '';
-      if (isStreaming && (order.status === 'completed' || order.status === 'approved') && order.deliveryAccount) {
+      
+      // ✅ NUEVO: Verificar si hay credenciales entregadas (para pedidos normales)
+      if (!isStreaming && order.credentials && (status === 'completed' || status === 'approved')) {
+        deliveryContent = renderCredentials(order);
+      } else if (isStreaming && (order.status === 'completed' || order.status === 'approved') && order.deliveryAccount) {
         deliveryContent = `
           <div class="delivery-info" style="background: rgba(138,43,226,0.1); border: 1px solid var(--purple);">
             <h4 style="color: var(--purple);">📺 CUENTA DE STREAMING ENTREGADA</h4>
@@ -782,7 +1120,7 @@
             ` : ''}
           </div>
         `;
-      } else if (!isStreaming && (order.status === 'completed' || order.status === 'approved')) {
+      } else if (!isStreaming && (status === 'completed' || status === 'approved') && !order.credentials) {
         deliveryContent = `
           <div class="delivery-info">
             <h4>✅ Pedido Completado</h4>

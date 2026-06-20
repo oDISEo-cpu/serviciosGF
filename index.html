@@ -306,9 +306,9 @@
   <div class="section-header">
     <span class="section-tag">// Catálogo de Servicios</span>
     <h2 class="section-title">Todo lo que <span class="hl">necesitas</span><br>en un solo servidor</h2>
-    <p class="section-desc">Soluciones completas para técnicos GSM: unlock, flash, bypass, licencias y soporte remoto.</p>
+    <p class="section-desc">Soluciones completas para técnicos GSM: unlock, flash, bypass, licencias, streaming y soporte remoto.</p>
   </div>
-  <div class="services-grid">
+  <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
     <div class="service-card">
       <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
       <h3>Registros IMEI / SN</h3>
@@ -319,9 +319,9 @@
         <span class="tag">Honor</span>
         <span class="tag">FRP</span>
       </div>
-      <div class="service-time-badge time-minutes">
-        <span class="time-icon">⏱️</span>
-        <span>1-5 min</span>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
       </div>
     </div>
     
@@ -335,9 +335,9 @@
         <span class="tag">FDL</span>
         <span class="tag">EDL</span>
       </div>
-      <div class="service-time-badge time-minutes">
-        <span class="time-icon">⏱️</span>
-        <span>5-15 min</span>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
       </div>
     </div>
     
@@ -365,9 +365,9 @@
         <span class="tag">KG Bypass</span>
         <span class="tag">iRemoval</span>
       </div>
-      <div class="service-time-badge time-minutes">
-        <span class="time-icon">⏱️</span>
-        <span>10-30 min</span>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
       </div>
     </div>
     
@@ -381,9 +381,26 @@
         <span class="tag">6 meses</span>
         <span class="tag">12 meses</span>
       </div>
-      <div class="service-time-badge time-hours">
-        <span class="time-icon">🕐</span>
-        <span>24-48h</span>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
+      </div>
+    </div>
+    
+    <!-- ✅ NUEVO: SERVICIO DE STREAMING -->
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22 6 12 13 2 6"></polyline></svg></div>
+      <h3>Servicios Streaming</h3>
+      <p>Cuentas premium de Netflix, Spotify, Disney+, HBO Max y más plataformas digitales al mejor precio.</p>
+      <div class="service-tags">
+        <span class="tag">Netflix</span>
+        <span class="tag">Spotify</span>
+        <span class="tag">Disney+</span>
+        <span class="tag">HBO</span>
+      </div>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
       </div>
     </div>
     
@@ -397,9 +414,9 @@
         <span class="tag">DZKJ</span>
         <span class="tag">PCB</span>
       </div>
-      <div class="service-time-badge time-hours">
-        <span class="time-icon">🕐</span>
-        <span>1-2 horas</span>
+      <div class="service-time-badge time-instant">
+        <span class="time-icon">⚡</span>
+        <span>Instant</span>
       </div>
     </div>
   </div>
@@ -1036,15 +1053,15 @@
   }
 
   .time-minutes {
-    background: rgba(255, 204, 0, 0.15);
-    color: var(--yellow);
-    border: 1px solid var(--yellow);
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--green);
+    border: 1px solid var(--green);
   }
 
   .time-hours {
-    background: rgba(136, 136, 136, 0.15);
-    color: #888;
-    border: 1px solid #888;
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--green);
+    border: 1px solid var(--green);
   }
 
   /* ✅ FAQ VISUAL DESPLEGABLE */
