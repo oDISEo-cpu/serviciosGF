@@ -9,21 +9,21 @@ const NexaGSM = {
         warningTimer: null,
         lastActivity: Date.now()
     },
-    
+
     // ✅ CONFIGURACIÓN DE INACTIVIDAD
     inactivityConfig: {
         timeout: 5 * 60 * 1000,      // 5 minutos de inactividad para cerrar sesión
         warningTime: 2 * 60 * 1000,   // 2 minutos antes de cerrar sesión mostrar advertencia
         enabled: true                  // Activar/desactivar esta funcionalidad
     },
-    
+
     // ✅ CONFIGURACIÓN DE TELEGRAM BOT
     telegramConfig: {
         botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
         chatId: '1461150518',
         enabled: true
     },
-    
+
     currentRegisterStep: 1,
 
     async init() {
@@ -42,7 +42,7 @@ const NexaGSM = {
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 await this.handleSession(user);
-                
+
                 if (this.inactivityConfig.enabled) {
                     this.startInactivityTracking();
                 }
@@ -59,10 +59,10 @@ const NexaGSM = {
             console.log('🔕 Notificaciones de Telegram desactivadas');
             return false;
         }
-        
+
         try {
             const url = `https://api.telegram.org/bot${this.telegramConfig.botToken}/sendMessage`;
-            
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -74,9 +74,9 @@ const NexaGSM = {
                     parse_mode: 'HTML'
                 })
             });
-            
+
             const data = await response.json();
-            
+
             if (data.ok) {
                 console.log('✅ Notificación enviada a Telegram');
                 return true;
@@ -105,7 +105,7 @@ const NexaGSM = {
 ${orderData.imei ? `🔢 <b>IMEI:</b> ${orderData.imei}\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> ${orderData.ip}\n` : ''}${orderData.sn ? `📱 <b>SN:</b> ${orderData.sn}\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de revisión
         `.trim();
-        
+
         return await this.sendTelegramMessage(message);
     },
 
@@ -123,7 +123,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> ${orderData.imei}\n` : ''}${orderData.ip ?
 ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositData.walletAddress ? `📍 <b>Wallet:</b> ${depositData.walletAddress}\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de verificación
         `.trim();
-        
+
         return await this.sendTelegramMessage(message);
     },
 
@@ -142,7 +142,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
 ⏳ <b>Estado:</b> Pendiente de entrega manual
         `.trim();
-        
+
         return await this.sendTelegramMessage(message);
     },
 
@@ -159,13 +159,13 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
 ✅ <b>Estado:</b> Completado
         `.trim();
-        
+
         return await this.sendTelegramMessage(message);
     },
 
     // 👤 NOTIFICACIÓN DE NUEVO REGISTRO
     async notifyNewUser(userData) {
-        const message = `
+        let message = `
 👤 <b>NUEVO USUARIO REGISTRADO</b>
 
 📧 <b>Email:</b> ${userData.email || 'N/A'}
@@ -173,41 +173,51 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 📱 <b>Teléfono:</b> ${userData.phone || 'N/A'}
 🌍 <b>País:</b> ${userData.country || 'N/A'}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
-
-✅ <b>Estado:</b> Registrado exitosamente
         `.trim();
-        
+
+        // Agregar código de referido si existe
+        if (userData.referralCode && userData.referralCode.trim() !== '') {
+            message += `
+
+🎁 <b>Código de Referido:</b> ${userData.referralCode}
+✅ <b>Estado:</b> Registrado con referido - Pendiente de aprobación`;
+        } else {
+            message += `
+
+✅ <b>Estado:</b> Registrado exitosamente`;
+        }
+
         return await this.sendTelegramMessage(message);
     },
 
     // ✅ SISTEMA DE TRACKING DE INACTIVIDAD
     startInactivityTracking() {
         console.log('🔒 Tracking de inactividad activado');
-        
+
         const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-        
+
         activityEvents.forEach(event => {
             document.addEventListener(event, () => {
                 this.resetInactivityTimer();
             }, { passive: true });
         });
-        
+
         this.resetInactivityTimer();
     },
 
     stopInactivityTracking() {
         console.log('🔓 Tracking de inactividad desactivado');
-        
+
         if (this.state.inactivityTimer) {
             clearTimeout(this.state.inactivityTimer);
             this.state.inactivityTimer = null;
         }
-        
+
         if (this.state.warningTimer) {
             clearTimeout(this.state.warningTimer);
             this.state.warningTimer = null;
         }
-        
+
         const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
         activityEvents.forEach(event => {
             document.removeEventListener(event, () => this.resetInactivityTimer());
@@ -216,21 +226,21 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     resetInactivityTimer() {
         this.state.lastActivity = Date.now();
-        
+
         if (this.state.inactivityTimer) {
             clearTimeout(this.state.inactivityTimer);
         }
-        
+
         if (this.state.warningTimer) {
             clearTimeout(this.state.warningTimer);
         }
-        
+
         const warningDelay = this.inactivityConfig.timeout - this.inactivityConfig.warningTime;
-        
+
         this.state.warningTimer = setTimeout(() => {
             this.showInactivityWarning();
         }, warningDelay);
-        
+
         this.state.inactivityTimer = setTimeout(() => {
             this.autoLogout();
         }, this.inactivityConfig.timeout);
@@ -238,13 +248,13 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     showInactivityWarning() {
         const remainingSeconds = Math.floor(this.inactivityConfig.warningTime / 1000);
-        
+
         if (!document.getElementById('inactivityWarningModal')) {
             const modal = document.createElement('div');
             modal.id = 'inactivityWarningModal';
             modal.className = 'modal-overlay open';
             modal.style.cssText = 'position:fixed;inset:0;background:rgba(4,10,18,0.95);backdrop-filter:blur(6px);z-index:10000;display:flex;align-items:center;justify-content:center;';
-            
+
             modal.innerHTML = `
                 <div style="background:var(--surface);border:2px solid var(--yellow);border-radius:12px;padding:32px;max-width:500px;text-align:center;animation:modalSlideIn 0.3s ease;">
                     <div style="font-size:64px;margin-bottom:16px;">⚠️</div>
@@ -260,36 +270,36 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     </button>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
-            
+
             document.getElementById('btnStayLoggedIn').addEventListener('click', () => {
                 this.dismissInactivityWarning();
             });
-            
+
             document.getElementById('btnLogoutNow').addEventListener('click', () => {
                 this.autoLogout();
             });
         }
-        
+
         this.startCountdown(remainingSeconds);
     },
 
     startCountdown(seconds) {
         const countdownEl = document.getElementById('countdown');
         if (!countdownEl) return;
-        
+
         const interval = setInterval(() => {
             seconds--;
             if (countdownEl) {
                 countdownEl.textContent = seconds;
             }
-            
+
             if (seconds <= 0) {
                 clearInterval(interval);
             }
         }, 1000);
-        
+
         this.state.countdownInterval = interval;
     },
 
@@ -298,61 +308,61 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         if (modal) {
             modal.remove();
         }
-        
+
         if (this.state.countdownInterval) {
             clearInterval(this.state.countdownInterval);
             this.state.countdownInterval = null;
         }
-        
+
         this.resetInactivityTimer();
-        
+
         this.showToast('✅ Sesión renovada', 'success');
     },
 
     async autoLogout() {
         console.log('🔒 Cerrando sesión por inactividad');
-        
+
         const modal = document.getElementById('inactivityWarningModal');
         if (modal) {
             modal.remove();
         }
-        
+
         if (this.state.countdownInterval) {
             clearInterval(this.state.countdownInterval);
             this.state.countdownInterval = null;
         }
-        
+
         this.showToast('🔒 Sesión cerrada por inactividad', 'error');
-        
+
         await this.logout();
-        
+
         this.stopInactivityTracking();
     },
 
     setupPreciosVisibility() {
         const preciosSection = document.getElementById('precios');
         const navBtnPrecios = document.getElementById('navBtnPrecios');
-        
+
         if (!preciosSection || !navBtnPrecios) return;
-        
+
         preciosSection.style.display = 'none';
         preciosSection.style.opacity = '0';
         preciosSection.style.transition = 'opacity 0.5s ease';
-        
+
         navBtnPrecios.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             if (!this.state.currentUser) {
                 this.openModal('login');
                 return;
             }
-            
+
             preciosSection.style.display = 'block';
-            
+
             setTimeout(() => {
                 preciosSection.style.opacity = '1';
             }, 50);
-            
+
             setTimeout(() => {
                 preciosSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
@@ -362,9 +372,9 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     initCarousel() {
         const track = document.getElementById('carouselTrack');
         const dotsContainer = document.getElementById('carouselDots');
-        
+
         if (!track || !dotsContainer) return;
-        
+
         const slides = track.querySelectorAll('.carousel-slide');
         let currentSlide = 0;
         let autoPlayInterval;
@@ -427,23 +437,23 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     // ✅ FUNCIÓN CORREGIDA: handleSession
     async handleSession(user) {
         this.state.currentUser = user;
-        
+
         try {
             // Intentar cargar el perfil
             const profileDoc = await db.collection('profiles').doc(user.uid).get();
-            
+
             if (profileDoc.exists) {
                 this.state.userProfile = profileDoc.data();
             } else {
                 // Si el perfil no existe, crear uno básico (esto puede pasar después del registro)
                 const name = user.displayName || user.email.split('@')[0];
-                const newProfile = { 
+                const newProfile = {
                     name: name,
-                    email: user.email, 
-                    role: 'user', 
-                    createdAt: new Date().toISOString() 
+                    email: user.email,
+                    role: 'user',
+                    createdAt: new Date().toISOString()
                 };
-                
+
                 // Intentar crear el perfil, pero no fallar si no se puede
                 try {
                     await db.collection('profiles').doc(user.uid).set(newProfile, { merge: true });
@@ -463,7 +473,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             await this.logLoginSession();
             await this.loadData();
             this.updateAuthUI();
-            
+
             const preciosSection = document.getElementById('precios');
             if (preciosSection) {
                 preciosSection.style.opacity = '0';
@@ -471,11 +481,11 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     preciosSection.style.display = 'none';
                 }, 500);
             }
-            
+
             setTimeout(() => {
                 this.showToast(`¡Bienvenido, ${this.state.userProfile.name}!`, 'success');
             }, 600);
-            
+
         } catch (error) {
             console.error('Error en handleSession:', error);
             // No mostrar error al usuario, solo en consola
@@ -492,12 +502,12 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     async logLoginSession() {
         if (!this.state.currentUser) return;
-        
+
         try {
             const ip = await this.getUserIPForLog();
             const countryData = await this.getCountryFromIP(ip);
             const device = this.getDeviceInfo();
-            
+
             await db.collection('loginLogs').add({
                 userId: this.state.currentUser.uid,
                 email: this.state.currentUser.email,
@@ -507,7 +517,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                 device: device,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
-            
+
             console.log('✅ Sesión registrada:', ip, countryData.countryName);
         } catch (error) {
             console.error('❌ Error registrando sesión:', error);
@@ -530,10 +540,10 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             if (ip === 'Unknown') {
                 return { countryCode: 'Unknown', countryName: 'Unknown' };
             }
-            
+
             const response = await fetch(`https://ipapi.co/${ip}/json/`);
             const data = await response.json();
-            
+
             return {
                 countryCode: data.country_code || 'Unknown',
                 countryName: data.country_name || 'Unknown'
@@ -546,21 +556,21 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
 
     getDeviceInfo() {
         const ua = navigator.userAgent;
-        
+
         let browser = 'Other';
         if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
         else if (ua.includes('Firefox')) browser = 'Firefox';
         else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
         else if (ua.includes('Edg')) browser = 'Edge';
         else if (ua.includes('Opera') || (ua.includes('OPR'))) browser = 'Opera';
-        
+
         let os = 'Unknown';
         if (ua.includes('Windows')) os = 'Windows';
         else if (ua.includes('Mac')) os = 'macOS';
         else if (ua.includes('Linux')) os = 'Linux';
         else if (ua.includes('Android')) os = 'Android';
         else if (ua.includes('iOS') || ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
-        
+
         return `${browser} - ${os}`;
     },
 
@@ -568,10 +578,10 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         try {
             const servicesSnap = await db.collection('services').orderBy('createdAt', 'desc').get();
             const pricesSnap = await db.collection('prices').orderBy('createdAt', 'desc').get();
-            
+
             this.state.services = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.state.prices = pricesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
             console.log('✅ Servicios cargados:', this.state.services.length);
         } catch (error) {
             console.error('❌ Error cargando datos:', error);
@@ -593,18 +603,22 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             const city = document.getElementById('regCity').value;
             const zipCode = document.getElementById('regZipCode').value;
             const newsletter = document.getElementById('regNewsletter').checked;
-            
+            const referralCode = document.getElementById('regReferralCode')?.value.trim() || '';
+
             // 1. Crear usuario en Authentication
             const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-            
+
             // 2. Actualizar nombre en el perfil de Auth
-            await userCredential.user.updateProfile({ 
-                displayName: `${firstName} ${lastName}` 
+            await userCredential.user.updateProfile({
+                displayName: `${firstName} ${lastName}`
             });
-            
+
             // 3. Crear perfil en Firestore (SIN verificar si existe primero)
             try {
-                await db.collection('profiles').doc(userCredential.user.uid).set({
+                // Generar código único de referido para este usuario
+                const myReferralCode = userCredential.user.uid.substring(0, 8).toUpperCase();
+                
+                const profileData = {
                     name: firstName,
                     lastName: lastName,
                     email: email,
@@ -618,34 +632,59 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     role: 'user',
                     newsletter: newsletter,
                     balance: 0,
+                    referralCode: myReferralCode,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
-                });
-                console.log('✅ Perfil creado en Firestore');
+                };
+                
+                // Procesar código de referido si existe
+                if (referralCode) {
+                    profileData.referredBy = referralCode;
+                    profileData.referredAt = new Date().toISOString();
+                    profileData.referralStatus = 'pending';
+                    
+                    // Crear notificación de referido pendiente
+                    try {
+                        await db.collection('referralNotifications').add({
+                            newUserId: userCredential.user.uid,
+                            newUserEmail: email,
+                            newUserName: `${firstName} ${lastName}`,
+                            referralCode: referralCode,
+                            status: 'pending',
+                            createdAt: new Date().toISOString()
+                        });
+                        console.log('✅ Notificación de referido creada');
+                    } catch (refError) {
+                        console.warn('⚠️ Error creando notificación de referido:', refError);
+                    }
+                }
+                
+                await db.collection('profiles').doc(userCredential.user.uid).set(profileData);
+                console.log('✅ Perfil creado en Firestore con código de referido:', myReferralCode);
             } catch (firestoreError) {
                 console.warn('⚠️ Error creando perfil en Firestore (no crítico):', firestoreError);
-                // No mostrar error al usuario, el registro fue exitoso
             }
-            
+
             // 4. Enviar notificación a Telegram (no crítico si falla)
             try {
                 await this.notifyNewUser({
                     email: email,
                     name: `${firstName} ${lastName}`,
                     phone: phone,
-                    country: country
+                    country: country,
+                    referralCode: referralCode || ''
                 });
             } catch (telegramError) {
                 console.warn('⚠️ Error enviando notificación a Telegram:', telegramError);
             }
-            
+
             // 5. Mostrar mensaje de éxito
             this.showToast('✅ ¡Cuenta creada con éxito!', 'success');
             return true;
-            
+
         } catch (error) {
             console.error('Error en registro:', error);
-            
+
             if (error.code === 'auth/email-already-in-use') {
                 this.showToast('❌ Este correo ya está registrado. Intenta iniciar sesión.', 'error');
             } else if (error.code === 'auth/weak-password') {
@@ -663,21 +702,21 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         if (!this.validateStep(currentStep)) {
             return;
         }
-        
+
         document.getElementById(`step${currentStep}`).style.display = 'none';
-        
+
         this.currentRegisterStep = currentStep + 1;
         document.getElementById(`step${this.currentRegisterStep}`).style.display = 'block';
-        
+
         this.updateProgressBar();
     },
 
     prevStep(currentStep) {
         document.getElementById(`step${currentStep}`).style.display = 'none';
-        
+
         this.currentRegisterStep = currentStep - 1;
         document.getElementById(`step${this.currentRegisterStep}`).style.display = 'block';
-        
+
         this.updateProgressBar();
     },
 
@@ -697,44 +736,44 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
             const state = document.getElementById('regState').value;
             const city = document.getElementById('regCity').value;
             const zipCode = document.getElementById('regZipCode').value;
-            
+
             if (!firstName || !lastName || !address1 || !country || !state || !city || !zipCode) {
                 this.showToast('⚠️ Completa todos los campos obligatorios', 'error');
                 return false;
             }
             return true;
         }
-        
+
         if (step === 2) {
             const phone = document.getElementById('regPhone').value;
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
-            
+
             if (!phone || !email || !password) {
                 this.showToast('⚠️ Completa todos los campos', 'error');
                 return false;
             }
-            
+
             if (password.length < 6) {
                 this.showToast('⚠️ La contraseña debe tener al menos 6 caracteres', 'error');
                 return false;
             }
-            
+
             if (!email.includes('@')) {
                 this.showToast('⚠️ Ingresa un correo válido', 'error');
                 return false;
             }
-            
+
             return true;
         }
-        
+
         return true;
     },
 
     async login(email, password) {
         try {
             await auth.signInWithEmailAndPassword(email, password);
-            
+
             setTimeout(() => {
                 const modal = document.getElementById('authModal');
                 if (modal) {
@@ -745,13 +784,68 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     }, 400);
                 }
             }, 500);
-            
+
             return true;
         } catch (error) {
             console.error('Error en login:', error);
             this.showToast(this.getErrorMessage(error.code), 'error');
             return false;
         }
+    },
+
+    // ✅ NUEVA FUNCIÓN: RECUPERAR CONTRASEÑA
+    async resetPassword(email) {
+        try {
+            await auth.sendPasswordResetEmail(email);
+            return true;
+        } catch (error) {
+            console.error('Error en resetPassword:', error);
+            
+            let errorMessage = 'Error al enviar el correo';
+            
+            if (error.code === 'auth/user-not-found') {
+                errorMessage = 'No existe una cuenta con este correo electrónico';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'El correo electrónico no es válido';
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMessage = 'Demasiadas solicitudes. Intenta más tarde';
+            }
+            
+            this.showToast('❌ ' + errorMessage, 'error');
+            return false;
+        }
+    },
+
+    // ✅ NUEVA FUNCIÓN: MOSTRAR FORMULARIO DE RECUPERACIÓN
+    showResetPasswordForm() {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const resetPasswordForm = document.getElementById('resetPasswordForm');
+        
+        if (loginForm) loginForm.classList.add('hidden');
+        if (registerForm) registerForm.classList.add('hidden');
+        if (resetPasswordForm) resetPasswordForm.classList.remove('hidden');
+        
+        // Resetear el formulario
+        const resetEmail = document.getElementById('resetEmail');
+        if (resetEmail) resetEmail.value = '';
+        
+        // Resetear mensajes
+        const resetFormContent = document.getElementById('resetFormContent');
+        const resetSuccessMessage = document.getElementById('resetSuccessMessage');
+        if (resetFormContent) resetFormContent.classList.remove('hidden');
+        if (resetSuccessMessage) resetSuccessMessage.classList.add('hidden');
+    },
+
+    // ✅ NUEVA FUNCIÓN: VOLVER AL LOGIN DESDE RECUPERACIÓN
+    backToLoginFromReset() {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const resetPasswordForm = document.getElementById('resetPasswordForm');
+        
+        if (resetPasswordForm) resetPasswordForm.classList.add('hidden');
+        if (loginForm) loginForm.classList.remove('hidden');
+        if (registerForm) registerForm.classList.add('hidden');
     },
 
     async logout() {
@@ -770,7 +864,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         this.updateAuthUI();
         this.hideAdminPanel();
         this.hideClientPanel();
-        
+
         const preciosSection = document.getElementById('precios');
         if (preciosSection) {
             preciosSection.style.display = 'block';
@@ -778,7 +872,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                 preciosSection.style.opacity = '1';
             }, 50);
         }
-        
+
         this.showToast('Sesión cerrada.', 'success');
     },
 
@@ -802,23 +896,23 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
         const navAuth = document.getElementById('navAuth');
         const navLinks = document.getElementById('navLinks');
         const mobileDrawer = document.getElementById('mobileDrawer');
-        
+
         const pricingLocked = document.getElementById('pricingLocked');
         const pricingUnlocked = document.getElementById('pricingUnlocked');
-        
+
         const navAdminLink = document.getElementById('navAdminLink');
         const navImportLink = document.getElementById('navImportLink');
-        
+
         if (this.state.currentUser) {
             navLinks.classList.remove('hidden-nav');
-            
+
             const name = this.state.userProfile?.name || 'Usuario';
             const initial = name.charAt(0).toUpperCase();
             const isAdmin = this.isAdmin();
             const isClient = this.isClient();
             const roleLabel = isAdmin ? 'ADMIN' : isClient ? 'CLIENTE' : '';
             const roleColor = isAdmin ? '#ff6b35' : isClient ? '#00ff88' : '';
-            
+
             if (navAdminLink) {
                 if (isAdmin || isClient) {
                     navAdminLink.style.display = 'block';
@@ -826,25 +920,23 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     navAdminLink.style.display = 'none';
                 }
             }
-            
+
             if (navImportLink) {
-                if (isAdmin || isClient) {
+                if (isAdmin) {
                     navImportLink.style.display = 'block';
                 } else {
                     navImportLink.style.display = 'none';
                 }
             }
-            
+
             let panelButton = '<a href="dashboard.html" class="btn-ghost" style="margin-left:10px;color:var(--cyan);border-color:var(--cyan);text-decoration:none;">👤 Perfil</a>';
             if (isAdmin) {
                 panelButton += '<button class="btn-ghost" id="btnAdminPanel" style="margin-left:10px;">Panel Admin</button>';
                 panelButton += '<button class="btn-ghost" id="btnClientPanel" style="margin-left:10px;color:#00ff88;border-color:#00ff88;">📊 Mis Estadísticas</button>';
                 panelButton += '<a href="admin-pedidos.html" class="btn-ghost" style="margin-left:10px;color:var(--yellow);border-color:var(--yellow);">🔧 Admin Pedidos</a>';
                 panelButton += '<a href="importar-descargas.html" class="btn-ghost" style="margin-left:10px;color:#00ff88;border-color:#00ff88;">📥 Importar</a>';
-            } else if (isClient) {
+            } else {
                 panelButton += '<button class="btn-ghost" id="btnClientPanel" style="margin-left:10px;color:#00ff88;border-color:#00ff88;">📊 Mis Estadísticas</button>';
-                panelButton += '<a href="admin-pedidos.html" class="btn-ghost" style="margin-left:10px;color:var(--yellow);border-color:var(--yellow);">🔧 Admin Pedidos</a>';
-                panelButton += '<a href="importar-descargas.html" class="btn-ghost" style="margin-left:10px;color:#00ff88;border-color:#00ff88;">📥 Importar</a>';
             }
 
             navAuth.innerHTML = `
@@ -856,7 +948,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                 </div>
                 ${panelButton}
             `;
-            
+
             mobileDrawer.innerHTML = `
                 <ul class="mobile-nav-links">
                     <li><a href="#" class="mobile-dropdown-toggle">Servicios</a>
@@ -873,23 +965,23 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                 </ul>
                 <div class="mobile-nav-actions">
                   <div style="padding:10px 16px;color:var(--text-muted);font-size:13px;">Conectado como: <strong style="color:var(--cyan);">${name}</strong> ${roleLabel ? `<span style="color:${roleColor};">(${roleLabel})</span>` : ''}</div>
-                  <a href="dashboard.html" class="btn-ghost" style="color:var(--cyan);border-color:var(--cyan);text-decoration:none;">👤 Perfil</a>                    
+                  <a href="dashboard.html" class="btn-ghost" style="color:var(--cyan);border-color:var(--cyan);text-decoration:none;">👤 Perfil</a>
                   ${isAdmin ? '<button class="btn-ghost" id="mobileBtnAdminPanel">Panel Admin</button>' : ''}
-                  ${(isAdmin || isClient) ? '<button class="btn-ghost" id="mobileBtnClientPanel" style="color:#00ff88;border-color:#00ff88;">📊 Estadísticas</button>' : ''}
-                  ${(isAdmin || isClient) ? '<a href="admin-pedidos.html" class="btn-ghost" style="color:var(--yellow);border-color:var(--yellow);text-decoration:none;text-align:center;">🔧 Admin Pedidos</a>' : ''}
-                  ${(isAdmin || isClient) ? '<a href="importar-descargas.html" class="btn-ghost" style="color:#00ff88;border-color:#00ff88;text-decoration:none;text-align:center;"> Importar</a>' : ''}
+                  ${!isAdmin ? '<button class="btn-ghost" id="mobileBtnClientPanel" style="color:#00ff88;border-color:#00ff88;">📊 Estadísticas</button>' : ''}
+                  ${isAdmin ? '<a href="admin-pedidos.html" class="btn-ghost" style="color:var(--yellow);border-color:var(--yellow);text-decoration:none;text-align:center;">🔧 Admin Pedidos</a>' : ''}
+                  ${isAdmin ? '<a href="importar-descargas.html" class="btn-ghost" style="color:#00ff88;border-color:#00ff88;text-decoration:none;text-align:center;"> Importar</a>' : ''}
                   <button class="btn-ghost" id="mobileBtnLogout">Cerrar Sesión</button>
                 </div>
             `;
-            
+
             const btnLogout = document.getElementById('btnLogout');
             if (btnLogout) btnLogout.addEventListener('click', () => this.logout());
             const mobileBtnLogout = document.getElementById('mobileBtnLogout');
             if (mobileBtnLogout) mobileBtnLogout.addEventListener('click', () => this.logout());
-            
+
             const btnDashboard = document.getElementById('btnDashboard');
             if (btnDashboard) btnDashboard.addEventListener('click', () => this.openDashboard());
-            
+
             const mobileBtnDashboard = document.getElementById('mobileBtnDashboard');
             if (mobileBtnDashboard) {
                 mobileBtnDashboard.addEventListener('click', () => {
@@ -903,7 +995,7 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     document.body.style.overflow = '';
                 });
             }
-            
+
             const mobileBtnPrecios = document.getElementById('mobileBtnPrecios');
             if (mobileBtnPrecios) {
                 mobileBtnPrecios.addEventListener('click', (e) => {
@@ -925,37 +1017,37 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
                     }
                 });
             }
-            
+
             if (isAdmin) {
                 const btnAdminPanel = document.getElementById('btnAdminPanel');
                 if (btnAdminPanel) btnAdminPanel.addEventListener('click', () => this.showAdminPanel());
                 const mobileBtnAdminPanel = document.getElementById('mobileBtnAdminPanel');
                 if (mobileBtnAdminPanel) mobileBtnAdminPanel.addEventListener('click', () => this.showAdminPanel());
             }
-            
+
             if (isAdmin || isClient) {
                 const btnClientPanel = document.getElementById('btnClientPanel');
                 if (btnClientPanel) btnClientPanel.addEventListener('click', () => this.showClientPanel());
                 const mobileBtnClientPanel = document.getElementById('mobileBtnClientPanel');
                 if (mobileBtnClientPanel) mobileBtnClientPanel.addEventListener('click', () => this.showClientPanel());
             }
-            
+
             document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
                 toggle.addEventListener('click', (e) => { e.preventDefault(); toggle.classList.toggle('open'); toggle.nextElementSibling.classList.toggle('open'); });
             });
 
             if (pricingLocked) pricingLocked.style.display = 'none';
             if (pricingUnlocked) pricingUnlocked.style.display = 'block';
-            
+
         } else {
             navLinks.classList.add('hidden-nav');
-            
+
             if (navAdminLink) navAdminLink.style.display = 'none';
             if (navImportLink) navImportLink.style.display = 'none';
-            
+
             navAuth.innerHTML = `<a href="#" class="btn-ghost" id="btnOpenLogin">Iniciar Sesión</a><a href="#" class="btn-primary" id="btnOpenRegister">Registrarse</a>`;
             mobileDrawer.innerHTML = `<div class="mobile-nav-actions"><a href="#" class="btn-ghost" id="mobileBtnLogin">Iniciar Sesión</a><a href="#" class="btn-primary" id="mobileBtnRegister">Registrarse</a></div>`;
-            
+
             const btnOpenLogin = document.getElementById('btnOpenLogin');
             if (btnOpenLogin) btnOpenLogin.addEventListener('click', (e) => { e.preventDefault(); this.openModal('login'); });
             const btnOpenRegister = document.getElementById('btnOpenRegister');
@@ -973,46 +1065,131 @@ ${depositData.txid ? `🔗 <b>TXID:</b> ${depositData.txid}\n` : ''}${depositDat
     async showAdminPanel() {
         if (!this.isAdmin()) return;
         document.getElementById('adminModal').classList.add('open');
-        
+
         try {
             const profilesSnap = await db.collection('profiles').orderBy('createdAt', 'desc').get();
             const users = profilesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
+            // Contar usuarios por rol (normalizando a minúsculas)
+            const roleCounts = {
+                client: 0,
+                reseller: 0,
+                distributor: 0,
+                webowner: 0,
+                admin: 0,
+                user: 0
+            };
+
+            users.forEach(user => {
+                const role = (user.role || 'user').toLowerCase();
+                if (roleCounts[role] !== undefined) {
+                    roleCounts[role]++;
+                } else {
+                    // Si el rol no existe en el conteo, sumarlo a client
+                    roleCounts.client++;
+                }
+            });
+
+            // Actualizar contadores
+            document.getElementById('adminTotalUsers').textContent = users.length;
+            document.getElementById('adminClientCount').textContent = roleCounts.client + roleCounts.user;
+            document.getElementById('adminResellerCount').textContent = roleCounts.reseller;
+            document.getElementById('adminDistributorCount').textContent = roleCounts.distributor;
+            document.getElementById('adminWebOwnerCount').textContent = roleCounts.webowner;
+
             const adminUsersList = document.getElementById('adminUsersList');
             if (users.length === 0) {
                 adminUsersList.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay usuarios registrados.</p>';
             } else {
-                adminUsersList.innerHTML = users.map(user => `
-                    <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:6px;padding:16px;margin-bottom:10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div>
-                                <div style="font-weight:600;color:var(--text);margin-bottom:4px;">${user.name} <span style="font-size:10px;color:${user.role==='admin'?'#ff6b35':user.role==='client'?'#00ff88':'var(--text-dim)'};border:1px solid currentColor;padding:2px 6px;border-radius:4px;margin-left:8px;">${user.role.toUpperCase()}</span></div>
-                                <div style="font-size:13px;color:var(--text-muted);">${user.email}</div>
-                                <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Registrado: ${new Date(user.createdAt).toLocaleDateString('es-ES')}</div>
+                adminUsersList.innerHTML = users.map(user => {
+                    const currentRole = (user.role || 'user').toLowerCase();
+                    const roleLabels = {
+                        client: 'CLIENT',
+                        reseller: 'RESELLER',
+                        distributor: 'DISTRIBUTOR',
+                        webowner: 'WEB OWNER',
+                        admin: 'ADMIN',
+                        user: 'USER'
+                    };
+                    const roleColors = {
+                        client: '#00ff88',
+                        reseller: '#ffcc00',
+                        distributor: '#ff8800',
+                        webowner: '#8a2be2',
+                        admin: '#ff6b35',
+                        user: 'var(--text-dim)'
+                    };
+
+                    return `
+                        <div style="background:var(--dark3);border:1px solid var(--cyan-border);border-radius:6px;padding:16px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div>
+                                    <div style="font-weight:600;color:var(--text);margin-bottom:4px;">${user.name} <span style="font-size:10px;color:${roleColors[currentRole]};border:1px solid currentColor;padding:2px 6px;border-radius:4px;margin-left:8px;">${roleLabels[currentRole]}</span></div>
+                                    <div style="font-size:13px;color:var(--text-muted);">${user.email}</div>
+                                    <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Registrado: ${new Date(user.createdAt).toLocaleDateString('es-ES')}</div>
+                                </div>
+                                <div style="display:flex;gap:8px;">
+                                    ${currentRole !== 'admin' ? `<button class="btn-ghost" onclick="NexaGSM.openChangeRoleModal('${user.id}', '${user.name}', '${user.email}', '${currentRole}')" style="padding:6px 12px;font-size:11px;color:var(--cyan);border-color:var(--cyan);">🔧 Cambiar Rol</button>` : ''}
+                                    ${currentRole !== 'admin' ? `<button class="btn-ghost" onclick="NexaGSM.deleteUser('${user.id}', '${user.email}')" style="padding:6px 12px;font-size:11px;color:#ff4455;border-color:#ff4455;">Eliminar</button>` : ''}
+                                </div>
                             </div>
-                            ${user.role !== 'admin' ? `<button class="btn-ghost" onclick="NexaGSM.deleteUser('${user.id}', '${user.email}')" style="padding:6px 12px;font-size:11px;color:#ff4455;border-color:#ff4455;">Eliminar</button>` : ''}
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
-            document.getElementById('adminTotalUsers').textContent = users.length;
         } catch (error) {
             console.error('Error mostrando admin panel:', error);
         }
     },
+
+    openChangeRoleModal(userId, userName, userEmail, currentRole) {
+        this.selectedUserForRole = userId;
+        document.getElementById('roleUserName').textContent = userName;
+        document.getElementById('roleUserEmail').textContent = userEmail;
+        document.getElementById('newRoleSelect').value = currentRole;
+        document.getElementById('changeRoleModal').classList.add('open');
+    },
+
+    async saveUserRole() {
+        if (!this.selectedUserForRole) return;
+
+        const newRole = document.getElementById('newRoleSelect').value;
+
+        try {
+            await db.collection('profiles').doc(this.selectedUserForRole).update({
+                role: newRole,
+                plan: newRole === 'webowner' ? 'webowner' : newRole === 'distributor' ? 'distributor' : newRole === 'reseller' ? 'reseller' : 'client',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            this.showToast('✅ Rol actualizado a ' + newRole, 'success');
+            this.closeChangeRoleModal();
+            await this.showAdminPanel();
+
+        } catch (error) {
+            console.error('Error actualizando rol:', error);
+            this.showToast('❌ Error al actualizar rol', 'error');
+        }
+    },
+
+    closeChangeRoleModal() {
+        document.getElementById('changeRoleModal').classList.remove('open');
+        this.selectedUserForRole = null;
+    },
+
 
     async deleteUser(userId, userEmail) {
         if (!this.isAdmin()) {
             this.showToast('⚠️ Solo administradores pueden eliminar usuarios', 'error');
             return;
         }
-        
+
         const confirmMessage = `
 ⚠️ ELIMINAR USUARIO
 
 Email: ${userEmail}
 
-Esta acción eliminará:
+Esta acción eliminarará:
 ✓ Perfil del usuario
 ✓ Todos sus pedidos
 ✓ Todas sus transacciones
@@ -1023,34 +1200,34 @@ Y eliminar el usuario manualmente para liberar el email.
 
 ¿Confirmas la eliminación?
         `.trim();
-        
+
         if (!confirm(confirmMessage)) return;
-        
+
         try {
             await db.collection('profiles').doc(userId).delete();
-            
+
             const ordersSnap = await db.collection('orders').where('userId', '==', userId).get();
             const batch1 = db.batch();
             ordersSnap.docs.forEach(doc => batch1.delete(doc.ref));
             await batch1.commit();
-            
+
             const transactionsSnap = await db.collection('transactions').where('userId', '==', userId).get();
             const batch2 = db.batch();
             transactionsSnap.docs.forEach(doc => batch2.delete(doc.ref));
             await batch2.commit();
-            
+
             const streamingOrdersSnap = await db.collection('streamingOrders').where('userId', '==', userId).get();
             const batch3 = db.batch();
             streamingOrdersSnap.docs.forEach(doc => batch3.delete(doc.ref));
             await batch3.commit();
-            
+
             this.showToast('✅ Usuario eliminado de Firestore. Ahora ve a Firebase Console → Authentication y elimínalo también.', 'success');
             this.showAdminPanel();
-            
+
             setTimeout(() => {
                 this.showToast('⚠️ Recuerda: Ve a Firebase Console → Authentication → Users y elimina el usuario manualmente', 'warning');
             }, 3000);
-            
+
         } catch (error) {
             console.error('Error eliminando usuario:', error);
             this.showToast('❌ Error al eliminar: ' + error.message, 'error');
@@ -1058,48 +1235,48 @@ Y eliminar el usuario manualmente para liberar el email.
     },
 
     hideAdminPanel() { document.getElementById('adminModal').classList.remove('open'); },
-    
-    async showClientPanel() { 
+
+    async showClientPanel() {
         if (!this.isClient() && !this.isAdmin()) {
             this.showToast('Acceso denegado.', 'error');
             return;
         }
-        
+
         document.getElementById('clientModal').classList.add('open');
         await this.loadUserStats();
     },
-    
+
     hideClientPanel() { document.getElementById('clientModal').classList.remove('open'); },
 
     switchClientTab(tab) {
         const s = document.getElementById('clientSectionServicios');
         const p = document.getElementById('clientSectionPrecios');
-        if (tab === 'servicios') { 
-            s.style.display = 'block'; p.style.display = 'none'; 
-            document.getElementById('tabServicios').classList.add('active'); 
-            document.getElementById('tabPrecios').classList.remove('active'); 
-            this.renderClientServices(); 
-        } else { 
-            s.style.display = 'none'; p.style.display = 'block'; 
-            document.getElementById('tabServicios').classList.remove('active'); 
-            document.getElementById('tabPrecios').classList.add('active'); 
-            this.renderClientPrices(); 
+        if (tab === 'servicios') {
+            s.style.display = 'block'; p.style.display = 'none';
+            document.getElementById('tabServicios').classList.add('active');
+            document.getElementById('tabPrecios').classList.remove('active');
+            this.renderClientServices();
+        } else {
+            s.style.display = 'none'; p.style.display = 'block';
+            document.getElementById('tabServicios').classList.remove('active');
+            document.getElementById('tabPrecios').classList.add('active');
+            this.renderClientPrices();
         }
     },
 
     renderClientServices() {
         const list = document.getElementById('clientServicesList');
-        
-        if (!this.state.services || this.state.services.length === 0) { 
-            list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay servicios. ¡Agrega el primero!</p>'; 
-            return; 
+
+        if (!this.state.services || this.state.services.length === 0) {
+            list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay servicios. ¡Agrega el primero!</p>';
+            return;
         }
-        
+
         list.innerHTML = this.state.services.map(service => {
             let tagsHTML = '';
             if (service.tags) {
-                const tagsArray = Array.isArray(service.tags) 
-                    ? service.tags 
+                const tagsArray = Array.isArray(service.tags)
+                    ? service.tags
                     : service.tags.split(',').map(t => t.trim());
                 tagsHTML = tagsArray.map(t => `<span class="tag">${t}</span>`).join('');
             }
@@ -1132,9 +1309,9 @@ Y eliminar el usuario manualmente para liberar el email.
 
     renderClientPrices() {
         const list = document.getElementById('clientPricesList');
-        if (this.state.prices.length === 0) { 
-            list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay precios configurados.</p>'; 
-            return; 
+        if (this.state.prices.length === 0) {
+            list.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay precios configurados.</p>';
+            return;
         }
         list.innerHTML = this.state.prices.map(price => {
             const service = this.state.services.find(s => s.id === price.service_id);
@@ -1165,7 +1342,7 @@ Y eliminar el usuario manualmente para liberar el email.
         const modal = document.getElementById('serviceModal');
         const title = document.getElementById('serviceModalTitle');
         const form = document.getElementById('formService');
-        
+
         if (serviceId) {
             const service = this.state.services.find(s => s.id === serviceId);
             title.textContent = 'Editar Servicio';
@@ -1177,10 +1354,10 @@ Y eliminar el usuario manualmente para liberar el email.
             document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
             document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
             document.getElementById('serviceTags').value = service.tags ? (Array.isArray(service.tags) ? service.tags.join(', ') : service.tags) : '';
-        } else { 
-            title.textContent = 'Agregar Servicio'; 
-            form.reset(); 
-            document.getElementById('serviceId').value = ''; 
+        } else {
+            title.textContent = 'Agregar Servicio';
+            form.reset();
+            document.getElementById('serviceId').value = '';
         }
         modal.classList.add('open');
     },
@@ -1200,10 +1377,10 @@ Y eliminar el usuario manualmente para liberar el email.
             document.getElementById('priceAmount').value = price.amount;
             document.getElementById('priceTime').value = price.time;
             document.getElementById('priceStatus').value = price.status;
-        } else { 
-            title.textContent = 'Agregar Precio'; 
-            form.reset(); 
-            document.getElementById('priceId').value = ''; 
+        } else {
+            title.textContent = 'Agregar Precio';
+            form.reset();
+            document.getElementById('priceId').value = '';
         }
         modal.classList.add('open');
     },
@@ -1249,7 +1426,7 @@ Y eliminar el usuario manualmente para liberar el email.
         const clientModal = document.getElementById('clientModal');
         const btnCloseDashboard = document.getElementById('btnCloseDashboard');
         const dashboardModal = document.getElementById('dashboardModal');
-        
+
         if (btnCloseModal) btnCloseModal.addEventListener('click', () => this.closeModal());
         if (authModal) authModal.addEventListener('click', (e) => { if (e.target.id === 'authModal') this.closeModal(); });
         if (btnCloseAdmin) btnCloseAdmin.addEventListener('click', () => this.hideAdminPanel());
@@ -1264,10 +1441,58 @@ Y eliminar el usuario manualmente para liberar el email.
         if (linkToRegister) linkToRegister.addEventListener('click', () => this.switchModalView('register'));
         if (linkToLogin) linkToLogin.addEventListener('click', () => this.switchModalView('login'));
 
+        // ✅ NUEVO: Event listeners para recuperación de contraseña
+        const linkForgotPassword = document.getElementById('linkForgotPassword');
+        if (linkForgotPassword) {
+            linkForgotPassword.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showResetPasswordForm();
+            });
+        }
+
+        const linkBackToLogin = document.getElementById('linkBackToLogin');
+        if (linkBackToLogin) {
+            linkBackToLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.backToLoginFromReset();
+            });
+        }
+
+        const formResetPassword = document.getElementById('formResetPassword');
+        if (formResetPassword) {
+            formResetPassword.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('resetEmail').value.trim();
+                
+                if (!email) {
+                    this.showToast('⚠️ Por favor ingresa tu correo electrónico', 'error');
+                    return;
+                }
+
+                const submitBtn = formResetPassword.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '📧 Enviando...';
+                submitBtn.disabled = true;
+
+                const success = await this.resetPassword(email);
+
+                if (success) {
+                    // Mostrar mensaje de éxito
+                    document.getElementById('resetEmailSent').textContent = email;
+                    document.getElementById('resetFormContent').classList.add('hidden');
+                    document.getElementById('resetSuccessMessage').classList.remove('hidden');
+                    this.showToast('✅ Correo de recuperación enviado', 'success');
+                }
+
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
+
         const formLogin = document.getElementById('formLogin');
         const formRegister = document.getElementById('formRegister');
         const heroBtnLogin = document.getElementById('heroBtnLogin');
-        
+
         if (formLogin) {
             formLogin.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -1292,12 +1517,12 @@ Y eliminar el usuario manualmente para liberar el email.
 
         const formService = document.getElementById('formService');
         const formPrice = document.getElementById('formPrice');
-        
+
         if (formService) {
             formService.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const id = document.getElementById('serviceId').value;
-                
+
                 const tagsRaw = document.getElementById('serviceTags').value;
                 const tagsArray = tagsRaw ? tagsRaw.split(',').map(t => t.trim()) : [];
 
@@ -1315,7 +1540,7 @@ Y eliminar el usuario manualmente para liberar el email.
                     status: 'active',
                     updatedAt: new Date().toISOString()
                 };
-                
+
                 try {
                     if (id) {
                         await db.collection('services').doc(id).update(serviceData);
@@ -1346,7 +1571,7 @@ Y eliminar el usuario manualmente para liberar el email.
                     status: document.getElementById('priceStatus').value,
                     updatedAt: new Date().toISOString()
                 };
-                
+
                 try {
                     if (id) {
                         await db.collection('prices').doc(id).update(priceData);
@@ -1389,25 +1614,29 @@ Y eliminar el usuario manualmente para liberar el email.
     },
 
     openModal(view = 'login') { document.getElementById('authModal').classList.add('open'); this.switchModalView(view); },
-    closeModal() { 
+    closeModal() {
         const authModal = document.getElementById('authModal');
-        if (authModal) authModal.classList.remove('open'); 
+        if (authModal) authModal.classList.remove('open');
         const formLogin = document.getElementById('formLogin');
         if (formLogin) formLogin.reset();
         const formRegister = document.getElementById('formRegister');
         if (formRegister) formRegister.reset();
     },
     switchModalView(view) {
-        if (view === 'login') { 
+        if (view === 'login') {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
-            if (loginForm) loginForm.classList.remove('hidden'); 
-            if (registerForm) registerForm.classList.add('hidden'); 
-        } else { 
+            const resetPasswordForm = document.getElementById('resetPasswordForm');
+            if (loginForm) loginForm.classList.remove('hidden');
+            if (registerForm) registerForm.classList.add('hidden');
+            if (resetPasswordForm) resetPasswordForm.classList.add('hidden');
+        } else if (view === 'register') {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
-            if (loginForm) loginForm.classList.add('hidden'); 
-            if (registerForm) registerForm.classList.remove('hidden'); 
+            const resetPasswordForm = document.getElementById('resetPasswordForm');
+            if (loginForm) loginForm.classList.add('hidden');
+            if (registerForm) registerForm.classList.remove('hidden');
+            if (resetPasswordForm) resetPasswordForm.classList.add('hidden');
         }
     },
 
@@ -1432,9 +1661,9 @@ Y eliminar el usuario manualmente para liberar el email.
 
     async loadDashboardData() {
         if (!this.state.currentUser) return;
-        
+
         const uid = this.state.currentUser.uid;
-        
+
         const userDoc = await db.collection('profiles').doc(uid).get();
         if (userDoc.exists) {
             const data = userDoc.data();
@@ -1443,14 +1672,14 @@ Y eliminar el usuario manualmente para liberar el email.
             document.getElementById('profileEmail').textContent = data.email || '';
             document.getElementById('profileLastLogin').textContent = new Date().toLocaleString('es-ES');
         }
-        
+
         this.getUserIP();
-        
+
         try {
             const ordersSnap = await db.collection('orders').where('userId', '==', uid).get();
             const orders = ordersSnap.docs.map(doc => doc.data());
             const activeOrders = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
-            
+
             document.getElementById('userActiveOrders').textContent = activeOrders;
             document.getElementById('userTotalOrders').textContent = orders.length;
         } catch (error) {
@@ -1458,7 +1687,7 @@ Y eliminar el usuario manualmente para liberar el email.
             document.getElementById('userActiveOrders').textContent = '0';
             document.getElementById('userTotalOrders').textContent = '0';
         }
-        
+
         this.loadNews();
     },
 
@@ -1476,12 +1705,12 @@ Y eliminar el usuario manualmente para liberar el email.
         try {
             const newsSnap = await db.collection('news').orderBy('createdAt', 'desc').limit(10).get();
             const newsContainer = document.getElementById('newsContainer');
-            
+
             if (newsSnap.empty) {
                 newsContainer.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay noticias disponibles.</p>';
                 return;
             }
-            
+
             newsContainer.innerHTML = newsSnap.docs.map(doc => {
                 const news = doc.data();
                 const date = news.createdAt?.toDate ? news.createdAt.toDate() : new Date(news.createdAt);
@@ -1532,41 +1761,41 @@ Y eliminar el usuario manualmente para liberar el email.
 
     async loadUserStats() {
         if (!this.state.currentUser) return;
-        
+
         const uid = this.state.currentUser.uid;
-        
+
         try {
             const userDoc = await db.collection('profiles').doc(uid).get();
             if (userDoc.exists) {
                 const data = userDoc.data();
                 document.getElementById('statsBalance').textContent = '$' + (data.balance || 0).toFixed(2);
             }
-            
+
             const ordersSnap = await db.collection('orders').where('userId', '==', uid).get();
             const orders = ordersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
             const totalOrders = orders.length;
             const approvedOrders = orders.filter(o => o.status === 'approved').length;
             const totalSpent = orders
                 .filter(o => o.status === 'approved')
                 .reduce((sum, o) => sum + (o.totalCredits || 0), 0);
-            
+
             document.getElementById('statsTotalOrders').textContent = totalOrders;
             document.getElementById('statsApproved').textContent = approvedOrders;
             document.getElementById('statsTotalSpent').textContent = '$' + totalSpent.toFixed(2);
-            
+
             this.renderTopServices(orders);
             this.renderRecentOrders(orders);
-            
+
         } catch (error) {
             console.error('Error cargando estadísticas:', error);
         }
     },
-    
+
     renderTopServices(orders) {
         const container = document.getElementById('statsTopServices');
         if (!container) return;
-        
+
         const serviceCount = {};
         orders.forEach(order => {
             if (order.items) {
@@ -1576,23 +1805,23 @@ Y eliminar el usuario manualmente para liberar el email.
                 });
             }
         });
-        
+
         const sorted = Object.entries(serviceCount)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5);
-        
+
         if (sorted.length === 0) {
             container.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">Aún no has usado servicios</p>';
             return;
         }
-        
+
         const maxCount = sorted[0][1];
-        
+
         container.innerHTML = sorted.map(([name, count], index) => {
             const percentage = (count / maxCount) * 100;
             const colors = ['var(--cyan)', 'var(--green)', 'var(--yellow)', 'var(--purple)', 'var(--red)'];
             const color = colors[index] || 'var(--cyan)';
-            
+
             return `
                 <div style="display:flex;align-items:center;gap:12px;">
                     <div style="font-size:18px;font-weight:700;color:${color};min-width:30px;">#${index + 1}</div>
@@ -1607,39 +1836,47 @@ Y eliminar el usuario manualmente para liberar el email.
             `;
         }).join('');
     },
-    
+
     renderRecentOrders(orders) {
         const container = document.getElementById('statsRecentOrders');
         if (!container) return;
-        
+
         const sorted = orders.sort((a, b) => {
             const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
             const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
             return dateB - dateA;
         }).slice(0, 5);
-        
+
         if (sorted.length === 0) {
             container.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No hay pedidos recientes</p>';
             return;
         }
-        
+
         const statusLabels = {
             'pending': '⏳ Pendiente',
+            'processing': '🔄 En Proceso',
             'approved': '✅ Aprobado',
-            'rejected': '❌ Rechazado'
+            'completed': '✅ Completado',
+            'rejected': '❌ Rechazado',
+            'refunded': '💰 Reembolsado'
         };
-        
+
         const statusColors = {
             'pending': 'var(--yellow)',
+            'processing': 'var(--cyan)',
             'approved': 'var(--green)',
-            'rejected': 'var(--red)'
+            'completed': 'var(--green)',
+            'rejected': 'var(--red)',
+            'refunded': 'var(--purple)'
         };
-        
+
         container.innerHTML = sorted.map(order => {
             const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
             const status = order.status || 'pending';
-            const itemCount = order.items ? order.items.length : 0;
-            
+            const serviceName = order.serviceName || 'Servicio';
+            const quantity = order.quantity || 1;
+            const price = order.servicePrice || order.totalPrice || order.totalCredits || order.credits || 0;
+
             return `
                 <div style="background:var(--dark2);border:1px solid var(--cyan-border);border-radius:6px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
                     <div style="flex:1;">
@@ -1647,15 +1884,15 @@ Y eliminar el usuario manualmente para liberar el email.
                             #${order.id.substring(0, 8).toUpperCase()}
                         </div>
                         <div style="font-size:11px;color:var(--text-dim);">
-                            ${date.toLocaleDateString('es-ES')} • ${itemCount} servicio${itemCount !== 1 ? 's' : ''}
+                            ${date.toLocaleDateString('es-ES')} • ${serviceName} (x${quantity})
                         </div>
                     </div>
                     <div style="text-align:right;">
                         <div style="font-family:'Orbitron',monospace;font-size:14px;color:var(--yellow);font-weight:700;">
-                            $${(order.totalCredits || 0).toFixed(2)}
+                            $${parseFloat(price).toFixed(2)}
                         </div>
-                        <div style="font-size:11px;color:${statusColors[status]};font-weight:600;">
-                            ${statusLabels[status]}
+                        <div style="font-size:11px;color:${statusColors[status] || 'var(--text-dim)'};font-weight:600;">
+                            ${statusLabels[status] || status}
                         </div>
                     </div>
                 </div>
