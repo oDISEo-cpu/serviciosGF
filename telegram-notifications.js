@@ -1,8 +1,8 @@
 // ✅ CONFIGURACIÓN DE TELEGRAM BOT
 const TelegramNotifier = {
     // 🔑 REEMPLAZA CON TU TOKEN Y CHAT ID
-    botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['1461150518', '8225719154'],    
+    botToken: 'TU_TOKEN_DE_TELEGRAM_AQUI',
+    chatIds: ['TU_ID_DE_ADMIN', 'OTRO_CHAT_ID'],    
     
     // ✅ FUNCIÓN PARA ENVIAR MENSAJE (CORREGIDA)
     async sendMessage(message) {
