@@ -1,8 +1,8 @@
 exports.handler = async (event, context) => {
   try {
     const bodyParams = new URLSearchParams({
-      username: 'Esojlin',
-      apiaccesskey: 'IZQ-MNQ-61K-6SD-FFQ-BQG-5UP-XU9',
+      username: 'TU_USUARIO_DHRU',
+      apiaccesskey: 'TU_API_KEY_DHRU_AQUI',
       action: 'accountinfo',
       requestformat: 'JSON',
       parameters: '<PARAMETERS></PARAMETERS>'

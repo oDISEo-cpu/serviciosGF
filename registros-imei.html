@@ -1221,8 +1221,8 @@
   const db = firebase.firestore();
 
   const telegramConfig = {
-    botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['1461150518', '8225719154'],
+    botToken: 'TU_TOKEN_DE_TELEGRAM_AQUI',
+    chatIds: ['TU_ID_DE_ADMIN', 'OTRO_CHAT_ID'],
     enabled: true
   };
 
@@ -1506,7 +1506,7 @@
 📊 <b>Cantidad:</b> ${orderData.quantity || 1}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
 
-${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
+${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}${orderData.customField ? `📝 <b>${orderData.customFieldName || 'Campo'}:</b> <code>${orderData.customField}</code>\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de revisión
     `.trim();
     
@@ -1862,8 +1862,32 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
   function generateDynamicFields(category) {
     const container = document.getElementById('dynamicFields');
     let fieldsHTML = '';
-    
-    if (category === 'unlock' || category === 'remote') {
+
+    // ✅ C7: servicios con campo personalizado (ECID / SERIAL NUMBER, imei_custom=1)
+    const customInput = currentOrderService?.customInput;
+    const customFieldsArr = currentOrderService?.customFields || [];
+    const hasCustom = !!customInput || customFieldsArr.length > 0;
+
+    if (hasCustom) {
+      // Hint del proveedor (imei_custom_info) o descripcion del campo.
+      // El texto '*#06#' queda SOLO como fallback para servicios de IMEI puro.
+      const hint = customInput?.customInfo || customFieldsArr[0]?.description || '';
+      const infoText = customInput?.customName || customFieldsArr[0]?.fieldname || 'Información adicional';
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Este servicio requiere: ${infoText}.${hint ? ' ' + hint : ''}
+        </div>
+
+        <div class="form-group">
+          <label>${infoText} *</label>
+          <input type="text" id="orderCustomField_0" name="${infoText}" data-fieldname="${infoText}" required placeholder="${hint || infoText}">
+          ${hint ? `<small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">${hint}</small>` : ''}
+        </div>
+
+        <div id="orderFieldType" style="display:none;">${infoText}</div>
+      `;
+    } else if (category === 'unlock' || category === 'remote') {
       fieldsHTML = `
         <div class="info-box">
           <strong>ℹ️ Información requerida:</strong><br>
@@ -1912,26 +1936,77 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
     
-    const imei = document.getElementById('orderIMEI')?.value.trim();
-    if (!imei) {
-      showError('⚠️ Por favor ingresa el IMEI/SN');
+    // ✅ C3: captura del campo personalizado (ECID / SERIAL NUMBER)
+    let customFieldValue = "";
+    let imeiValue = "";
+    let customFieldsArray = [];
+    let customFieldName = "";
+
+    const customFieldInput = document.getElementById("orderCustomField");
+    const customFieldInputAlt = document.getElementById("orderCustomField_0");
+    if (customFieldInput || customFieldInputAlt) {
+      const inputToUse = customFieldInput || customFieldInputAlt;
+      customFieldValue = inputToUse.value.trim();
+      customFieldName = currentOrderService.customInput?.customName || currentOrderService.customFields?.[0]?.fieldname || document.getElementById("orderFieldType")?.textContent || "CUSTOM";
+    }
+
+    const imei = document.getElementById('orderIMEI')?.value.trim() || "";
+    imeiValue = imei;
+
+    if (!imei && !customFieldValue) {
+      showError('⚠️ Por favor ingresa el IMEI/SN o el campo requerido');
       return;
     }
-    
-    orderData.imei = imei;
-    orderData.inputData = `IMEI/SN: ${imei}`;
+
+    if (imei) {
+      orderData.imei = imei;
+      orderData.inputData = `IMEI/SN: ${imei}`;
+    }
+    if (customFieldValue) {
+      orderData.customField = customFieldValue;
+      orderData.customFieldName = customFieldName;
+      orderData.inputData = `${customFieldName}: ${customFieldValue}`;
+    }
     
     const confirmPurchase = confirm(
       `✅ Confirmar Compra\n\n` +
       `Servicio: ${currentOrderService.name}\n` +
       `Precio: $${price.toFixed(2)}\n` +
-      `IMEI: ${imei}\n\n` +
+      `${customFieldName || 'IMEI'}: ${imei || customFieldValue}\n\n` +
       `¿Confirmas la compra?`
     );
     
     if (!confirmPurchase) return;
     
     try {
+      // ✅ PASO 3 (envio a DHru): objeto dhruData -> api/place-order-dhru.php
+      const dhruData = {
+        serviceId: String(currentOrderService.serviceId || currentOrderService.id || ''),
+        imei: imeiValue,
+        customField: customFieldValue,
+        customFieldName: customFieldName || currentOrderService.customInput?.customName || currentOrderService.customFields?.[0]?.fieldname || "",
+        email: currentUser.email || '',
+        category: 'imei',
+        quantity: 1
+      };
+
+      try {
+        const dhruRes = await fetch('api/place-order-dhru.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dhruData)
+        });
+        const dhruJson = await dhruRes.json();
+        console.log('DHru response:', dhruJson);
+        orderData.dhruRefId = dhruJson.refId || null;
+        if (dhruJson.success === false) {
+          orderData.dhruError = dhruJson.error || 'Unknown response';
+        }
+      } catch (dhruErr) {
+        console.error('Error enviando a DHru:', dhruErr);
+        orderData.dhruError = dhruErr.message;
+      }
+
       await db.collection('orders').add(orderData);
       await notifyNewOrder(orderData);
       

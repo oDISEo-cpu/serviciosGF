@@ -6,8 +6,8 @@ exports.handler = async (event, context) => {
     const parametersXml = `<PARAMETERS><IMEI>${imei}</IMEI><ID>${serviceId}</ID></PARAMETERS>`;
     
     const bodyParams = new URLSearchParams({
-      username: 'Esojlin',
-      apiaccesskey: 'IZQ-MNQ-61K-6SD-FFQ-BQG-5UP-XU9',
+      username: 'TU_USUARIO_DHRU',
+      apiaccesskey: 'TU_API_KEY_DHRU_AQUI',
       action: 'placeimeiorder',
       requestformat: 'JSON',
       parameters: parametersXml

@@ -19,8 +19,8 @@ const NexaGSM = {
     
     // ✅ CONFIGURACIÓN DE TELEGRAM BOT
     telegramConfig: {
-        botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-        chatId: '1461150518',
+        botToken: 'TU_TOKEN_DE_TELEGRAM_AQUI',
+        chatId: 'TU_ID_DE_ADMIN',
         enabled: true
     },
     
@@ -102,7 +102,7 @@ const NexaGSM = {
 📊 <b>Cantidad:</b> ${orderData.quantity || 1}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
 
-${orderData.imei ? `🔢 <b>IMEI:</b> ${orderData.imei}\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> ${orderData.ip}\n` : ''}${orderData.sn ? `📱 <b>SN:</b> ${orderData.sn}\n` : ''}
+${orderData.imei ? `🔢 <b>IMEI:</b> ${orderData.imei}\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> ${orderData.ip}\n` : ''}${orderData.sn ? `📱 <b>SN:</b> ${orderData.sn}\n` : ''}${orderData.customField ? `📝 <b>${orderData.customFieldName || 'Campo'}:</b> <code>${orderData.customField}</code>\n` : ''}
 ⏳ <b>Estado:</b> Pendiente de revisión
         `.trim();
         
