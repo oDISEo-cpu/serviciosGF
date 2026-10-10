@@ -1678,7 +1678,53 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     return await sendTelegramMessage(message);
   }
 
+  // ✅ CENTRO DE CONTROL DINÁMICO: reglas de campo (Firestore fieldRules), una vez.
+  async function loadFieldRules() {
+    try {
+      const snap = await db.collection('fieldRules').get();
+      window._fieldRulesCache = snap.empty ? [] : snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+    } catch (e) {
+      console.warn('⚠️ fieldRules no disponible (fallback automático):', e.message);
+      window._fieldRulesCache = null;
+    }
+  }
+
+  function applyFieldRuleOverrides(baseFields) {
+    // Sobrescribe label/placeholder/hint/validación si hay regla activa coincidente
+    // (el comodín "*" deja los campos tal cual → comportamiento actual intacto).
+    const rules = (window._fieldRulesCache || []).filter(r => r.active !== false);
+    if (!rules.length) return baseFields;
+    const norm = s => String(s || '').toLowerCase();
+    const findRule = (fieldName) => {
+      const cands = rules.filter(r => {
+        if (!r.pattern || r.pattern === '*') return false;
+        const target = norm(fieldName);
+        if ((r.matchType || 'exact') === 'contains') return target.includes(norm(r.pattern));
+        if (r.matchType === 'regex') { try { return new RegExp(r.pattern, 'i').test(target); } catch (e) { return false; } }
+        return target === norm(r.pattern);
+      });
+      cands.sort((a, b) => (Number(b.priority || 0) - Number(a.priority || 0)));
+      return cands[0] || null;
+    };
+    return baseFields.map(f => {
+      const r = findRule(f.fieldName);
+      if (!r) return f;
+      return {
+        ...f,
+        label: r.label || f.label,
+        placeholder: r.placeholder || f.placeholder,
+        hint: r.hint || f.hint,
+        inputType: r.inputType || f.inputType,
+        minLength: r.minLength || f.minLength,
+        maxLength: r.maxLength || f.maxLength,
+        regex: r.regex || f.regex,
+        ruleId: r._id || null
+      };
+    });
+  }
+
   auth.onAuthStateChanged(async (user) => {
+    loadFieldRules();
     if (user) {
       currentUser = user;
       const profileDoc = await db.collection('profiles').doc(user.uid).get();
@@ -2056,6 +2102,24 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
 
   // ✅ NUEVA FUNCIÓN: Generar campos dinámicos según los requisitos del servicio
   function generateDynamicFields(service) {
+    // ✅ Reglas del admin sobre los campos estándar (Modelo/IP/SN/IMEI...)
+    service = Object.assign({}, service, (() => {
+      const ov = {};
+      const rules = applyFieldRuleOverrides([
+        { fieldName: 'Modelo', id: 'orderModel' },
+        { fieldName: 'IP', id: 'orderIP' },
+        { fieldName: 'SN', id: 'orderSN' },
+        { fieldName: 'AnyDesk', id: 'orderAnydesk' },
+        { fieldName: 'UltraViewer', id: 'orderUltraViewer' },
+        { fieldName: 'IMEI', id: 'orderIMEIRemote' }
+      ]);
+      const byName = {};
+      rules.forEach(r => { if (r.ruleId) byName[r.fieldName] = r; });
+      if (byName['Modelo']) ov.modelLabel = byName['Modelo'].label;
+      if (byName['IP']) ov.ipLabel = byName['IP'].label;
+      if (byName['SN']) ov.snLabel = byName['SN'].label;
+      return ov;
+    })());
     const container = document.getElementById('dynamicFields');
     let fieldsHTML = `
       <div class="info-box">

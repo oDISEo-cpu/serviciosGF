@@ -77,6 +77,19 @@ try {
                 }
             }
 
+            // ---- Detección de tipo para el catálogo en vivo (Centro de Control) ----
+            // imei_custom=1 -> "custom:<NOMBRE>" | customFields>1 -> "multi:<lista>"
+            // imei_single/bulk=1 -> "imei" | resto -> "license"
+            $detectedType = 'license';
+            if (($svc['imei_custom'] ?? '0') == '1') {
+                $detectedType = 'custom:' . ($customInput['customName'] ?? '');
+            } elseif (count($customFields) > 1) {
+                $names = array_map(function ($cf) { return $cf['fieldname']; }, $customFields);
+                $detectedType = 'multi:' . implode(',', $names);
+            } elseif ((($svc['imei_single'] ?? '0') == '1') || (($svc['imei_bulk'] ?? '0') == '1')) {
+                $detectedType = 'imei';
+            }
+
             $services[] = [
                 'serviceId' => $svc['ID'] ?? ($svc['id'] ?? ''),
                 'name' => $svc['SERVICE_NAME'] ?? ($svc['name'] ?? ''),
@@ -90,6 +103,7 @@ try {
                 'imeiCustom' => $svc['imei_custom'] ?? '0',
                 'customInput' => $customInput,      // frontend: currentOrderService.customInput
                 'customFields' => $customFields,    // frontend: currentOrderService.customFields
+                'detectedType' => $detectedType,    // catálogo en vivo (T3 admin-config.html)
                 'description' => $svc['DESCRIPTION'] ?? ''
             ];
         }

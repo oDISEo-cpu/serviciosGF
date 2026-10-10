@@ -1513,6 +1513,19 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     return await sendTelegramMessage(message);
   }
 
+  // ✅ CENTRO DE CONTROL DINÁMICO: fieldRules (Firestore) se consulta UNA vez.
+  // Si la colección está vacía o Firestore falla, _fieldRulesCache queda null y
+  // el modal usa el comportamiento automático actual con datos del proveedor.
+  async function loadFieldRules() {
+    try {
+      const snap = await db.collection('fieldRules').get();
+      window._fieldRulesCache = snap.empty ? [] : snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+    } catch (e) {
+      console.warn('⚠️ fieldRules no disponible (fallback automático):', e.message);
+      window._fieldRulesCache = null;
+    }
+  }
+
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       currentUser = user;
@@ -1524,7 +1537,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
         }
       }
     }
-    await loadServices();
+    await Promise.all([loadServices(), loadFieldRules()]);
     updateNav();
   });
 
@@ -1863,6 +1876,32 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     const container = document.getElementById('dynamicFields');
     let fieldsHTML = '';
 
+    // ✅ CENTRO DE CONTROL DINÁMICO: reglas de campo (Firestore fieldRules).
+    // Se consultan UNA vez; si ninguna coincide (o Firestore falla), se usa
+    // el comportamiento automático actual con los datos del proveedor (fallback).
+    window._fieldRulesCache = window._fieldRulesCache || null;
+    const activeRules = (window._fieldRulesCache || []).filter(r => r.active !== false);
+    const norm = s => String(s || '').toLowerCase();
+    const matchRule = (rule, fieldName, serviceName) => {
+      if (!rule.pattern) return false;
+      const target = rule.scope === 'serviceName' ? norm(serviceName) : norm(fieldName);
+      if (rule.matchType === 'contains') return target.includes(norm(rule.pattern));
+      if (rule.matchType === 'regex') { try { return new RegExp(rule.pattern, 'i').test(target); } catch (e) { return false; } }
+      return target === norm(rule.pattern);
+    };
+    const findFieldRule = (fieldName, serviceName) => {
+      const cands = activeRules.filter(r => matchRule(r, fieldName, serviceName));
+      if (!cands.length) return null;
+      cands.sort((a, b) => {
+        const pa = Number(a.priority || 0), pb = Number(b.priority || 0);
+        if (pb !== pa) return pb - pa;                 // mayor prioridad primero
+        if (a.pattern === '*') return 1;               // el comodín siempre pierde
+        if (b.pattern === '*') return -1;
+        return String(a.pattern).localeCompare(String(b.pattern));
+      });
+      return cands[0];
+    };
+
     // ✅ C7: servicios con campo personalizado (ECID / SERIAL NUMBER, imei_custom=1)
     const customInput = currentOrderService?.customInput;
     const customFieldsArr = currentOrderService?.customFields || [];
@@ -1871,8 +1910,18 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
     if (hasCustom) {
       // Hint del proveedor (imei_custom_info) o descripcion del campo.
       // El texto '*#06#' queda SOLO como fallback para servicios de IMEI puro.
-      const hint = customInput?.customInfo || customFieldsArr[0]?.description || '';
-      const infoText = customInput?.customName || customFieldsArr[0]?.fieldname || 'Información adicional';
+      const providerFieldName = customInput?.customName || customFieldsArr[0]?.fieldname || 'Información adicional';
+      const baseHint = customInput?.customInfo || customFieldsArr[0]?.description || '';
+      // Regla del admin (si existe y no es el comodín) > datos del proveedor
+      const fRule = findFieldRule(providerFieldName, currentOrderService?.name);
+      const isWildcard = fRule && fRule.pattern === '*';
+      const infoText = (!isWildcard && fRule?.label) ? fRule.label : providerFieldName;
+      const hint = (!isWildcard && fRule?.hint) ? fRule.hint : baseHint;
+      const placeholder = (!isWildcard && fRule?.placeholder) ? fRule.placeholder : (hint || infoText);
+      const inputType = (!isWildcard && fRule?.inputType) ? fRule.inputType : 'text';
+      const minLenAttr = (!isWildcard && fRule?.minLength) ? ` minlength="${Number(fRule.minLength)}"` : '';
+      const maxLenAttr = (!isWildcard && fRule?.maxLength) ? ` maxlength="${Number(fRule.maxLength)}"` : '';
+      const patternAttr = (!isWildcard && fRule?.regex) ? ` pattern="${String(fRule.regex).replace(/"/g, '&quot;')}"` : '';
       fieldsHTML = `
         <div class="info-box">
           <strong>ℹ️ Información requerida:</strong><br>
@@ -1881,7 +1930,7 @@ ${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${o
 
         <div class="form-group">
           <label>${infoText} *</label>
-          <input type="text" id="orderCustomField_0" name="${infoText}" data-fieldname="${infoText}" required placeholder="${hint || infoText}">
+          <input type="${inputType}" id="orderCustomField_0" name="${providerFieldName}" data-fieldname="${providerFieldName}" required placeholder="${placeholder}"${minLenAttr}${maxLenAttr}${patternAttr}>
           ${hint ? `<small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">${hint}</small>` : ''}
         </div>
 
