@@ -1,23 +1,4 @@
-# Node modules
 node_modules/
-serviciosgf-api/node_modules/
-
-# Environment variables
 .env
 .env.local
-
-# Logs
-*.log
-npm-debug.log*
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Build files
-dist/
-build/
-
-# Firebase credentials
-firebase-service-account.json
-*.json (except package.json)
+.env.*.local

@@ -14,8 +14,8 @@ const db = firebase.firestore();
 
 // ✅ CONFIGURACIÓN DE TELEGRAM
 const telegramConfig = {
-    botToken: '7801739137:AAFWjOf0ebKhIMD-BqWBF_eqCydIXKK4fKw',
-    chatIds: ['8225719154', '1461150518'],
+    botToken: 'TU_TOKEN_DE_TELEGRAM_AQUI',
+    chatIds: ['OTRO_CHAT_ID', 'TU_ID_DE_ADMIN'],
     enabled: true
 };
 

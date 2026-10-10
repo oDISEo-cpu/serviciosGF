@@ -1,97 +1,70 @@
-# ServiciosGF
+# ServiciosGF — Plataforma de Servicios GSM
 
-Sitio web empresarial responsivo para la gestión y visualización de servicios, enfocado en usabilidad, rendimiento y experiencia del usuario.
+Plataforma web de venta de servicios GSM (registros IMEI/SN, licencias, créditos,
+remotos, rent tools y streaming) que revende del proveedor **JonartGSM** (API
+Dhru Fusion). Frontend HTML/JS + Firebase (Auth/Firestore), backend PHP en `api/`
+y bot de notificaciones Node en `telegram-bot/`.
 
-## Descripción
+## Requisitos
+- PHP 7.4+ con extensión cURL
+- Node.js 16+
+- Apache o Nginx (con soporte PHP) para el backend `api/`
+- Composer (solo si se usa el backend alternativo Node en `serviciosgf-api/`)
+- Cuenta Firebase (Auth + Firestore) y cuenta de revendedor en JonartGSM
 
-ServiciosGF es una plataforma web completa que permite a los usuarios visualizar y gestionar diferentes servicios. El proyecto incluye un panel de administración intuitivo y está diseñado con tecnologías modernas para garantizar un rendimiento óptimo y una experiencia de usuario fluida.
+## Instalación paso a paso
+1. Subir el proyecto a tu hosting (o `git clone`).
+2. Dar permisos de escritura a `api/` (para `dhru-errors.log`).
+3. Configurar `api/config-dhru.php` con usuario y API key REALES del panel JonartGSM
+   (nunca subir credenciales reales al repositorio).
+4. Copiar `.env.example` a `.env` y completar las variables del bot y cron jobs.
+5. En Firebase Console: crear proyecto, activar Email/Password, crear Firestore y
+   pegar la configuración web en los bloques `firebaseConfig` de las páginas.
+6. (Opcional) `cd telegram-bot && npm install && node bot.js`.
 
-## Características
+## Configuración
+### Firebase
+Reemplaza `apiKey/authDomain/projectId` en cada página HTML y en `app.js` con los
+valores de tu proyecto. Las claves de servicio (SDK JSON) solo van en el servidor:
+cron jobs leen `FIREBASE_CREDENTIALS` desde variables de entorno.
 
-- **Diseño Responsivo:** Adaptable a dispositivos móviles, tablets y escritorio.
-- **Panel de Administración:** Gestión completa de servicios, pedidos, recargas y más.
-- **Alto Rendimiento:** Optimizado para carga rápida y navegación fluida.
-- **Interfaz Intuitiva:** Enfocada en la usabilidad y experiencia del usuario.
-- **Arquitectura Moderna:** Estructura escalable y mantenible.
+### Dhru Fusion (JonartGSM)
+- Endpoint: `https://jonartgsm.com/api/index.php`
+- Acciones usadas: `getservices`, `getimeiservicedetails`, `placeimeiorder`, `getdetail`.
+- Credenciales: constantes `DHru_USERNAME` / `DHru_API_KEY` en `api/config-dhru.php`.
+- Ver [MAPEO-SERVICIOS.md](MAPEO-SERVICIOS.md), [REGLAS-NUEVOS-SERVICIOS.md](REGLAS-NUEVOS-SERVICIOS.md) y la guía de producción [RECOMENDACIONES.md](RECOMENDACIONES.md).
 
-## Tecnologías Utilizadas
+### Bot de Telegram
+- `TELEGRAM_BOT_TOKEN` y `TELEGRAM_ADMIN_ID` se leen de `process.env` (fallback a
+  placeholder). Crear el bot con @BotFather y agregarlo al chat de avisos.
 
-**Frontend:**
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- React
-
-**Backend:**
-- Node.js
-- Express.js
-
-**Despliegue:**
-- Netlify
-
-## Estructura del Proyecto
-
-```text
-serviciosGF/
-├── admin-*.html          # Páginas de administración
-├── dashboard.html        # Panel principal
-├── app.js                # Lógica principal de la aplicación
-├── serviciosgf-api/      # Integración con API
-├── settings/             # Configuraciones
-├── images/               # Recursos multimedia
-└── cron-jobs/            # Tareas automatizadas
-
+## Estructura del proyecto
+```
+├── api/                  # Backend PHP (pedidos DHru, lista de servicios, config)
+│   ├── place-order-dhru.php   # Coloca pedidos (XML <PARAMETERS> → placeimeiorder)
+│   ├── dhru-services.php      # Catalogo de servicios JonartGSM + mapeo campos dinamicos
+│   ├── config-dhru.php        # Credenciales (placeholders en el repo)
+│   └── dhru-errors.log        # Log generado en produccion
+├── RECOMENDACIONES.md    # Guia de produccion basada en incidentes reales
+├── app.js                # Logica compartida (auth, notificaciones Telegram)
+├── registros-imei.html   # Tienda IMEI/SN + modal de pedido + submitOrder/dhruData
+├── licencias-creditos.html / remotos-rent-tools.html / servicios-streaming.html
+├── admin-*.html          # Paneles de administracion
+├── telegram-bot/bot.js   # Bot Node (credenciales via .env)
+├── cron-jobs/            # Verificacion periodica de pedidos
+├── netlify/functions/    # Pruebas gratuitas (descatalogado, no usar)
+└── serviciosgf-api/      # Backend Express alternativo (Render)
 ```
 
-## Instalación
+## Solución de problemas comunes
+| Problema | Causa / Solución |
+|---|---|
+| Error **"IP Unauthorized" / IPv6 no autorizada** | JonartGSM lista IP por IP. Entra al panel del proveedor → *My Account → IP List* y resetea/agrega la IP publica actual del servidor (incluida la IPv6 si PHP resuelve por IPv6). |
+| Pedido falla con campo personalizado obligatorio (Motorola, Rent Tools: "IMEI A PONER", IP, SN, MODELO) | El servicio exige etiquetas extra: revisa en `api/dhru-errors.log` el XML generado; deben ir en MAYUSCULAS con `_` (`[^a-zA-Z0-9_]`→`_`) y valor no vacio. Ver MAPEO-SERVICIOS.md. |
+| Respuesta extrana de DHru | Revisa SIEMPRE `api/dhru-errors.log`: registra request, detalles del servicio, XML final y respuesta cruda. |
+| Modal muestra "*#06#*" en un servicio ECID/SERIAL | Falta el mapeo `imei_custom_info` en `api/dhru-services.php` (rama custom del modal en registros-imei.html). |
+| Saldo no descuenta / pedido duplicado | El cobro es en Firestore (collection `transactions`); verifica reglas de seguridad y que `orders` tenga `dhruRefId`. |
 
-1. Clona el repositorio:
-```bash
-git clone https://github.com/oDISEo-cpu/serviciosGF.git
-
-```
-## Navega al directorio del proyecto:
-cd serviciosGF
-
-## Abre el archivo dashboard.html en tu navegador o utiliza un servidor local:
-npx http-server
-
-## Uso
-Dashboard Principal: Accede a dashboard.html para ver la vista principal
-Panel de Administración: Los diferentes módulos admin están disponibles en los archivos admin-*.html
-Gestión de Servicios: Incluye administración de pedidos, recargas, streaming, descuentos y más
-
-## Funcionalidades
-
-Gestión de pedidos y servicios
-Administración de recargas
-Control de streaming
-Gestión de descuentos
-Actualización de tasas y precios
-Panel de configuración
-## Desarrollo
-
-El proyecto sigue buenas prácticas de desarrollo:
-Código limpio y documentado
-Estructura modular
-Separación de responsabilidades
-Optimización de recursos
-
-## Licencia
-
-Este proyecto es de propiedad privada.
-
-## Autor
-
-Diego Molina
-GitHub: https://github.com/oDISEo-cpu
-LinkedIn: https://linkedin.com/in/diego-alexander-molina-caro-a82757368
-Email: dm30525331@gmail.com
-
-## Contacto
-
-Para consultas o soporte técnico, contactar a través de:
-Email: dm30525331@gmail.com
-LinkedIn: linkedin.com/in/diego-alexander-molina-caro-a82757368
-
-Desarrollado por Diego Molina
+## Seguridad
+- Credenciales reales SOLO en `api/config-dhru.php` (producción) y variables de entorno.
+- Este repositorio NO debe contener nunca: `service-account.json`, `serviceAccountKey.json`, `.env` ni tokens hardcodeados.

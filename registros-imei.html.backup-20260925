@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Remotos & Rent Tools - ServiciosGF</title>
+<title>Registros IMEI / SN - ServiciosGF</title>
 <link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
@@ -21,13 +21,14 @@
     --text-muted: #7ba8c4;
     --text-dim: #4a7a9b;
     --green: #00ff88;
+    --emerald: #00ff88;
+    --emerald-dim: #00cc6a;
+    --emerald-glow: rgba(0,255,136,0.15);
+    --emerald-border: rgba(0,255,136,0.3);
     --yellow: #ffcc00;
-    --orange: #ff8800;
-    --orange-glow: rgba(255,136,0,0.15);
-    --orange-border: rgba(255,136,0,0.3);
     --red: #ff4455;
     --purple: #8a2be2;
-    --whatsapp: #25D366;
+    --orange: #ff6b35;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
@@ -37,8 +38,8 @@
   .logo-img { height: 48px; width: auto; object-fit: contain; }
   .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
   .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
-  .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
-  .nav-links a.active { color: var(--cyan); }
+  .nav-links a:hover { color: var(--emerald); background: var(--emerald-glow); }
+  .nav-links a.active { color: var(--emerald); }
   
   .nav-dropdown { position: relative; }
   .nav-dropdown > a { cursor: pointer; }
@@ -65,17 +66,17 @@
     transition: all 0.2s;
   }
   .dropdown-menu a:hover {
-    background: var(--cyan-glow);
-    color: var(--cyan);
+    background: var(--emerald-glow);
+    color: var(--emerald);
   }
   
   .nav-actions { display: flex; gap: 10px; align-items: center; }
-  .btn-ghost { background: transparent; border: 1px solid var(--cyan-border); color: var(--cyan); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-  .btn-ghost:hover { background: var(--cyan-glow); border-color: var(--cyan); }
-  .btn-primary { background: var(--cyan); border: 1px solid var(--cyan); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-  .btn-primary:hover { background: var(--cyan-dim); box-shadow: 0 0 16px rgba(0,229,255,0.3); }
+  .btn-ghost { background: transparent; border: 1px solid var(--emerald-border); color: var(--emerald); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--emerald-glow); border-color: var(--emerald); }
+  .btn-primary { background: var(--emerald); border: 1px solid var(--emerald); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: var(--emerald-dim); box-shadow: 0 0 16px rgba(0,255,136,0.4); }
   .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
-  .user-avatar { width: 24px; height: 24px; background: var(--cyan); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--emerald); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
   .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
   .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
@@ -90,7 +91,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,136,0,0.08) 0%, transparent 70%);
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,255,136,0.08) 0%, transparent 70%);
   }
   .page-hero h1 {
     font-family: 'Orbitron', monospace;
@@ -99,7 +100,7 @@
     color: var(--text);
     margin-bottom: 12px;
   }
-  .page-hero h1 .hl { color: var(--orange); }
+  .page-hero h1 .hl { color: var(--emerald); }
   .page-hero p {
     font-size: 16px;
     color: var(--text-muted);
@@ -121,7 +122,7 @@
   }
   
   .category-tabs-container::-webkit-scrollbar { display: none; }
-  
+
   .category-tabs {
     display: flex;
     gap: 10px;
@@ -129,7 +130,7 @@
     min-width: max-content;
     align-items: center;
   }
-  
+
   .category-tab {
     background: var(--surface);
     border: 1px solid var(--cyan-border);
@@ -145,17 +146,17 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-  
+
   .category-tab:hover {
-    background: var(--orange-glow);
-    border-color: var(--orange);
-    color: var(--orange);
+    background: var(--emerald-glow);
+    border-color: var(--emerald);
+    color: var(--emerald);
   }
-  
+
   .category-tab.active {
-    background: var(--orange);
-    border-color: var(--orange);
-    color: white;
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--dark);
     font-weight: 700;
   }
 
@@ -199,7 +200,7 @@
   .search-input {
     width: 100%;
     background: var(--surface);
-    border: 2px solid var(--orange-border);
+    border: 2px solid var(--emerald-border);
     color: var(--text);
     padding: 12px 48px 12px 48px;
     border-radius: 8px;
@@ -211,14 +212,14 @@
   }
 
   .search-input:focus {
-    border-color: var(--orange);
-    box-shadow: 0 0 20px rgba(255,136,0,0.2);
+    border-color: var(--emerald);
+    box-shadow: 0 0 20px rgba(0,255,136,0.2);
     background: var(--dark3);
   }
 
   .search-input:focus + .search-icon,
   .search-input:focus ~ .search-icon {
-    color: var(--orange);
+    color: var(--emerald);
   }
 
   .search-input::placeholder {
@@ -256,8 +257,9 @@
   }
 
   .search-results-info.visible { display: block; }
-  .search-results-info .count { color: var(--orange); font-weight: 700; }
+  .search-results-info .count { color: var(--emerald); font-weight: 700; }
 
+  /* ✅ NUEVO: FILTROS POR MARCA */
   .brand-filters {
     display: flex;
     gap: 8px;
@@ -277,7 +279,7 @@
 
   .brand-pill {
     background: var(--surface);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     color: var(--text-muted);
     padding: 6px 14px;
     border-radius: 20px;
@@ -294,15 +296,15 @@
   }
 
   .brand-pill:hover {
-    background: var(--orange-glow);
-    border-color: var(--orange);
-    color: var(--orange);
+    background: var(--emerald-glow);
+    border-color: var(--emerald);
+    color: var(--emerald);
   }
 
   .brand-pill.active {
-    background: var(--orange);
-    border-color: var(--orange);
-    color: white;
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--dark);
     font-weight: 700;
   }
 
@@ -316,9 +318,10 @@
 
   .brand-pill.active .pill-count {
     background: rgba(0,0,0,0.3);
-    color: white;
+    color: var(--dark);
   }
 
+  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
   .controls-row {
     display: flex;
     justify-content: space-between;
@@ -344,7 +347,7 @@
 
   .sort-select {
     background: var(--surface);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     color: var(--text);
     padding: 10px 14px;
     border-radius: 6px;
@@ -359,7 +362,7 @@
   }
 
   .sort-select:hover, .sort-select:focus {
-    border-color: var(--orange);
+    border-color: var(--emerald);
     background: var(--dark3);
   }
 
@@ -375,9 +378,9 @@
   }
 
   .btn-add-service {
-    background: var(--orange);
-    border: 1px solid var(--orange);
-    color: white;
+    background: var(--emerald);
+    border: 1px solid var(--emerald);
+    color: var(--dark);
     padding: 10px 24px;
     border-radius: 6px;
     font-family: 'Rajdhani', sans-serif;
@@ -393,8 +396,8 @@
   }
 
   .btn-add-service:hover {
-    background: #e67700;
-    box-shadow: 0 0 20px rgba(255,136,0,0.4);
+    background: var(--emerald-dim);
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
   }
 
   .services-grid {
@@ -405,21 +408,22 @@
 
   .service-card {
     background: var(--surface);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     border-radius: 12px;
     padding: 24px;
     position: relative;
     transition: all 0.3s;
-    background: linear-gradient(135deg, var(--surface) 0%, rgba(255,136,0,0.05) 100%);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(0,255,136,0.05) 100%);
     overflow: hidden;
   }
 
   .service-card:hover {
-    border-color: var(--orange);
+    border-color: var(--emerald);
     transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(255, 136, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.25);
   }
 
+  /* ✅ NUEVO: CINTA "MÁS VENDIDO" / "NUEVO" */
   .service-ribbon {
     position: absolute;
     top: 14px;
@@ -431,19 +435,17 @@
     letter-spacing: 0.1em;
     border-radius: 0 4px 4px 0;
     z-index: 3;
-    color: white;
+    color: var(--dark);
     box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     font-family: 'Rajdhani', sans-serif;
   }
 
   .service-ribbon.bestseller {
     background: linear-gradient(135deg, #ff6b35, #ffcc00);
-    color: var(--dark);
   }
 
   .service-ribbon.new {
     background: linear-gradient(135deg, #00ff88, #00e5ff);
-    color: var(--dark);
   }
 
   .service-ribbon::after {
@@ -458,6 +460,7 @@
     border-right-color: rgba(0,0,0,0.4);
   }
 
+  /* ✅ NUEVO: ICONO DE MARCA */
   .brand-icon-badge {
     position: absolute;
     top: 16px;
@@ -465,7 +468,7 @@
     width: 40px;
     height: 40px;
     background: var(--dark3);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -478,8 +481,8 @@
   .service-category {
     display: inline-block;
     padding: 4px 12px;
-    background: var(--orange-glow);
-    color: var(--orange);
+    background: var(--emerald-glow);
+    color: var(--emerald);
     border-radius: 4px;
     font-size: 10px;
     font-weight: 700;
@@ -492,7 +495,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 18px;
     font-weight: 700;
-    color: var(--orange);
+    color: var(--emerald);
     margin-bottom: 8px;
     padding-right: 50px;
   }
@@ -520,9 +523,8 @@
     letter-spacing: 0.05em;
   }
 
-  .badge.stock { background: rgba(0,255,136,0.15); color: var(--green); }
-  .badge.auto { background: rgba(0,229,255,0.15); color: var(--cyan); }
-  .badge.manual { background: var(--orange-glow); color: var(--orange); }
+  .badge.stock { background: var(--emerald-glow); color: var(--emerald); }
+  .badge.auto { background: var(--emerald-glow); color: var(--emerald); }
   .badge.out { background: rgba(255,68,85,0.15); color: var(--red); }
 
   .service-tags {
@@ -535,60 +537,10 @@
   .tag {
     padding: 4px 10px;
     background: var(--dark3);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     border-radius: 4px;
     font-size: 11px;
     color: var(--text-muted);
-  }
-
-  /* ✅ NUEVO: BOTONES DE SOPORTE */
-  .support-buttons {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-
-  .btn-support-tool {
-    background: rgba(0,229,255,0.15);
-    border: 1px solid var(--cyan);
-    color: var(--cyan);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  .btn-support-tool:hover {
-    background: var(--cyan);
-    color: var(--dark);
-  }
-
-  .btn-support-page {
-    background: rgba(37,211,102,0.15);
-    border: 1px solid var(--whatsapp);
-    color: var(--whatsapp);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-
-  .btn-support-page:hover {
-    background: var(--whatsapp);
-    color: white;
   }
 
   .service-footer {
@@ -596,7 +548,7 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 16px;
-    border-top: 1px solid var(--orange-border);
+    border-top: 1px solid var(--emerald-border);
   }
 
   .service-price {
@@ -612,8 +564,8 @@
   }
 
   .btn-select {
-    background: var(--orange);
-    color: white;
+    background: var(--emerald);
+    color: var(--dark);
     padding: 8px 20px;
     border-radius: 4px;
     font-family: 'Rajdhani', sans-serif;
@@ -627,8 +579,8 @@
   }
 
   .btn-select:hover {
-    background: #e67700;
-    box-shadow: 0 0 16px rgba(255, 136, 0, 0.4);
+    background: var(--emerald-dim);
+    box-shadow: 0 0 16px rgba(0, 255, 136, 0.4);
   }
 
   .service-actions {
@@ -709,7 +661,6 @@
     z-index: 1000;
     align-items: center;
     justify-content: center;
-    padding: 20px;
   }
 
   .modal-overlay.open { display: flex; }
@@ -744,12 +695,12 @@
     transition: color 0.2s;
   }
 
-  .modal-close:hover { color: var(--orange); }
+  .modal-close:hover { color: var(--emerald); }
 
   .modal h2 {
     font-family: 'Orbitron', monospace;
     font-size: 20px;
-    color: var(--orange);
+    color: var(--emerald);
     margin-bottom: 8px;
   }
 
@@ -790,7 +741,7 @@
   .form-group input:focus,
   .form-group textarea:focus,
   .form-group select:focus {
-    border-color: var(--orange);
+    border-color: var(--emerald);
   }
 
   .form-group textarea { resize: vertical; min-height: 80px; }
@@ -801,67 +752,18 @@
     gap: 16px;
   }
 
-  .checkbox-group {
+  .modal-actions {
     display: flex;
-    flex-direction: column;
     gap: 12px;
-    margin: 12px 0;
-    padding: 16px;
-    background: var(--dark3);
-    border: 1px solid var(--cyan-border);
-    border-radius: 8px;
-  }
-
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .checkbox-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--orange);
-  }
-
-  .checkbox-item label {
-    margin: 0;
-    cursor: pointer;
-    color: var(--text);
-    font-size: 13px;
-  }
-
-  .download-links-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .download-link-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .download-link-item input { flex: 1; }
-
-  .download-link-item .link-number {
-    background: var(--orange);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    min-width: 24px;
-    text-align: center;
+    margin-top: 24px;
   }
 
   .btn-full { width: 100%; padding: 14px; font-size: 15px; }
 
   .btn-save {
-    background: var(--orange);
-    border: 1px solid var(--orange);
-    color: white;
+    background: var(--emerald);
+    border: 1px solid var(--emerald);
+    color: var(--dark);
     padding: 12px 24px;
     border-radius: 6px;
     font-family: 'Rajdhani', sans-serif;
@@ -875,42 +777,13 @@
   }
 
   .btn-save:hover {
-    background: #e67700;
-    box-shadow: 0 0 20px rgba(255,136,0,0.4);
-  }
-
-  .download-buttons-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin: 12px 0;
-  }
-
-  .btn-download-link {
-    background: var(--orange);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 12px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
-  }
-
-  .btn-download-link:hover {
-    background: #e67700;
-    box-shadow: 0 0 16px rgba(255,136,0,0.4);
+    background: var(--emerald-dim);
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
   }
 
   .order-summary {
     background: var(--dark3);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 24px;
@@ -921,7 +794,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
-    border-bottom: 1px solid var(--orange-border);
+    border-bottom: 1px solid var(--emerald-border);
   }
 
   .summary-item:last-child { border-bottom: none; }
@@ -938,12 +811,12 @@
     font-family: 'Orbitron', monospace;
     font-size: 16px;
     font-weight: 700;
-    color: var(--orange);
+    color: var(--emerald);
   }
 
   .info-box {
-    background: rgba(255,136,0,0.05);
-    border: 1px solid var(--orange-border);
+    background: rgba(0,255,136,0.05);
+    border: 1px solid var(--emerald-border);
     border-radius: 6px;
     padding: 12px;
     margin-bottom: 16px;
@@ -952,18 +825,18 @@
     line-height: 1.6;
   }
 
-  .info-box strong { color: var(--orange); }
+  .info-box strong { color: var(--emerald); }
 
   .service-info-panel {
     background: var(--dark3);
-    border: 1px solid var(--orange-border);
+    border: 1px solid var(--emerald-border);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 20px;
   }
 
   .service-info-panel h4 {
-    color: var(--orange);
+    color: var(--emerald);
     font-size: 14px;
     margin-bottom: 12px;
     font-family: 'Orbitron', monospace;
@@ -973,7 +846,7 @@
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
-    border-bottom: 1px solid var(--orange-border);
+    border-bottom: 1px solid var(--emerald-border);
     font-size: 13px;
   }
 
@@ -988,18 +861,18 @@
     margin: 12px 0;
     padding: 12px;
     background: rgba(0,255,136,0.05);
-    border: 1px solid var(--green);
+    border: 1px solid var(--emerald);
     border-radius: 6px;
   }
 
   .checkbox-container input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: var(--green);
+    accent-color: var(--emerald);
   }
 
   .checkbox-container label {
-    color: var(--green);
+    color: var(--emerald);
     font-size: 13px;
     font-weight: 600;
     margin: 0;
@@ -1029,13 +902,6 @@
     gap: 10px;
   }
 
-  a[href*="ping.eu"]:hover {
-    background: var(--orange) !important;
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 136, 0, 0.3);
-  }
-
   .toast {
     background: var(--surface);
     border: 1px solid var(--cyan-border);
@@ -1052,7 +918,7 @@
     min-width: 300px;
   }
 
-  .toast.success { border-left: 4px solid var(--green); }
+  .toast.success { border-left: 4px solid var(--emerald); }
   .toast.error { border-left: 4px solid var(--red); }
 
   @keyframes slideIn {
@@ -1073,7 +939,7 @@
   }
 
   footer p { font-size: 13px; color: var(--text-dim); }
-  footer strong { color: var(--orange); }
+  footer strong { color: var(--emerald); }
 
   @media (max-width: 900px) {
     nav { padding: 0 20px; }
@@ -1085,7 +951,6 @@
     .services-grid { grid-template-columns: 1fr; }
     .modal { width: 95vw; padding: 24px; }
     .form-row { grid-template-columns: 1fr; }
-    .order-grid { grid-template-columns: 1fr !important; }
     .services-header { flex-direction: column; align-items: stretch; }
     .search-container { max-width: 100%; }
     .service-actions { right: 10px; top: 60px; }
@@ -1120,15 +985,15 @@
 </nav>
 
 <div class="page-hero">
-  <h1>🌐 Remotos <span class="hl">& Rent Tools</span></h1>
-  <p>Servicios remotos y renta de herramientas profesionales</p>
+  <h1>📱 Registros <span class="hl">IMEI / SN</span></h1>
+  <p>Desbloqueos y registros por IMEI o número de serie para las principales marcas</p>
 </div>
 
 <div class="category-tabs-container">
   <div class="category-tabs">
-    <button class="category-tab" onclick="window.location.href='registros-imei.html'">📱 IMEI/SN</button>
+    <button class="category-tab active">📱 IMEI/SN</button>
     <button class="category-tab" onclick="window.location.href='licencias-creditos.html'">🔑 Licencias</button>
-    <button class="category-tab active">🌐 Remotos</button>
+    <button class="category-tab" onclick="window.location.href='remotos-rent-tools.html'">🌐 Remotos</button>
     <button class="category-tab" onclick="window.location.href='servicios-streaming.html'">📺 Streaming</button>
   </div>
 </div>
@@ -1142,7 +1007,7 @@
           type="text" 
           id="searchInput" 
           class="search-input" 
-          placeholder="Buscar servicio remoto, herramienta..."
+          placeholder="Buscar por marca, modelo, IMEI..."
           oninput="handleSearch()"
           autocomplete="off"
         >
@@ -1160,10 +1025,13 @@
     </div>
   </div>
 
+  <!-- ✅ NUEVO: FILTROS POR MARCA -->
   <div class="brand-filters" id="brandFilters">
-    <span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>
+    <span class="brand-filter-label">🏷️ Filtrar por marca:</span>
+    <!-- Se genera dinámicamente -->
   </div>
 
+  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
   <div class="controls-row">
     <div class="sort-container">
       <span class="sort-label">📊 Ordenar:</span>
@@ -1187,7 +1055,7 @@
 </footer>
 
 <div class="modal-overlay" id="serviceModal">
-  <div class="modal" style="width: 700px; max-width: 95vw;">
+  <div class="modal">
     <button class="modal-close" onclick="closeServiceModal()">✕</button>
     <h2 id="modalTitle">➕ Agregar Servicio</h2>
     <p class="modal-sub">Completa la información del servicio</p>
@@ -1197,12 +1065,12 @@
       
       <div class="form-group">
         <label>Nombre del Servicio</label>
-        <input type="text" id="serviceName" required placeholder="Ej: Xiaomi FRP Unlock">
+        <input type="text" id="serviceName" required placeholder="Ej: Samsung FRP via IMEI">
       </div>
       
       <div class="form-group">
-        <label>Descripción Corta</label>
-        <textarea id="serviceDesc" required placeholder="Ej: Desbloqueo FRP para Xiaomi" style="min-height: 60px;"></textarea>
+        <label>Descripción</label>
+        <textarea id="serviceDesc" required placeholder="Ej: Desbloqueo de cuenta Google"></textarea>
       </div>
       
       <div class="form-row">
@@ -1219,98 +1087,35 @@
         </div>
       </div>
       
-      <div class="form-row">
-        <div class="form-group">
-          <label>¿Automático?</label>
-          <select id="serviceAuto" required>
-            <option value="true">⚡ Sí, automático</option>
-            <option value="false">👤 No, manual</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Tiempo estimado del proceso</label>
-          <input type="text" id="serviceProcessTime" placeholder="Ej: 1 Hora | 9 minutos">
-        </div>
+      <div class="form-group">
+        <label>¿Automático?</label>
+        <select id="serviceAuto" required>
+          <option value="true">⚡ Sí, automático</option>
+          <option value="false">👤 No, manual</option>
+        </select>
       </div>
       
       <div class="form-group">
         <label>Tags (separados por coma)</label>
-        <input type="text" id="serviceTags" placeholder="Ej: Xiaomi, FRP, Unlock">
-      </div>
-      
-      <!-- ✅ NUEVO: URL DE SOPORTE DE LA HERRAMIENTA -->
-      <div class="form-group">
-        <label>🔧 URL de Soporte de la Herramienta (opcional)</label>
-        <input type="url" id="serviceSupportUrl" placeholder="Ej: https://t.me/chimera_support o https://chimera-tool.com/support">
-        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">URL del soporte oficial de la herramienta (Telegram, web, etc.)</small>
+        <input type="text" id="serviceTags" placeholder="Ej: Samsung, FRP, IMEI">
       </div>
       
       <div class="form-group">
-        <label>📋 Campos Requeridos para el Pedido</label>
-        <div class="checkbox-group">
-          <div class="checkbox-item">
-            <input type="checkbox" id="requireModel">
-            <label for="requireModel">📱 Modelo del dispositivo (requerido)</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="requireAnyDesk">
-            <label for="requireAnyDesk">🖥️ AnyDesk ID (requerido)</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="requireUltraViewer">
-            <label for="requireUltraViewer">💻 UltraViewer ID (requerido)</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="requireIMEI">
-            <label for="requireIMEI">🔢 IMEI a poner (requerido)</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="requireIP">
-            <label for="requireIP">🌐 IP (requerido)</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="requireSN">
-            <label for="requireSN">📱 SN - Serial Number (requerido)</label>
-          </div>
-        </div>
-        <small style="color:var(--text-dim);font-size:11px;display:block;margin-top:4px;">Selecciona qué datos necesitas del cliente para este servicio</small>
-      </div>
-      
-      <div class="form-group">
-        <label>🔗 Enlaces de Descarga (hasta 5)</label>
-        <div class="download-links-group">
-          <div class="download-link-item">
-            <span class="link-number">1</span>
-            <input type="url" id="downloadUrl1" placeholder="https://ejemplo.com/herramienta1.zip">
-          </div>
-          <div class="download-link-item">
-            <span class="link-number">2</span>
-            <input type="url" id="downloadUrl2" placeholder="https://ejemplo.com/herramienta2.zip">
-          </div>
-          <div class="download-link-item">
-            <span class="link-number">3</span>
-            <input type="url" id="downloadUrl3" placeholder="https://ejemplo.com/herramienta3.zip">
-          </div>
-          <div class="download-link-item">
-            <span class="link-number">4</span>
-            <input type="url" id="downloadUrl4" placeholder="https://ejemplo.com/herramienta4.zip">
-          </div>
-          <div class="download-link-item">
-            <span class="link-number">5</span>
-            <input type="url" id="downloadUrl5" placeholder="https://ejemplo.com/herramienta5.zip">
-          </div>
-        </div>
-        <small style="color:var(--text-dim);font-size:11px;display:block;margin-top:4px;">Agrega hasta 5 enlaces de descarga diferentes (opcional)</small>
+        <label>Tiempo estimado del proceso</label>
+        <input type="text" id="serviceProcessTime" placeholder="Ej: 1 Hora | 6 minutos">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Tiempo promedio que tarda el servicio</small>
       </div>
       
       <div class="form-group">
         <label>Información adicional / Instrucciones</label>
-        <textarea id="serviceAdditionalInfo" placeholder="Ej: USAR REDIRECTOR 1.9.7, Conecta en Fastboot" style="min-height: 80px;"></textarea>
+        <textarea id="serviceAdditionalInfo" placeholder="Ej: USAR REDIRECTOR 1.9.7, Conecta en Sideload / VOL + (assistant mode)"></textarea>
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Instrucciones especiales para el usuario</small>
       </div>
       
       <div class="form-group">
-        <label>IP / DNS del servidor</label>
+        <label>IP / DNS (opcional)</label>
         <input type="text" id="serviceIP" placeholder="Ej: 51.161.9.229">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">IP o DNS del servidor (para servicios remotos)</small>
       </div>
       
       <button type="submit" class="btn-save">
@@ -1321,103 +1126,74 @@
 </div>
 
 <div class="modal-overlay" id="orderModal">
-  <div class="modal" style="width: 850px; max-width: 95vw;">
+  <div class="modal">
     <button class="modal-close" onclick="closeOrderModal()">✕</button>
     <h2>Ingresar Pedido</h2>
+    <p class="modal-sub">Completa los datos requeridos para procesar tu pedido</p>
     
     <div id="errorMessage" class="error-message"></div>
     
-    <div class="order-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div class="form-row">
       <div>
-        <h3 style="font-family: 'Orbitron', monospace; font-size: 16px; color: var(--orange); margin-bottom: 16px;" id="orderServiceName">
-          Nombre del Servicio
-        </h3>
+        <div class="order-summary">
+          <div class="summary-item">
+            <span>Servicio:</span>
+            <span id="orderServiceName" style="color: var(--text); font-weight: 600;">-</span>
+          </div>
+          <div class="summary-item">
+            <span>Precio:</span>
+            <span class="price" id="orderPrice">$0.00</span>
+          </div>
+          <div class="summary-item">
+            <span>Tu saldo actual:</span>
+            <span id="orderBalance">$0.00</span>
+          </div>
+        </div>
         
         <form id="orderForm" onsubmit="submitOrder(event)">
-          <div class="form-group">
-            <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Ingrese Cantidad</label>
-            <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
-              <button type="button" onclick="changeQuantity(-1)" style="width: 40px; height: 40px; background: var(--dark3); border: 1px solid var(--cyan-border); color: var(--cyan); border-radius: 6px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">−</button>
-              <input type="number" id="orderQuantity" value="1" min="1" max="99" readonly style="flex: 1; background: var(--dark3); border: 1px solid var(--cyan-border); color: var(--text); padding: 12px; border-radius: 6px; font-size: 16px; font-weight: 700; text-align: center; font-family: 'Orbitron', monospace;">
-              <button type="button" onclick="changeQuantity(1)" style="width: 40px; height: 40px; background: var(--dark3); border: 1px solid var(--cyan-border); color: var(--cyan); border-radius: 6px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
-            </div>
-            <small style="color: var(--text-dim); font-size: 11px; margin-top: 4px; display: block;">Ingrese Cantidad Permitida 1 - 99</small>
-          </div>
-          
           <div id="dynamicFields"></div>
           
-          <div class="checkbox-container" style="margin: 16px 0;">
+          <div class="checkbox-container">
             <input type="checkbox" id="priceGuaranteed" checked disabled>
             <label for="priceGuaranteed">✓ Precio final garantizado</label>
           </div>
           
-          <div style="display: flex; align-items: center; gap: 8px; margin: 16px 0; padding: 12px; background: rgba(255,136,0,0.05); border-radius: 6px;">
-            <div style="width: 24px; height: 24px; background: var(--dark3); border-radius: 4px; display: flex; align-items: center; justify-content: center;">⏱️</div>
-            <div>
-              <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Tiempo del Proceso (Promedio)</div>
-              <div style="font-size: 13px; color: var(--text); font-weight: 600;" id="orderProcessTime">1 Hora | 9 minutos</div>
-            </div>
-          </div>
-          
-          <button type="submit" class="btn-primary btn-full" style="background: var(--orange); margin-top: 16px;">
+          <button type="submit" class="btn-primary btn-full">
             🛒 Ingresar Pedido
           </button>
         </form>
       </div>
       
-      <div style="text-align: center;">
-        <div style="margin-bottom: 20px;">
-          <div style="width: 120px; height: 120px; background: var(--dark3); border-radius: 12px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 60px;" id="serviceLogo">
-            🛜
+      <div>
+        <div class="service-info-panel">
+          <h4>📋 Información del Servicio</h4>
+          
+          <div class="service-info-item">
+            <span class="label">Precio:</span>
+            <span class="value" id="infoPrice">$0.00</span>
           </div>
-          <div style="font-size: 12px; color: var(--text-muted); word-break: break-word; padding: 4px 8px; background: rgba(0,0,0,0.3); border-radius: 4px; display: inline-block;" id="serviceAvailabilityText">Trabajando solo en días laborables</div>
-        </div>
-        
-        <div style="margin: 24px 0;">
-          <div style="font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 700; color: var(--text); margin-bottom: 8px;" id="orderPrice">$2.50</div>
-          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;" id="serviceBadges">
-            <span style="background: rgba(0,255,136,0.15); color: var(--green); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">✓ EN STOCK</span>
-            <span style="background: var(--orange-glow); color: var(--orange); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">👤 SOPORTE MANUAL BY ADMIN</span>
+          
+          <div class="service-info-item">
+            <span class="label">Estado:</span>
+            <span class="value" id="infoStatus">-</span>
           </div>
-        </div>
-        
-        <div style="background: var(--dark3); border-radius: 8px; padding: 12px; margin: 20px 0;">
-          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Tu saldo actual:</div>
-          <div style="font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700; color: var(--green);" id="orderBalance">$0.00</div>
-        </div>
-        
-        <div id="downloadButtonsContainer" style="display: none; margin: 16px 0;">
-          <div style="font-size: 11px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; font-weight: 700;">📥 Enlaces de Descarga:</div>
-          <div class="download-buttons-grid" id="downloadButtonsGrid"></div>
-        </div>
-        
-        <div id="infoAdditionalContainer" style="display: none; text-align: left; background: var(--dark3); border-radius: 8px; padding: 12px; margin: 12px 0;">
-          <div style="font-size: 11px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; font-weight: 700;">🔧 Instrucciones:</div>
-          <div style="font-size: 13px; color: var(--text); line-height: 1.6;" id="infoAdditional"></div>
-        </div>
-        
-        <div id="infoIPContainer" style="display: none; text-align: left; background: var(--dark3); border-radius: 8px; padding: 12px; margin: 12px 0;">
-          <div style="font-size: 11px; color: var(--cyan); text-transform: uppercase; margin-bottom: 4px; font-weight: 700;">🌐 IP / DNS:</div>
-          <div style="font-size: 14px; color: var(--orange); font-family: 'Share Tech Mono', monospace; font-weight: 700;" id="infoIP"></div>
-        </div>
-        
-        <div id="offlineMessage" style="background: rgba(255,68,85,0.1); border: 1px solid var(--red); border-radius: 6px; padding: 12px; margin: 12px 0;">
-          <div style="font-size: 12px; color: var(--red); font-weight: 700; text-transform: uppercase;">
-            ⚠️ DOMINGO OFFLINE ⚠️
+          
+          <div class="service-info-item" id="infoTimeContainer">
+            <span class="label">⏱️ Tiempo del proceso:</span>
+            <span class="value" id="infoProcessTime">-</span>
           </div>
-          <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">
-            Disponible de Lunes a Sábado
+          
+          <div id="infoAdditionalContainer">
+            <div class="service-info-item" style="flex-direction: column; align-items: flex-start;">
+              <span class="label" style="margin-bottom: 8px;">📝 Instrucciones:</span>
+              <span class="value" id="infoAdditional" style="line-height: 1.6;">-</span>
+            </div>
           </div>
-        </div>
-        
-        <!-- ✅ NUEVO: DOS BOTONES DE SOPORTE -->
-        <div id="supportButtonsContainer" style="display: flex; gap: 12px; margin-top: 24px;">
-          <button type="button" id="btnToolSupport" onclick="openToolSupport()" style="flex: 1; background: var(--cyan); color: var(--dark); border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase; display: none;">
-            🔧 Soporte Herramienta
-          </button>
-          <button type="button" onclick="showPageSupport()" style="flex: 1; background: var(--orange); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase;">
-            💬 Soporte Página
-          </button>
+          
+          <div class="service-info-item" id="infoIPContainer">
+            <span class="label">🌐 IP / DNS:</span>
+            <span class="value" id="infoIP">-</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1450,37 +1226,52 @@
     enabled: true
   };
 
-  // ✅ URL DE SOPORTE DE LA PÁGINA (WhatsApp del admin)
-  const PAGE_SUPPORT_URL = 'https://wa.me/5213221938917';
-
   let currentUser = null;
   let userProfile = null;
   let allServices = [];
   let filteredServices = [];
   let currentOrderService = null;
-  let currentQuantity = 1;
   let searchQuery = '';
   let currentBrandFilter = 'all';
   let currentSort = 'recent';
 
+  // ✅ NUEVO: FUNCIÓN PARA PARSEAR TAGS CORRECTAMENTE (FIX DEL BUG)
   function parseTags(tags) {
     if (!tags) return [];
+    
+    // Si ya es un array, devolverlo limpio
     if (Array.isArray(tags)) {
       return tags.filter(t => typeof t === 'string' && t.trim() !== '');
     }
+    
+    // Si es string
     if (typeof tags === 'string') {
+      // Intentar parsear como JSON primero
       try {
         const parsed = JSON.parse(tags);
         if (Array.isArray(parsed)) {
           return parsed.filter(t => typeof t === 'string' && t.trim() !== '');
         }
-      } catch (e) {}
-      let cleaned = tags.replace(/[\[\]"]/g, '').replace(/\\n/g, ',').trim();
-      return cleaned.split(',').map(t => t.trim()).filter(t => t && t.length > 0);
+      } catch (e) {
+        // No es JSON válido, continuar
+      }
+      
+      // Limpiar caracteres JSON residuales
+      let cleaned = tags
+        .replace(/[\[\]"]/g, '')  // Quitar corchetes y comillas
+        .replace(/\\n/g, ',')      // Reemplazar \n por coma
+        .trim();
+      
+      // Split por coma
+      return cleaned.split(',')
+        .map(t => t.trim())
+        .filter(t => t && t.length > 0);
     }
+    
     return [];
   }
 
+  // ✅ NUEVO: DETECTAR MARCA DEL SERVICIO
   function detectBrand(service) {
     const text = [
       service.name || '',
@@ -1489,22 +1280,18 @@
     ].join(' ').toLowerCase();
     
     const brands = [
-      { name: 'AnyDesk', keywords: ['anydesk'] },
-      { name: 'TeamViewer', keywords: ['teamviewer'] },
-      { name: 'UltraViewer', keywords: ['ultraviewer'] },
-      { name: 'Chimera', keywords: ['chimera'] },
-      { name: 'UnlockTool', keywords: ['unlocktool', 'unlock tool'] },
-      { name: 'HydraTool', keywords: ['hydratool', 'hydra tool'] },
-      { name: 'Octoplus', keywords: ['octoplus'] },
-      { name: 'Z3X', keywords: ['z3x'] },
-      { name: 'UMT', keywords: ['umt'] },
-      { name: 'MRT', keywords: ['mrt'] },
-      { name: 'EFT', keywords: ['eft'] },
-      { name: 'SigmaKey', keywords: ['sigma'] },
-      { name: 'DC-Unlocker', keywords: ['dc-unlocker', 'dc unlocker'] },
-      { name: 'Miracle', keywords: ['miracle'] },
-      { name: 'Pandora', keywords: ['pandora'] },
-      { name: 'FGM', keywords: ['fgm'] }
+      { name: 'Samsung', keywords: ['samsung', 'galaxy', 'sm-', 'gt-', 'sch-'] },
+      { name: 'Xiaomi', keywords: ['xiaomi', 'redmi', 'poco', ' mi ', 'mi account', 'miui'] },
+      { name: 'Apple', keywords: ['apple', 'iphone', 'ipad', 'ios', 'icloud', 'hello iphone'] },
+      { name: 'Honor', keywords: ['honor'] },
+      { name: 'Huawei', keywords: ['huawei'] },
+      { name: 'Motorola', keywords: ['motorola', 'moto '] },
+      { name: 'LG', keywords: [' lg ', 'lg-', 'lg '] },
+      { name: 'Realme', keywords: ['realme'] },
+      { name: 'Oppo', keywords: ['oppo'] },
+      { name: 'OnePlus', keywords: ['oneplus', 'one plus'] },
+      { name: 'Tecno', keywords: ['tecno', 'infinix'] },
+      { name: 'Nokia', keywords: ['nokia', 'hmd'] }
     ];
     
     for (const brand of brands) {
@@ -1515,34 +1302,40 @@
     return null;
   }
 
+  // ✅ NUEVO: OBTENER ICONO DE MARCA
   function getBrandIcon(brand) {
     const icons = {
-      'AnyDesk': '🔴',
-      'TeamViewer': '🔷',
-      'UltraViewer': '🟢',
-      'Chimera': '🦁',
-      'UnlockTool': '🔓',
-      'HydraTool': '🐉',
-      'Octoplus': '🐙',
-      'Z3X': '🔷',
-      'UMT': '🔶',
-      'EFT': '⚡',
-      'MRT': '🔑',
-      'SigmaKey': 'Σ',
-      'DC-Unlocker': '🔓',
-      'Miracle': '✨',
-      'Pandora': '📦',
-      'FGM': '🔧'
+      'Samsung': '📱',
+      'Xiaomi': '🔶',
+      'Apple': '🍎',
+      'Honor': '⭐',
+      'Huawei': '🌸',
+      'Motorola': '🔷',
+      'LG': '🔴',
+      'Realme': '🟡',
+      'Oppo': '🟢',
+      'OnePlus': '➕',
+      'Tecno': '🔵',
+      'Nokia': '🟣'
     };
-    return icons[brand] || '🛜';
+    return icons[brand] || '📲';
   }
 
+  // ✅ NUEVO: VERIFICAR SI ES MÁS VENDIDO
   function isBestSeller(service) {
     const name = (service.name || '').toLowerCase();
-    const bestSellers = ['unlock', 'frp', 'bypass', 'remote', 'rent'];
+    const bestSellers = [
+      'samsung frp',
+      'xiaomi mi account',
+      'iphone bypass',
+      'honor frp',
+      'samsung unlock',
+      'frp via imei'
+    ];
     return bestSellers.some(bs => name.includes(bs));
   }
 
+  // ✅ NUEVO: VERIFICAR SI ES NUEVO (menos de 7 días)
   function isNew(service) {
     if (!service.createdAt) return false;
     const created = new Date(service.createdAt);
@@ -1551,58 +1344,81 @@
     return diffDays <= 7;
   }
 
+  // ✅ NUEVO: EXTRAER MARCAS ÚNICAS DE LOS SERVICIOS
   function extractBrands(services) {
     const brandCount = {};
     services.forEach(service => {
       const brand = detectBrand(service);
-      if (brand) brandCount[brand] = (brandCount[brand] || 0) + 1;
+      if (brand) {
+        brandCount[brand] = (brandCount[brand] || 0) + 1;
+      }
     });
     return brandCount;
   }
 
+  // ✅ NUEVO: RENDERIZAR FILTROS DE MARCA
   function renderBrandFilters() {
     const container = document.getElementById('brandFilters');
     const brandCount = extractBrands(allServices);
     const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]);
     
-    let html = '<span class="brand-filter-label">🏷️ Filtrar por herramienta:</span>';
-    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">Todos <span class="pill-count">${allServices.length}</span></button>`;
+    let html = '<span class="brand-filter-label">🏷️ Filtrar por marca:</span>';
     
+    // Botón "Todos"
+    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">
+      Todos <span class="pill-count">${allServices.length}</span>
+    </button>`;
+    
+    // Botones por marca
     brands.forEach(([brand, count]) => {
       const icon = getBrandIcon(brand);
-      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">${icon} ${brand} <span class="pill-count">${count}</span></button>`;
+      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">
+        ${icon} ${brand} <span class="pill-count">${count}</span>
+      </button>`;
     });
     
     container.innerHTML = html;
   }
 
+  // ✅ NUEVO: FILTRAR POR MARCA
   function filterByBrand(brand) {
     currentBrandFilter = brand;
     applyFiltersAndSort();
     renderBrandFilters();
   }
 
+  // ✅ NUEVO: MANEJAR ORDENAMIENTO
   function handleSort() {
     currentSort = document.getElementById('sortSelect').value;
     applyFiltersAndSort();
   }
 
+  // ✅ NUEVO: APLICAR FILTROS Y ORDENAMIENTO
   function applyFiltersAndSort() {
     let result = [...allServices];
     
+    // Aplicar búsqueda
     if (searchQuery) {
       result = result.filter(service => {
         const name = (service.name || '').toLowerCase();
         const description = (service.description || '').toLowerCase();
         const tags = parseTags(service.tags).join(' ').toLowerCase();
-        return name.includes(searchQuery) || description.includes(searchQuery) || tags.includes(searchQuery);
+        
+        return name.includes(searchQuery) || 
+               description.includes(searchQuery) || 
+               tags.includes(searchQuery);
       });
     }
     
+    // Aplicar filtro de marca
     if (currentBrandFilter !== 'all') {
-      result = result.filter(service => detectBrand(service) === currentBrandFilter);
+      result = result.filter(service => {
+        const brand = detectBrand(service);
+        return brand === currentBrandFilter;
+      });
     }
     
+    // Aplicar ordenamiento
     switch (currentSort) {
       case 'price-asc':
         result.sort((a, b) => (a.price || a.credits || 0) - (b.price || b.credits || 0));
@@ -1611,7 +1427,11 @@
         result.sort((a, b) => (b.price || b.credits || 0) - (a.price || a.credits || 0));
         break;
       case 'popular':
-        result.sort((a, b) => (isBestSeller(b) ? 1 : 0) - (isBestSeller(a) ? 1 : 0));
+        result.sort((a, b) => {
+          const aBest = isBestSeller(a) ? 1 : 0;
+          const bBest = isBestSeller(b) ? 1 : 0;
+          return bBest - aBest;
+        });
         break;
       case 'name':
         result.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -1628,6 +1448,7 @@
     filteredServices = result;
     renderServices();
     
+    // Actualizar info de búsqueda
     const resultsInfo = document.getElementById('searchResultsInfo');
     if (searchQuery || currentBrandFilter !== 'all') {
       resultsInfo.classList.add('visible');
@@ -1640,41 +1461,55 @@
 
   async function sendTelegramMessage(message) {
     if (!telegramConfig.enabled) return false;
+    
     let allSuccess = true;
+    
     for (const chatId of telegramConfig.chatIds) {
       try {
         const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
+        
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'HTML'
+          })
         });
+        
         const data = await response.json();
-        if (data.ok) console.log(`✅ Notificación enviada a chat ${chatId}`);
-        else { console.error(`❌ Error enviando a chat ${chatId}:`, data.description); allSuccess = false; }
+        
+        if (data.ok) {
+          console.log(`✅ Notificación enviada a chat ${chatId}`);
+        } else {
+          console.error(`❌ Error enviando a chat ${chatId}:`, data.description);
+          allSuccess = false;
+        }
       } catch (error) {
         console.error(`❌ Error de conexión con chat ${chatId}:`, error);
         allSuccess = false;
       }
     }
+    
     return allSuccess;
   }
 
-  async function notifyRemoteOrder(orderData) {
+  async function notifyNewOrder(orderData) {
     const message = `
-🌐 <b>NUEVO PEDIDO REMOTO RECIBIDO</b>
+🆕 <b>NUEVO PEDIDO RECIBIDO</b>
 
 👤 <b>Cliente:</b> ${orderData.userName || 'Usuario'}
 📧 <b>Email:</b> ${orderData.userEmail || 'N/A'}
 📦 <b>Servicio:</b> ${orderData.serviceName || 'N/A'}
-💰 <b>Precio Unitario:</b> $${(orderData.unitPrice || 0).toFixed(2)}
+💰 <b>Precio:</b> $${(orderData.servicePrice || 0).toFixed(2)}
 📊 <b>Cantidad:</b> ${orderData.quantity || 1}
-💵 <b>Total:</b> $${(orderData.servicePrice || 0).toFixed(2)}
 📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
 
-${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''}${orderData.anydesk ? `🖥️ <b>AnyDesk:</b> <code>${orderData.anydesk}</code>\n` : ''}${orderData.ultraViewer ? `💻 <b>UltraViewer:</b> <code>${orderData.ultraViewer}</code>\n` : ''}${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
-⏳ <b>Estado:</b> Pendiente de procesamiento remoto
+${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
+⏳ <b>Estado:</b> Pendiente de revisión
     `.trim();
+    
     return await sendTelegramMessage(message);
   }
 
@@ -1714,14 +1549,23 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
   }
 
   function logout() {
-    auth.signOut().then(() => { window.location.href = 'index.html'; });
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
   }
 
   async function loadServices() {
     try {
-      const servicesSnap = await db.collection('services').where('category', '==', 'remote').get();
+      const servicesSnap = await db.collection('services')
+        .where('category', '==', 'unlock')
+        .get();
+      
       allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      // Renderizar filtros de marca
       renderBrandFilters();
+      
+      // Aplicar filtros y ordenamiento
       applyFiltersAndSort();
     } catch (error) {
       console.error('Error cargando servicios:', error);
@@ -1737,9 +1581,15 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
   function handleSearch() {
     const input = document.getElementById('searchInput');
     const clearBtn = document.getElementById('searchClear');
+    
     searchQuery = input.value.trim().toLowerCase();
-    if (searchQuery) clearBtn.classList.add('visible');
-    else clearBtn.classList.remove('visible');
+    
+    if (searchQuery) {
+      clearBtn.classList.add('visible');
+    } else {
+      clearBtn.classList.remove('visible');
+    }
+    
     applyFiltersAndSort();
   }
 
@@ -1761,15 +1611,16 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     
     if (filteredServices.length === 0) {
       if (searchQuery || currentBrandFilter !== 'all') {
-        const filterText = currentBrandFilter !== 'all' ? `de <strong style="color:var(--orange);">${currentBrandFilter}</strong>` : '';
-        const searchText = searchQuery ? `"<strong style="color:var(--orange);">${searchQuery}</strong>"` : '';
+        const filterText = currentBrandFilter !== 'all' ? `de la marca <strong style="color:var(--emerald);">${currentBrandFilter}</strong>` : '';
+        const searchText = searchQuery ? `"<strong style="color:var(--emerald);">${searchQuery}</strong>"` : '';
+        
         grid.innerHTML = `
           <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
-            <p style="color:var(--orange);font-size:18px;margin-bottom:8px;">No se encontraron resultados</p>
+            <p style="color:var(--emerald);font-size:18px;margin-bottom:8px;">No se encontraron resultados</p>
             <p style="color:var(--text-dim);">No hay servicios que coincidan ${filterText} ${searchText}</p>
             <button onclick="clearAllFilters()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar filtros</button>
           </div>
@@ -1780,7 +1631,7 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
             </svg>
-            <p>No hay servicios remotos disponibles</p>
+            <p>No hay servicios de registros IMEI disponibles</p>
           </div>
         `;
       }
@@ -1790,39 +1641,33 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
     
     grid.innerHTML = filteredServices.map(service => {
+      // ✅ FIX: Usar parseTags en lugar del procesamiento anterior
       const tags = parseTags(service.tags);
       const brand = detectBrand(service);
       const brandIcon = brand ? getBrandIcon(brand) : null;
       const bestSeller = isBestSeller(service);
       const newService = isNew(service);
       
+      // Resaltar coincidencias
       let highlightedName = service.name;
       if (searchQuery) {
         const regex = new RegExp(`(${escapeRegExp(searchQuery)})`, 'gi');
-        highlightedName = service.name.replace(regex, '<mark style="background:var(--orange);color:var(--dark);padding:0 2px;border-radius:2px;">$1</mark>');
+        highlightedName = service.name.replace(regex, '<mark style="background:var(--emerald);color:var(--dark);padding:0 2px;border-radius:2px;">$1</mark>');
       }
       
+      // ✅ NUEVO: Cinta de "Más vendido" o "Nuevo"
       let ribbonHTML = '';
-      if (bestSeller) ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
-      else if (newService) ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
-      
-      let brandIconHTML = '';
-      if (brandIcon) brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Herramienta'}">${brandIcon}</div>`;
-      
-      // ✅ NUEVO: Botones de soporte
-      let supportButtonsHTML = '';
-      if (service.supportUrl) {
-        supportButtonsHTML += `
-          <a href="${service.supportUrl}" target="_blank" class="btn-support-tool" title="Soporte oficial de la herramienta">
-            🔧 Soporte ${brand || 'Herramienta'}
-          </a>
-        `;
+      if (bestSeller) {
+        ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
+      } else if (newService) {
+        ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
       }
-      supportButtonsHTML += `
-        <a href="${PAGE_SUPPORT_URL}" target="_blank" class="btn-support-page" title="Soporte de ServiciosGF">
-          💬 Soporte Página
-        </a>
-      `;
+      
+      // ✅ NUEVO: Icono de marca
+      let brandIconHTML = '';
+      if (brandIcon) {
+        brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Marca'}">${brandIcon}</div>`;
+      }
       
       return `
         <div class="service-card">
@@ -1836,13 +1681,13 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
             </div>
           ` : ''}
           
-          <div class="service-category">Remoto/Rent</div>
+          <div class="service-category">Registro IMEI/SN</div>
           <h3>${highlightedName}</h3>
           <p>${service.description || 'Sin descripción'}</p>
           
           <div class="service-badges">
             ${service.stock ? '<span class="badge stock">✓ En Stock</span>' : '<span class="badge out">Agotado</span>'}
-            ${service.autoServer ? '<span class="badge auto">⚡ Auto</span>' : '<span class="badge manual">👤 Manual</span>'}
+            ${service.autoServer ? '<span class="badge auto">⚡ Auto</span>' : ''}
           </div>
           
           ${tags.length > 0 ? `
@@ -1850,9 +1695,6 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
               ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
             </div>
           ` : ''}
-          
-          <!-- ✅ NUEVO: Botones de soporte -->
-          ${supportButtonsHTML ? `<div class="support-buttons">${supportButtonsHTML}</div>` : ''}
           
           <div class="service-footer">
             <div class="service-price">$${parseFloat(service.price || service.credits || 0).toFixed(2)} <span>créditos</span></div>
@@ -1863,6 +1705,7 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     }).join('');
   }
 
+  // ✅ NUEVO: LIMPIAR TODOS LOS FILTROS
   function clearAllFilters() {
     document.getElementById('searchInput').value = '';
     document.getElementById('searchClear').classList.remove('visible');
@@ -1879,9 +1722,6 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     document.getElementById('modalTitle').textContent = '➕ Agregar Servicio';
     document.getElementById('serviceForm').reset();
     document.getElementById('serviceId').value = '';
-    document.getElementById('requireIMEI').checked = true;
-    document.getElementById('requireIP').checked = true;
-    document.getElementById('requireSN').checked = true;
     document.getElementById('serviceModal').classList.add('open');
   }
 
@@ -1900,26 +1740,12 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     document.getElementById('servicePrice').value = service.price || service.credits || 0;
     document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
     document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
-    document.getElementById('serviceProcessTime').value = service.processTime || '';
+    // ✅ FIX: Mostrar tags correctamente (sin JSON crudo)
     const tags = parseTags(service.tags);
     document.getElementById('serviceTags').value = tags.join(', ');
-    // ✅ NUEVO: Cargar URL de soporte
-    document.getElementById('serviceSupportUrl').value = service.supportUrl || '';
+    document.getElementById('serviceProcessTime').value = service.processTime || '';
     document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
     document.getElementById('serviceIP').value = service.ip || '';
-    
-    document.getElementById('requireModel').checked = service.requireModel || false;
-    document.getElementById('requireAnyDesk').checked = service.requireAnyDesk || false;
-    document.getElementById('requireUltraViewer').checked = service.requireUltraViewer || false;
-    document.getElementById('requireIMEI').checked = service.requireIMEI !== false;
-    document.getElementById('requireIP').checked = service.requireIP !== false;
-    document.getElementById('requireSN').checked = service.requireSN !== false;
-    
-    const downloadUrls = service.downloadUrls || [];
-    for (let i = 1; i <= 5; i++) {
-      const input = document.getElementById(`downloadUrl${i}`);
-      if (input) input.value = downloadUrls[i-1] || '';
-    }
     
     document.getElementById('serviceModal').classList.add('open');
   }
@@ -1931,31 +1757,16 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     const tagsRaw = document.getElementById('serviceTags').value;
     const tagsArray = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(t => t) : [];
     
-    const downloadUrls = [];
-    for (let i = 1; i <= 5; i++) {
-      const url = document.getElementById(`downloadUrl${i}`).value.trim();
-      if (url) downloadUrls.push(url);
-    }
-    
     const serviceData = {
       name: document.getElementById('serviceName').value,
       description: document.getElementById('serviceDesc').value,
-      category: 'remote',
+      category: 'unlock',
       price: parseFloat(document.getElementById('servicePrice').value),
       credits: parseFloat(document.getElementById('servicePrice').value),
       stock: document.getElementById('serviceStock').value === 'true',
       autoServer: document.getElementById('serviceAuto').value === 'true',
-      processTime: document.getElementById('serviceProcessTime').value.trim(),
       tags: tagsArray,
-      // ✅ NUEVO: URL de soporte de la herramienta
-      supportUrl: document.getElementById('serviceSupportUrl').value.trim(),
-      requireModel: document.getElementById('requireModel').checked,
-      requireAnyDesk: document.getElementById('requireAnyDesk').checked,
-      requireUltraViewer: document.getElementById('requireUltraViewer').checked,
-      requireIMEI: document.getElementById('requireIMEI').checked,
-      requireIP: document.getElementById('requireIP').checked,
-      requireSN: document.getElementById('requireSN').checked,
-      downloadUrls: downloadUrls,
+      processTime: document.getElementById('serviceProcessTime').value.trim(),
       additionalInfo: document.getElementById('serviceAdditionalInfo').value.trim(),
       ip: document.getElementById('serviceIP').value.trim(),
       updatedAt: new Date().toISOString()
@@ -1971,6 +1782,7 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
         await db.collection('services').add(serviceData);
         showToast('✅ Servicio agregado', 'success');
       }
+      
       closeServiceModal();
       await loadServices();
     } catch (error) {
@@ -1980,6 +1792,7 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
 
   async function deleteService(serviceId) {
     if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
+    
     try {
       await db.collection('services').doc(serviceId).delete();
       showToast('🗑️ Servicio eliminado', 'success');
@@ -1992,7 +1805,9 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
   function selectService(serviceId) {
     if (!currentUser) {
       showToast('⚠️ Debes iniciar sesión para comprar', 'error');
-      setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
       return;
     }
     
@@ -2002,28 +1817,27 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     const price = service.price || service.credits || 0;
     const balance = userProfile?.balance || 0;
     
+    if (balance < price) {
+      showError('❌ No tienes suficiente saldo');
+      document.getElementById('orderModal').classList.add('open');
+      return;
+    }
+    
     currentOrderService = service;
-    currentQuantity = 1;
     
     document.getElementById('orderServiceName').textContent = service.name;
     document.getElementById('orderPrice').textContent = '$' + price.toFixed(2);
     document.getElementById('orderBalance').textContent = '$' + balance.toFixed(2);
-    document.getElementById('orderQuantity').value = '1';
     
-    if (service.processTime) document.getElementById('orderProcessTime').textContent = service.processTime;
-    else document.getElementById('orderProcessTime').textContent = 'No especificado';
+    document.getElementById('infoPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('infoStatus').innerHTML = service.stock ? '<span style="color: var(--emerald);">✓ EN STOCK</span>' : '<span style="color: var(--red);">AGOTADO</span>';
     
-    document.getElementById('serviceLogo').textContent = '🛜';
-    
-    const badgesContainer = document.getElementById('serviceBadges');
-    let badgesHTML = '';
-    if (service.stock) badgesHTML += '<span style="background: rgba(0,255,136,0.15); color: var(--green); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">✓ EN STOCK</span>';
-    else badgesHTML += '<span style="background: rgba(255,68,85,0.15); color: var(--red); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">❌ AGOTADO</span>';
-    if (!service.autoServer) badgesHTML += '<span style="background: var(--orange-glow); color: var(--orange); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase;">👤 SOPORTE MANUAL BY ADMIN</span>';
-    badgesContainer.innerHTML = badgesHTML;
-    
-    generateDynamicFields(service);
-    generateDownloadButtons(service);
+    if (service.processTime) {
+      document.getElementById('infoProcessTime').textContent = service.processTime;
+      document.getElementById('infoTimeContainer').style.display = 'flex';
+    } else {
+      document.getElementById('infoTimeContainer').style.display = 'none';
+    }
     
     if (service.additionalInfo) {
       document.getElementById('infoAdditional').textContent = service.additionalInfo;
@@ -2034,234 +1848,51 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     
     if (service.ip) {
       document.getElementById('infoIP').textContent = service.ip;
-      document.getElementById('infoIPContainer').style.display = 'block';
+      document.getElementById('infoIPContainer').style.display = 'flex';
     } else {
       document.getElementById('infoIPContainer').style.display = 'none';
     }
     
-    // ✅ NUEVO: Actualizar botones de soporte según el servicio
-    const btnToolSupport = document.getElementById('btnToolSupport');
-    if (service.supportUrl) {
-      btnToolSupport.style.display = 'block';
-      btnToolSupport.onclick = function() {
-        window.open(service.supportUrl, '_blank');
-      };
-    } else {
-      btnToolSupport.style.display = 'none';
-    }
-    
+    generateDynamicFields('unlock');
     hideError();
+    
     document.getElementById('orderModal').classList.add('open');
   }
 
-  // ✅ NUEVA FUNCIÓN: Generar campos dinámicos según los requisitos del servicio
-  function generateDynamicFields(service) {
+  function generateDynamicFields(category) {
     const container = document.getElementById('dynamicFields');
-    let fieldsHTML = `
-      <div class="info-box">
-        <strong>ℹ️ Información requerida:</strong><br>
-        Completa los campos solicitados para procesar tu pedido remoto.
-      </div>
-    `;
+    let fieldsHTML = '';
     
-    // ✅ Campo Modelo (si está requerido)
-    if (service.requireModel) {
-      fieldsHTML += `
-        <div class="form-group">
-          <label>📱 Modelo del Dispositivo *</label>
-          <input type="text" id="orderModel" required placeholder="Ej: Motorola Moto G9 Power">
-          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Modelo exacto del dispositivo</small>
+    if (category === 'unlock' || category === 'remote') {
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Para procesar este servicio, necesitamos el IMEI o número de serie del dispositivo.
         </div>
-      `;
-    }
-    
-    // ✅ Campo AnyDesk (si está requerido)
-    if (service.requireAnyDesk) {
-      fieldsHTML += `
+        
         <div class="form-group">
-          <label>🖥️ AnyDesk ID *</label>
-          <input type="text" id="orderAnyDesk" required placeholder="AnyDesk">
-          <div style="margin-top:8px;">
-            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);cursor:pointer;">
-              <input type="checkbox" id="anydeskCheckbox" style="width:16px;height:16px;accent-color:var(--orange);">
-              Coloca tu anydesk
-            </label>
-          </div>
-        </div>
-      `;
-    }
-    
-    // ✅ Campo UltraViewer (si está requerido)
-    if (service.requireUltraViewer) {
-      fieldsHTML += `
-        <div class="form-group">
-          <label>💻 UltraViewer ID *</label>
-          <input type="text" id="orderUltraViewer" required placeholder="UltraViewer">
-          <div style="margin-top:8px;">
-            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);cursor:pointer;">
-              <input type="checkbox" id="ultraviewerCheckbox" style="width:16px;height:16px;accent-color:var(--orange);">
-              Coloca tu UltraViewer
-            </label>
-          </div>
-        </div>
-      `;
-    }
-    
-    // ✅ Campo IMEI (si está requerido)
-    if (service.requireIMEI) {
-      fieldsHTML += `
-        <div class="form-group">
-          <label>🔢 IMEI A PONER *</label>
-          <input type="text" id="orderIMEI" required placeholder="IMEI A PONER">
-          <div style="margin-top:8px;">
-            <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);cursor:pointer;">
-              <input type="checkbox" id="imeiCheckbox" style="width:16px;height:16px;accent-color:var(--orange);">
-              Si no tienes coloca: AL AZAR
-            </label>
-          </div>
-        </div>
-      `;
-    }
-    
-    // ✅ Campo IP (si está requerido)
-    if (service.requireIP) {
-      fieldsHTML += `
-        <div class="form-group">
-          <label>🌐 IP *</label>
-          <input type="text" id="orderIP" required placeholder="IP">
-          <a href="https://ping.eu/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; color: var(--orange); font-size: 11px; margin-top: 4px; text-decoration: none; font-weight: 700; padding: 4px 10px; background: var(--orange-glow); border: 1px solid var(--orange-border); border-radius: 4px; transition: all 0.2s;">
-            🌐 Ver mi IP en ping.eu
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-              <polyline points="15 3 21 3 21 9"></polyline>
-              <line x1="10" y1="14" x2="21" y2="3"></line>
-            </svg>
-          </a>
-        </div>
-      `;
-    }
-    
-    // ✅ Campo SN (si está requerido)
-    if (service.requireSN) {
-      fieldsHTML += `
-        <div class="form-group">
-          <label>📱 SN *</label>
-          <input type="text" id="orderSN" required placeholder="SN">
-          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">🔍 *#06# Ejemplo: ZY245PTG</small>
+          <label>IMEI / Número de Serie *</label>
+          <input type="text" id="orderIMEI" required placeholder="123456789012345">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Marca *#06# en tu teléfono para ver el IMEI</small>
         </div>
       `;
     }
     
     container.innerHTML = fieldsHTML;
-    
-    // ✅ Agregar event listeners para los checkboxes
-    setTimeout(() => {
-      const imeiCheckbox = document.getElementById('imeiCheckbox');
-      const imeiInput = document.getElementById('orderIMEI');
-      if (imeiCheckbox && imeiInput) {
-        imeiCheckbox.addEventListener('change', function() {
-          if (this.checked) {
-            imeiInput.value = 'AL AZAR';
-            imeiInput.readOnly = true;
-          } else {
-            imeiInput.value = '';
-            imeiInput.readOnly = false;
-          }
-        });
-      }
-      
-      const anydeskCheckbox = document.getElementById('anydeskCheckbox');
-      const anydeskInput = document.getElementById('orderAnyDesk');
-      if (anydeskCheckbox && anydeskInput) {
-        anydeskCheckbox.addEventListener('change', function() {
-          if (this.checked) {
-            anydeskInput.readOnly = false;
-            anydeskInput.focus();
-          } else {
-            anydeskInput.value = '';
-            anydeskInput.readOnly = true;
-          }
-        });
-        anydeskInput.readOnly = true;
-      }
-      
-      const ultraviewerCheckbox = document.getElementById('ultraviewerCheckbox');
-      const ultraviewerInput = document.getElementById('orderUltraViewer');
-      if (ultraviewerCheckbox && ultraviewerInput) {
-        ultraviewerCheckbox.addEventListener('change', function() {
-          if (this.checked) {
-            ultraviewerInput.readOnly = false;
-            ultraviewerInput.focus();
-          } else {
-            ultraviewerInput.value = '';
-            ultraviewerInput.readOnly = true;
-          }
-        });
-        ultraviewerInput.readOnly = true;
-      }
-    }, 100);
-  }
-
-  function generateDownloadButtons(service) {
-    const container = document.getElementById('downloadButtonsContainer');
-    const grid = document.getElementById('downloadButtonsGrid');
-    const downloadUrls = service.downloadUrls || [];
-    
-    if (downloadUrls.length === 0) {
-      container.style.display = 'none';
-      return;
-    }
-    
-    container.style.display = 'block';
-    grid.innerHTML = downloadUrls.map((url, index) => `
-      <button type="button" onclick="window.open('${url}', '_blank')" class="btn-download-link">
-        ⬇️ Descargar Herramienta ${index + 1}
-      </button>
-    `).join('');
-  }
-
-  function changeQuantity(delta) {
-    const newQuantity = currentQuantity + delta;
-    if (newQuantity >= 1 && newQuantity <= 99) {
-      currentQuantity = newQuantity;
-      document.getElementById('orderQuantity').value = currentQuantity;
-      updateTotalPrice();
-    }
-  }
-
-  function updateTotalPrice() {
-    if (currentOrderService) {
-      const unitPrice = currentOrderService.price || currentOrderService.credits || 0;
-      const totalPrice = unitPrice * currentQuantity;
-      document.getElementById('orderPrice').textContent = '$' + totalPrice.toFixed(2);
-    }
-  }
-
-  // ✅ NUEVO: Soporte de la herramienta (URL específica)
-  function openToolSupport() {
-    if (currentOrderService && currentOrderService.supportUrl) {
-      window.open(currentOrderService.supportUrl, '_blank');
-    } else {
-      showToast('⚠️ Esta herramienta no tiene URL de soporte configurada', 'warning');
-    }
-  }
-
-  // ✅ NUEVO: Soporte de la página (WhatsApp del admin)
-  function showPageSupport() {
-    window.open(PAGE_SUPPORT_URL, '_blank');
   }
 
   async function submitOrder(e) {
     e.preventDefault();
+    
     if (!currentOrderService || !currentUser) return;
+    
     hideError();
     
-    const unitPrice = currentOrderService.price || currentOrderService.credits || 0;
-    const totalPrice = unitPrice * currentQuantity;
+    const price = currentOrderService.price || currentOrderService.credits || 0;
     const balance = userProfile?.balance || 0;
     
-    if (balance < totalPrice) {
-      showError('❌ No tienes suficiente saldo. Te falta $' + (totalPrice - balance).toFixed(2));
+    if (balance < price) {
+      showError('❌ No tienes suficiente saldo');
       return;
     }
     
@@ -2271,83 +1902,40 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
       userName: userProfile.name || 'Usuario',
       serviceId: currentOrderService.id,
       serviceName: currentOrderService.name,
-      servicePrice: totalPrice,
-      unitPrice: unitPrice,
-      quantity: currentQuantity,
-      category: 'remote',
+      servicePrice: price,
+      unitPrice: price,
+      quantity: 1,
+      category: 'unlock',
       status: 'pending',
       paymentMethod: 'balance',
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
     
-    let inputDataParts = [];
-    
-    // ✅ Validar y guardar campos dinámicos
-    if (currentOrderService.requireModel) {
-      const model = document.getElementById('orderModel')?.value.trim();
-      if (!model) { showError('⚠️ Por favor ingresa el modelo del dispositivo'); return; }
-      orderData.model = model;
-      inputDataParts.push(`Modelo: ${model}`);
+    const imei = document.getElementById('orderIMEI')?.value.trim();
+    if (!imei) {
+      showError('⚠️ Por favor ingresa el IMEI/SN');
+      return;
     }
     
-    if (currentOrderService.requireAnyDesk) {
-      const anydesk = document.getElementById('orderAnyDesk')?.value.trim();
-      const anydeskChecked = document.getElementById('anydeskCheckbox')?.checked;
-      if (!anydesk && !anydeskChecked) { showError('⚠️ Por favor ingresa el AnyDesk ID o marca la casilla'); return; }
-      orderData.anydesk = anydeskChecked ? anydesk : 'No proporcionado';
-      inputDataParts.push(`AnyDesk: ${anydeskChecked ? anydesk : 'No proporcionado'}`);
-    }
+    orderData.imei = imei;
+    orderData.inputData = `IMEI/SN: ${imei}`;
     
-    if (currentOrderService.requireUltraViewer) {
-      const ultraViewer = document.getElementById('orderUltraViewer')?.value.trim();
-      const ultraViewerChecked = document.getElementById('ultraviewerCheckbox')?.checked;
-      if (!ultraViewer && !ultraViewerChecked) { showError('⚠️ Por favor ingresa el UltraViewer ID o marca la casilla'); return; }
-      orderData.ultraViewer = ultraViewerChecked ? ultraViewer : 'No proporcionado';
-      inputDataParts.push(`UltraViewer: ${ultraViewerChecked ? ultraViewer : 'No proporcionado'}`);
-    }
+    const confirmPurchase = confirm(
+      `✅ Confirmar Compra\n\n` +
+      `Servicio: ${currentOrderService.name}\n` +
+      `Precio: $${price.toFixed(2)}\n` +
+      `IMEI: ${imei}\n\n` +
+      `¿Confirmas la compra?`
+    );
     
-    if (currentOrderService.requireIMEI) {
-      const imei = document.getElementById('orderIMEI')?.value.trim();
-      const imeiChecked = document.getElementById('imeiCheckbox')?.checked;
-      if (!imei && !imeiChecked) { showError('⚠️ Por favor ingresa el IMEI o marca la casilla'); return; }
-      orderData.imei = imeiChecked ? 'AL AZAR' : imei;
-      inputDataParts.push(`IMEI: ${imeiChecked ? 'AL AZAR' : imei}`);
-    }
-    
-    if (currentOrderService.requireIP) {
-      const ip = document.getElementById('orderIP')?.value.trim();
-      if (!ip) { showError('⚠️ Por favor ingresa la IP'); return; }
-      orderData.ip = ip;
-      inputDataParts.push(`IP: ${ip}`);
-    }
-    
-    if (currentOrderService.requireSN) {
-      const sn = document.getElementById('orderSN')?.value.trim();
-      if (!sn) { showError('⚠️ Por favor ingresa el SN'); return; }
-      orderData.sn = sn;
-      inputDataParts.push(`SN: ${sn}`);
-    }
-    
-    orderData.inputData = inputDataParts.join(' | ');
-    
-    let confirmMessage = `✅ Confirmar Pedido Remoto\n\nServicio: ${currentOrderService.name}\n`;
-    if (orderData.model) confirmMessage += `Modelo: ${orderData.model}\n`;
-    if (orderData.anydesk) confirmMessage += `AnyDesk: ${orderData.anydesk}\n`;
-    if (orderData.ultraViewer) confirmMessage += `UltraViewer: ${orderData.ultraViewer}\n`;
-    if (orderData.imei) confirmMessage += `IMEI: ${orderData.imei}\n`;
-    if (orderData.ip) confirmMessage += `IP: ${orderData.ip}\n`;
-    if (orderData.sn) confirmMessage += `SN: ${orderData.sn}\n`;
-    confirmMessage += `\nCantidad: ${currentQuantity}\nTotal: $${totalPrice.toFixed(2)}\n\n¿Confirmas el pedido?`;
-    
-    const confirmPurchase = confirm(confirmMessage);
     if (!confirmPurchase) return;
     
     try {
       await db.collection('orders').add(orderData);
-      await notifyRemoteOrder(orderData);
+      await notifyNewOrder(orderData);
       
-      const newBalance = balance - totalPrice;
+      const newBalance = balance - price;
       await db.collection('profiles').doc(currentUser.uid).update({
         balance: newBalance,
         lastTransaction: firebase.firestore.FieldValue.serverTimestamp()
@@ -2358,8 +1946,8 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
         userEmail: currentUser.email,
         userName: userProfile.name || 'Usuario',
         type: 'purchase',
-        amount: -totalPrice,
-        description: `Compra remota: ${currentOrderService.name} (x${currentQuantity})`,
+        amount: -price,
+        description: `Compra: ${currentOrderService.name}`,
         status: 'completed',
         balanceBefore: balance,
         balanceAfter: newBalance,
@@ -2368,10 +1956,14 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
       });
       
       userProfile.balance = newBalance;
-      showToast('✅ ¡Pedido remoto creado exitosamente!', 'success');
+      
+      showToast('✅ ¡Pedido creado exitosamente!', 'success');
       closeOrderModal();
       
-      setTimeout(() => { window.location.href = 'mis-pedidos.html'; }, 2000);
+      setTimeout(() => {
+        window.location.href = 'mis-pedidos.html';
+      }, 2000);
+      
     } catch (error) {
       console.error('Error creando pedido:', error);
       showError('❌ Error al crear el pedido: ' + error.message);
@@ -2382,7 +1974,6 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
     document.getElementById('orderModal').classList.remove('open');
     document.getElementById('dynamicFields').innerHTML = '';
     currentOrderService = null;
-    currentQuantity = 1;
     hideError();
   }
 
@@ -2405,11 +1996,15 @@ ${orderData.model ? `📱 <b>Modelo:</b> <code>${orderData.model}</code>\n` : ''
       toastContainer.className = 'toast-container';
       document.body.appendChild(toastContainer);
     }
+    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
+    
     const icon = type === 'success' ? '✅' : '⚠️';
     toast.innerHTML = `<span>${icon}</span> ${message}`;
+    
     toastContainer.appendChild(toast);
+    
     setTimeout(() => {
       toast.style.animation = 'fadeOut 0.3s ease forwards';
       setTimeout(() => toast.remove(), 300);
