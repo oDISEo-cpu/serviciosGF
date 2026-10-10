@@ -32,7 +32,7 @@ cron jobs leen `FIREBASE_CREDENTIALS` desde variables de entorno.
 - Endpoint: `https://jonartgsm.com/api/index.php`
 - Acciones usadas: `getservices`, `getimeiservicedetails`, `placeimeiorder`, `getdetail`.
 - Credenciales: constantes `DHru_USERNAME` / `DHru_API_KEY` en `api/config-dhru.php`.
-- Ver [MAPEO-SERVICIOS.md](MAPEO-SERVICIOS.md) y [REGLAS-NUEVOS-SERVICIOS.md](REGLAS-NUEVOS-SERVICIOS.md).
+- Ver [MAPEO-SERVICIOS.md](MAPEO-SERVICIOS.md), [REGLAS-NUEVOS-SERVICIOS.md](REGLAS-NUEVOS-SERVICIOS.md) y la guía de producción [RECOMENDACIONES.md](RECOMENDACIONES.md).
 
 ### Bot de Telegram
 - `TELEGRAM_BOT_TOKEN` y `TELEGRAM_ADMIN_ID` se leen de `process.env` (fallback a
@@ -45,6 +45,7 @@ cron jobs leen `FIREBASE_CREDENTIALS` desde variables de entorno.
 │   ├── dhru-services.php      # Catalogo de servicios JonartGSM + mapeo campos dinamicos
 │   ├── config-dhru.php        # Credenciales (placeholders en el repo)
 │   └── dhru-errors.log        # Log generado en produccion
+├── RECOMENDACIONES.md    # Guia de produccion basada en incidentes reales
 ├── app.js                # Logica compartida (auth, notificaciones Telegram)
 ├── registros-imei.html   # Tienda IMEI/SN + modal de pedido + submitOrder/dhruData
 ├── licencias-creditos.html / remotos-rent-tools.html / servicios-streaming.html

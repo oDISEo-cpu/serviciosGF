@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registros IMEI / SN - ServiciosGF</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: #00b8cc;
+    --cyan-glow: rgba(0,229,255,0.15);
+    --cyan-border: rgba(0,229,255,0.3);
+    --dark: #040a12;
+    --dark2: #070d18;
+    --dark3: #0a1220;
+    --surface: #0f1e30;
+    --text: #e0f4ff;
+    --text-muted: #7ba8c4;
+    --text-dim: #4a7a9b;
+    --green: #00ff88;
+    --emerald: #00ff88;
+    --emerald-dim: #00cc6a;
+    --emerald-glow: rgba(0,255,136,0.15);
+    --emerald-border: rgba(0,255,136,0.3);
+    --yellow: #ffcc00;
+    --red: #ff4455;
+    --purple: #8a2be2;
+    --orange: #ff6b35;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--dark); color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 16px; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(4, 10, 18, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cyan-border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; text-decoration: none; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 14px; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
+  .nav-links a:hover { color: var(--emerald); background: var(--emerald-glow); }
+  .nav-links a.active { color: var(--emerald); }
+  
+  .nav-dropdown { position: relative; }
+  .nav-dropdown > a { cursor: pointer; }
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 6px;
+    padding: 8px 0;
+    min-width: 220px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 1000;
+  }
+  .nav-dropdown:hover .dropdown-menu { display: block; }
+  .dropdown-menu a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .dropdown-menu a:hover {
+    background: var(--emerald-glow);
+    color: var(--emerald);
+  }
+  
+  .nav-actions { display: flex; gap: 10px; align-items: center; }
+  .btn-ghost { background: transparent; border: 1px solid var(--emerald-border); color: var(--emerald); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { background: var(--emerald-glow); border-color: var(--emerald); }
+  .btn-primary { background: var(--emerald); border: 1px solid var(--emerald); color: var(--dark); padding: 8px 20px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: var(--emerald-dim); box-shadow: 0 0 16px rgba(0,255,136,0.4); }
+  .user-pill { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--cyan-border); padding: 6px 14px; border-radius: 20px; }
+  .user-avatar { width: 24px; height: 24px; background: var(--emerald); color: var(--dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .btn-logout-text { background: rgba(255,68,85,0.15); border: 1px solid #ff4455; color: #ff4455; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+  .btn-logout-text:hover { background: #ff4455 !important; color: white !important; }
+
+  .page-hero {
+    padding: 80px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,255,136,0.08) 0%, transparent 70%);
+  }
+  .page-hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .page-hero h1 .hl { color: var(--emerald); }
+  .page-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .category-tabs-container {
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+    background: var(--dark);
+    border-bottom: 1px solid var(--cyan-border);
+    padding: 12px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .category-tabs-container::-webkit-scrollbar { display: none; }
+
+  .category-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 0 40px;
+    min-width: max-content;
+    align-items: center;
+  }
+
+  .category-tab {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .category-tab:hover {
+    background: var(--emerald-glow);
+    border-color: var(--emerald);
+    color: var(--emerald);
+  }
+
+  .category-tab.active {
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--dark);
+    font-weight: 700;
+  }
+
+  .services-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .search-container {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+    min-width: 250px;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-dim);
+    font-size: 18px;
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 2px solid var(--emerald-border);
+    color: var(--text);
+    padding: 12px 48px 12px 48px;
+    border-radius: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .search-input:focus {
+    border-color: var(--emerald);
+    box-shadow: 0 0 20px rgba(0,255,136,0.2);
+    background: var(--dark3);
+  }
+
+  .search-input:focus + .search-icon,
+  .search-input:focus ~ .search-icon {
+    color: var(--emerald);
+  }
+
+  .search-input::placeholder {
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: none;
+  }
+
+  .search-clear:hover {
+    color: var(--red);
+    background: rgba(255,68,85,0.1);
+  }
+
+  .search-clear.visible { display: block; }
+
+  .search-results-info {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+    display: none;
+  }
+
+  .search-results-info.visible { display: block; }
+  .search-results-info .count { color: var(--emerald); font-weight: 700; }
+
+  /* ✅ NUEVO: FILTROS POR MARCA */
+  .brand-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .brand-filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .brand-pill {
+    background: var(--surface);
+    border: 1px solid var(--emerald-border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-pill:hover {
+    background: var(--emerald-glow);
+    border-color: var(--emerald);
+    color: var(--emerald);
+  }
+
+  .brand-pill.active {
+    background: var(--emerald);
+    border-color: var(--emerald);
+    color: var(--dark);
+    font-weight: 700;
+  }
+
+  .brand-pill .pill-count {
+    background: rgba(0,0,0,0.2);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .brand-pill.active .pill-count {
+    background: rgba(0,0,0,0.3);
+    color: var(--dark);
+  }
+
+  /* ✅ NUEVO: CONTROLES DE ORDENAMIENTO */
+  .controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sort-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sort-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .sort-select {
+    background: var(--surface);
+    border: 1px solid var(--emerald-border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .sort-select:hover, .sort-select:focus {
+    border-color: var(--emerald);
+    background: var(--dark3);
+  }
+
+  .sort-select option {
+    background: var(--dark2);
+    color: var(--text);
+  }
+
+  .admin-buttons {
+    display: none;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .btn-add-service {
+    background: var(--emerald);
+    border: 1px solid var(--emerald);
+    color: var(--dark);
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-add-service:hover {
+    background: var(--emerald-dim);
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+  }
+
+  .service-card {
+    background: var(--surface);
+    border: 1px solid var(--emerald-border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s;
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(0,255,136,0.05) 100%);
+    overflow: hidden;
+  }
+
+  .service-card:hover {
+    border-color: var(--emerald);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.25);
+  }
+
+  /* ✅ NUEVO: CINTA "MÁS VENDIDO" / "NUEVO" */
+  .service-ribbon {
+    position: absolute;
+    top: 14px;
+    left: -10px;
+    padding: 5px 14px 5px 18px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 0 4px 4px 0;
+    z-index: 3;
+    color: var(--dark);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .service-ribbon.bestseller {
+    background: linear-gradient(135deg, #ff6b35, #ffcc00);
+  }
+
+  .service-ribbon.new {
+    background: linear-gradient(135deg, #00ff88, #00e5ff);
+  }
+
+  .service-ribbon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 0;
+    border: 3px solid transparent;
+    border-top-color: rgba(0,0,0,0.4);
+    border-right-color: rgba(0,0,0,0.4);
+  }
+
+  /* ✅ NUEVO: ICONO DE MARCA */
+  .brand-icon-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--dark3);
+    border: 1px solid var(--emerald-border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .service-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--emerald-glow);
+    color: var(--emerald);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  .service-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--emerald);
+    margin-bottom: 8px;
+    padding-right: 50px;
+  }
+
+  .service-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .service-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge.stock { background: var(--emerald-glow); color: var(--emerald); }
+  .badge.auto { background: var(--emerald-glow); color: var(--emerald); }
+  .badge.out { background: rgba(255,68,85,0.15); color: var(--red); }
+
+  .service-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .tag {
+    padding: 4px 10px;
+    background: var(--dark3);
+    border: 1px solid var(--emerald-border);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .service-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--emerald-border);
+  }
+
+  .service-price {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  .service-price span {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .btn-select {
+    background: var(--emerald);
+    color: var(--dark);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-select:hover {
+    background: var(--emerald-dim);
+    box-shadow: 0 0 16px rgba(0, 255, 136, 0.4);
+  }
+
+  .service-actions {
+    position: absolute;
+    top: 16px;
+    right: 64px;
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+  }
+
+  .btn-edit, .btn-delete {
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-edit:hover {
+    background: var(--cyan-glow);
+    border-color: var(--cyan);
+  }
+
+  .btn-delete {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .btn-delete:hover {
+    background: var(--red);
+    color: white;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+    grid-column: 1 / -1;
+  }
+
+  .empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 80px;
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+    grid-column: 1 / -1;
+  }
+
+  .loading::after {
+    content: ' Cargando servicios';
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+
+  @keyframes dots {
+    0% { content: ' Cargando servicios'; }
+    33% { content: ' Cargando servicios.'; }
+    66% { content: ' Cargando servicios..'; }
+    100% { content: ' Cargando servicios...'; }
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(4,10,18,0.9);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    border-radius: 12px;
+    padding: 32px;
+    width: 700px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  @keyframes modalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--emerald); }
+
+  .modal h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    color: var(--emerald);
+    margin-bottom: 8px;
+  }
+
+  .modal-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .form-group { margin-bottom: 18px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--emerald);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .btn-full { width: 100%; padding: 14px; font-size: 15px; }
+
+  .btn-save {
+    background: var(--emerald);
+    border: 1px solid var(--emerald);
+    color: var(--dark);
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  .btn-save:hover {
+    background: var(--emerald-dim);
+    box-shadow: 0 0 20px rgba(0,255,136,0.4);
+  }
+
+  .order-summary {
+    background: var(--dark3);
+    border: 1px solid var(--emerald-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--emerald-border);
+  }
+
+  .summary-item:last-child { border-bottom: none; }
+  .summary-item span:first-child { color: var(--text-muted); font-size: 14px; }
+
+  .summary-item .price {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--yellow);
+  }
+
+  .summary-item span:last-child:not(.price) {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--emerald);
+  }
+
+  .info-box {
+    background: rgba(0,255,136,0.05);
+    border: 1px solid var(--emerald-border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .info-box strong { color: var(--emerald); }
+
+  .service-info-panel {
+    background: var(--dark3);
+    border: 1px solid var(--emerald-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .service-info-panel h4 {
+    color: var(--emerald);
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .service-info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--emerald-border);
+    font-size: 13px;
+  }
+
+  .service-info-item:last-child { border-bottom: none; }
+  .service-info-item .label { color: var(--text-muted); }
+  .service-info-item .value { color: var(--text); font-weight: 600; }
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    padding: 12px;
+    background: rgba(0,255,136,0.05);
+    border: 1px solid var(--emerald);
+    border-radius: 6px;
+  }
+
+  .checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--emerald);
+  }
+
+  .checkbox-container label {
+    color: var(--emerald);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .error-message {
+    background: rgba(255,68,85,0.15);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .error-message.show { display: block; }
+
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--cyan-border);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+    min-width: 300px;
+  }
+
+  .toast.success { border-left: 4px solid var(--emerald); }
+  .toast.error { border-left: 4px solid var(--red); }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(100%); }
+  }
+
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--cyan-border);
+    padding: 30px 40px;
+    text-align: center;
+  }
+
+  footer p { font-size: 13px; color: var(--text-dim); }
+  footer strong { color: var(--emerald); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .page-hero { padding: 60px 20px 30px; }
+    .category-tabs { padding: 0 20px; }
+    .category-tab { padding: 6px 12px; font-size: 12px; }
+    .services-container { padding: 20px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .modal { width: 95vw; padding: 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .services-header { flex-direction: column; align-items: stretch; }
+    .search-container { max-width: 100%; }
+    .service-actions { right: 10px; top: 60px; }
+    .brand-icon-badge { width: 34px; height: 34px; font-size: 18px; }
+    .service-card h3 { padding-right: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="logo.png" alt="ServiciosGF" class="logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li class="nav-dropdown">
+      <a href="#">Servicios ▾</a>
+      <div class="dropdown-menu">
+        <a href="registros-imei.html">Registros IMEI / SN</a>
+        <a href="licencias-creditos.html">Licencias & Créditos</a>
+        <a href="remotos-rent-tools.html">Remotos & Rent Tools</a>
+        <a href="servicios-streaming.html">Servicios de Streaming</a>
+      </div>
+    </li>
+    <li><a href="precios.html">Paquetes</a></li>
+    <li><a href="descargas.html">Descargas</a></li>
+    <li><a href="mis-pedidos.html">Tus pedidos</a></li>
+    <li><a href="soporte.html">Soporte</a></li>
+  </ul>
+  <div class="nav-actions" id="navAuth"></div>
+</nav>
+
+<div class="page-hero">
+  <h1>📱 Registros <span class="hl">IMEI / SN</span></h1>
+  <p>Desbloqueos y registros por IMEI o número de serie para las principales marcas</p>
+</div>
+
+<div class="category-tabs-container">
+  <div class="category-tabs">
+    <button class="category-tab active">📱 IMEI/SN</button>
+    <button class="category-tab" onclick="window.location.href='licencias-creditos.html'">🔑 Licencias</button>
+    <button class="category-tab" onclick="window.location.href='remotos-rent-tools.html'">🌐 Remotos</button>
+    <button class="category-tab" onclick="window.location.href='servicios-streaming.html'">📺 Streaming</button>
+  </div>
+</div>
+
+<div class="services-container">
+  <div class="services-header">
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Buscar por marca, modelo, IMEI..."
+          oninput="handleSearch()"
+          autocomplete="off"
+        >
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      </div>
+      <div class="search-results-info" id="searchResultsInfo">
+        Mostrando <span class="count" id="searchResultsCount">0</span> de <span class="count" id="searchTotalCount">0</span> servicios
+      </div>
+    </div>
+    
+    <div class="admin-buttons" id="adminButtons">
+      <button class="btn-add-service" onclick="openAddModal()">
+        ➕ Agregar Servicio
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ NUEVO: FILTROS POR MARCA -->
+  <div class="brand-filters" id="brandFilters">
+    <span class="brand-filter-label">🏷️ Filtrar por marca:</span>
+    <!-- Se genera dinámicamente -->
+  </div>
+
+  <!-- ✅ NUEVO: CONTROLES DE ORDENAMIENTO -->
+  <div class="controls-row">
+    <div class="sort-container">
+      <span class="sort-label">📊 Ordenar:</span>
+      <select class="sort-select" id="sortSelect" onchange="handleSort()">
+        <option value="recent">Más recientes</option>
+        <option value="price-asc">Precio ↑ (menor a mayor)</option>
+        <option value="price-desc">Precio ↓ (mayor a menor)</option>
+        <option value="popular">Más vendidos</option>
+        <option value="name">Nombre A-Z</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="services-grid" id="servicesGrid">
+    <div class="loading"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong>ServiciosGF</strong>. Todos los derechos reservados.</p>
+</footer>
+
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeServiceModal()">✕</button>
+    <h2 id="modalTitle">➕ Agregar Servicio</h2>
+    <p class="modal-sub">Completa la información del servicio</p>
+    
+    <form id="serviceForm" onsubmit="saveService(event)">
+      <input type="hidden" id="serviceId">
+      
+      <div class="form-group">
+        <label>Nombre del Servicio</label>
+        <input type="text" id="serviceName" required placeholder="Ej: Samsung FRP via IMEI">
+      </div>
+      
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea id="serviceDesc" required placeholder="Ej: Desbloqueo de cuenta Google"></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Precio (créditos)</label>
+          <input type="number" id="servicePrice" step="0.01" min="0" required placeholder="Ej: 2.50">
+        </div>
+        <div class="form-group">
+          <label>¿En Stock?</label>
+          <select id="serviceStock" required>
+            <option value="true">✅ Sí, disponible</option>
+            <option value="false">❌ Agotado</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>¿Automático?</label>
+        <select id="serviceAuto" required>
+          <option value="true">⚡ Sí, automático</option>
+          <option value="false">👤 No, manual</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Tags (separados por coma)</label>
+        <input type="text" id="serviceTags" placeholder="Ej: Samsung, FRP, IMEI">
+      </div>
+      
+      <div class="form-group">
+        <label>Tiempo estimado del proceso</label>
+        <input type="text" id="serviceProcessTime" placeholder="Ej: 1 Hora | 6 minutos">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Tiempo promedio que tarda el servicio</small>
+      </div>
+      
+      <div class="form-group">
+        <label>Información adicional / Instrucciones</label>
+        <textarea id="serviceAdditionalInfo" placeholder="Ej: USAR REDIRECTOR 1.9.7, Conecta en Sideload / VOL + (assistant mode)"></textarea>
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Instrucciones especiales para el usuario</small>
+      </div>
+      
+      <div class="form-group">
+        <label>IP / DNS (opcional)</label>
+        <input type="text" id="serviceIP" placeholder="Ej: 51.161.9.229">
+        <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">IP o DNS del servidor (para servicios remotos)</small>
+      </div>
+      
+      <button type="submit" class="btn-save">
+        💾 Guardar Servicio
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOrderModal()">✕</button>
+    <h2>Ingresar Pedido</h2>
+    <p class="modal-sub">Completa los datos requeridos para procesar tu pedido</p>
+    
+    <div id="errorMessage" class="error-message"></div>
+    
+    <div class="form-row">
+      <div>
+        <div class="order-summary">
+          <div class="summary-item">
+            <span>Servicio:</span>
+            <span id="orderServiceName" style="color: var(--text); font-weight: 600;">-</span>
+          </div>
+          <div class="summary-item">
+            <span>Precio:</span>
+            <span class="price" id="orderPrice">$0.00</span>
+          </div>
+          <div class="summary-item">
+            <span>Tu saldo actual:</span>
+            <span id="orderBalance">$0.00</span>
+          </div>
+        </div>
+        
+        <form id="orderForm" onsubmit="submitOrder(event)">
+          <div id="dynamicFields"></div>
+          
+          <div class="checkbox-container">
+            <input type="checkbox" id="priceGuaranteed" checked disabled>
+            <label for="priceGuaranteed">✓ Precio final garantizado</label>
+          </div>
+          
+          <button type="submit" class="btn-primary btn-full">
+            🛒 Ingresar Pedido
+          </button>
+        </form>
+      </div>
+      
+      <div>
+        <div class="service-info-panel">
+          <h4>📋 Información del Servicio</h4>
+          
+          <div class="service-info-item">
+            <span class="label">Precio:</span>
+            <span class="value" id="infoPrice">$0.00</span>
+          </div>
+          
+          <div class="service-info-item">
+            <span class="label">Estado:</span>
+            <span class="value" id="infoStatus">-</span>
+          </div>
+          
+          <div class="service-info-item" id="infoTimeContainer">
+            <span class="label">⏱️ Tiempo del proceso:</span>
+            <span class="value" id="infoProcessTime">-</span>
+          </div>
+          
+          <div id="infoAdditionalContainer">
+            <div class="service-info-item" style="flex-direction: column; align-items: flex-start;">
+              <span class="label" style="margin-bottom: 8px;">📝 Instrucciones:</span>
+              <span class="value" id="infoAdditional" style="line-height: 1.6;">-</span>
+            </div>
+          </div>
+          
+          <div class="service-info-item" id="infoIPContainer">
+            <span class="label">🌐 IP / DNS:</span>
+            <span class="value" id="infoIP">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  const telegramConfig = {
+    botToken: 'TU_TOKEN_DE_TELEGRAM_AQUI',
+    chatIds: ['TU_ID_DE_ADMIN', 'OTRO_CHAT_ID'],
+    enabled: true
+  };
+
+  let currentUser = null;
+  let userProfile = null;
+  let allServices = [];
+  let filteredServices = [];
+  let currentOrderService = null;
+  let searchQuery = '';
+  let currentBrandFilter = 'all';
+  let currentSort = 'recent';
+
+  // ✅ NUEVO: FUNCIÓN PARA PARSEAR TAGS CORRECTAMENTE (FIX DEL BUG)
+  function parseTags(tags) {
+    if (!tags) return [];
+    
+    // Si ya es un array, devolverlo limpio
+    if (Array.isArray(tags)) {
+      return tags.filter(t => typeof t === 'string' && t.trim() !== '');
+    }
+    
+    // Si es string
+    if (typeof tags === 'string') {
+      // Intentar parsear como JSON primero
+      try {
+        const parsed = JSON.parse(tags);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(t => typeof t === 'string' && t.trim() !== '');
+        }
+      } catch (e) {
+        // No es JSON válido, continuar
+      }
+      
+      // Limpiar caracteres JSON residuales
+      let cleaned = tags
+        .replace(/[\[\]"]/g, '')  // Quitar corchetes y comillas
+        .replace(/\\n/g, ',')      // Reemplazar \n por coma
+        .trim();
+      
+      // Split por coma
+      return cleaned.split(',')
+        .map(t => t.trim())
+        .filter(t => t && t.length > 0);
+    }
+    
+    return [];
+  }
+
+  // ✅ NUEVO: DETECTAR MARCA DEL SERVICIO
+  function detectBrand(service) {
+    const text = [
+      service.name || '',
+      service.description || '',
+      parseTags(service.tags).join(' ')
+    ].join(' ').toLowerCase();
+    
+    const brands = [
+      { name: 'Samsung', keywords: ['samsung', 'galaxy', 'sm-', 'gt-', 'sch-'] },
+      { name: 'Xiaomi', keywords: ['xiaomi', 'redmi', 'poco', ' mi ', 'mi account', 'miui'] },
+      { name: 'Apple', keywords: ['apple', 'iphone', 'ipad', 'ios', 'icloud', 'hello iphone'] },
+      { name: 'Honor', keywords: ['honor'] },
+      { name: 'Huawei', keywords: ['huawei'] },
+      { name: 'Motorola', keywords: ['motorola', 'moto '] },
+      { name: 'LG', keywords: [' lg ', 'lg-', 'lg '] },
+      { name: 'Realme', keywords: ['realme'] },
+      { name: 'Oppo', keywords: ['oppo'] },
+      { name: 'OnePlus', keywords: ['oneplus', 'one plus'] },
+      { name: 'Tecno', keywords: ['tecno', 'infinix'] },
+      { name: 'Nokia', keywords: ['nokia', 'hmd'] }
+    ];
+    
+    for (const brand of brands) {
+      for (const keyword of brand.keywords) {
+        if (text.includes(keyword)) return brand.name;
+      }
+    }
+    return null;
+  }
+
+  // ✅ NUEVO: OBTENER ICONO DE MARCA
+  function getBrandIcon(brand) {
+    const icons = {
+      'Samsung': '📱',
+      'Xiaomi': '🔶',
+      'Apple': '🍎',
+      'Honor': '⭐',
+      'Huawei': '🌸',
+      'Motorola': '🔷',
+      'LG': '🔴',
+      'Realme': '🟡',
+      'Oppo': '🟢',
+      'OnePlus': '➕',
+      'Tecno': '🔵',
+      'Nokia': '🟣'
+    };
+    return icons[brand] || '📲';
+  }
+
+  // ✅ NUEVO: VERIFICAR SI ES MÁS VENDIDO
+  function isBestSeller(service) {
+    const name = (service.name || '').toLowerCase();
+    const bestSellers = [
+      'samsung frp',
+      'xiaomi mi account',
+      'iphone bypass',
+      'honor frp',
+      'samsung unlock',
+      'frp via imei'
+    ];
+    return bestSellers.some(bs => name.includes(bs));
+  }
+
+  // ✅ NUEVO: VERIFICAR SI ES NUEVO (menos de 7 días)
+  function isNew(service) {
+    if (!service.createdAt) return false;
+    const created = new Date(service.createdAt);
+    const now = new Date();
+    const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+    return diffDays <= 7;
+  }
+
+  // ✅ NUEVO: EXTRAER MARCAS ÚNICAS DE LOS SERVICIOS
+  function extractBrands(services) {
+    const brandCount = {};
+    services.forEach(service => {
+      const brand = detectBrand(service);
+      if (brand) {
+        brandCount[brand] = (brandCount[brand] || 0) + 1;
+      }
+    });
+    return brandCount;
+  }
+
+  // ✅ NUEVO: RENDERIZAR FILTROS DE MARCA
+  function renderBrandFilters() {
+    const container = document.getElementById('brandFilters');
+    const brandCount = extractBrands(allServices);
+    const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]);
+    
+    let html = '<span class="brand-filter-label">🏷️ Filtrar por marca:</span>';
+    
+    // Botón "Todos"
+    html += `<button class="brand-pill ${currentBrandFilter === 'all' ? 'active' : ''}" onclick="filterByBrand('all')">
+      Todos <span class="pill-count">${allServices.length}</span>
+    </button>`;
+    
+    // Botones por marca
+    brands.forEach(([brand, count]) => {
+      const icon = getBrandIcon(brand);
+      html += `<button class="brand-pill ${currentBrandFilter === brand ? 'active' : ''}" onclick="filterByBrand('${brand}')">
+        ${icon} ${brand} <span class="pill-count">${count}</span>
+      </button>`;
+    });
+    
+    container.innerHTML = html;
+  }
+
+  // ✅ NUEVO: FILTRAR POR MARCA
+  function filterByBrand(brand) {
+    currentBrandFilter = brand;
+    applyFiltersAndSort();
+    renderBrandFilters();
+  }
+
+  // ✅ NUEVO: MANEJAR ORDENAMIENTO
+  function handleSort() {
+    currentSort = document.getElementById('sortSelect').value;
+    applyFiltersAndSort();
+  }
+
+  // ✅ NUEVO: APLICAR FILTROS Y ORDENAMIENTO
+  function applyFiltersAndSort() {
+    let result = [...allServices];
+    
+    // Aplicar búsqueda
+    if (searchQuery) {
+      result = result.filter(service => {
+        const name = (service.name || '').toLowerCase();
+        const description = (service.description || '').toLowerCase();
+        const tags = parseTags(service.tags).join(' ').toLowerCase();
+        
+        return name.includes(searchQuery) || 
+               description.includes(searchQuery) || 
+               tags.includes(searchQuery);
+      });
+    }
+    
+    // Aplicar filtro de marca
+    if (currentBrandFilter !== 'all') {
+      result = result.filter(service => {
+        const brand = detectBrand(service);
+        return brand === currentBrandFilter;
+      });
+    }
+    
+    // Aplicar ordenamiento
+    switch (currentSort) {
+      case 'price-asc':
+        result.sort((a, b) => (a.price || a.credits || 0) - (b.price || b.credits || 0));
+        break;
+      case 'price-desc':
+        result.sort((a, b) => (b.price || b.credits || 0) - (a.price || a.credits || 0));
+        break;
+      case 'popular':
+        result.sort((a, b) => {
+          const aBest = isBestSeller(a) ? 1 : 0;
+          const bBest = isBestSeller(b) ? 1 : 0;
+          return bBest - aBest;
+        });
+        break;
+      case 'name':
+        result.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        break;
+      case 'recent':
+      default:
+        result.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+          return dateB - dateA;
+        });
+    }
+    
+    filteredServices = result;
+    renderServices();
+    
+    // Actualizar info de búsqueda
+    const resultsInfo = document.getElementById('searchResultsInfo');
+    if (searchQuery || currentBrandFilter !== 'all') {
+      resultsInfo.classList.add('visible');
+      document.getElementById('searchResultsCount').textContent = filteredServices.length;
+      document.getElementById('searchTotalCount').textContent = allServices.length;
+    } else {
+      resultsInfo.classList.remove('visible');
+    }
+  }
+
+  async function sendTelegramMessage(message) {
+    if (!telegramConfig.enabled) return false;
+    
+    let allSuccess = true;
+    
+    for (const chatId of telegramConfig.chatIds) {
+      try {
+        const url = `https://api.telegram.org/bot${telegramConfig.botToken}/sendMessage`;
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+          console.log(`✅ Notificación enviada a chat ${chatId}`);
+        } else {
+          console.error(`❌ Error enviando a chat ${chatId}:`, data.description);
+          allSuccess = false;
+        }
+      } catch (error) {
+        console.error(`❌ Error de conexión con chat ${chatId}:`, error);
+        allSuccess = false;
+      }
+    }
+    
+    return allSuccess;
+  }
+
+  async function notifyNewOrder(orderData) {
+    const message = `
+🆕 <b>NUEVO PEDIDO RECIBIDO</b>
+
+👤 <b>Cliente:</b> ${orderData.userName || 'Usuario'}
+📧 <b>Email:</b> ${orderData.userEmail || 'N/A'}
+📦 <b>Servicio:</b> ${orderData.serviceName || 'N/A'}
+💰 <b>Precio:</b> $${(orderData.servicePrice || 0).toFixed(2)}
+📊 <b>Cantidad:</b> ${orderData.quantity || 1}
+📅 <b>Fecha:</b> ${new Date().toLocaleString('es-ES')}
+
+${orderData.imei ? `🔢 <b>IMEI:</b> <code>${orderData.imei}</code>\n` : ''}${orderData.ip ? `🌐 <b>IP:</b> <code>${orderData.ip}</code>\n` : ''}${orderData.sn ? `📱 <b>SN:</b> <code>${orderData.sn}</code>\n` : ''}
+⏳ <b>Estado:</b> Pendiente de revisión
+    `.trim();
+    
+    return await sendTelegramMessage(message);
+  }
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      const profileDoc = await db.collection('profiles').doc(user.uid).get();
+      if (profileDoc.exists) {
+        userProfile = profileDoc.data();
+        if (userProfile.role === 'admin' || userProfile.role === 'client') {
+          document.getElementById('adminButtons').style.display = 'flex';
+        }
+      }
+    }
+    await loadServices();
+    updateNav();
+  });
+
+  function updateNav() {
+    const navAuth = document.getElementById('navAuth');
+    if (currentUser && userProfile) {
+      const name = userProfile.name || 'Usuario';
+      const initial = name.charAt(0).toUpperCase();
+      navAuth.innerHTML = `
+        <div class="user-pill">
+          <div class="user-avatar">${initial}</div>
+          <span class="user-name">${name}</span>
+          <button class="btn-logout-text" onclick="logout()">Cerrar Sesión</button>
+        </div>
+      `;
+    } else {
+      navAuth.innerHTML = `
+        <a href="index.html" class="btn-ghost">Iniciar Sesión</a>
+        <a href="index.html" class="btn-primary">Registrarse</a>
+      `;
+    }
+  }
+
+  function logout() {
+    auth.signOut().then(() => {
+      window.location.href = 'index.html';
+    });
+  }
+
+  async function loadServices() {
+    try {
+      const servicesSnap = await db.collection('services')
+        .where('category', '==', 'unlock')
+        .get();
+      
+      allServices = servicesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      // Renderizar filtros de marca
+      renderBrandFilters();
+      
+      // Aplicar filtros y ordenamiento
+      applyFiltersAndSort();
+    } catch (error) {
+      console.error('Error cargando servicios:', error);
+      document.getElementById('servicesGrid').innerHTML = `
+        <div class="empty-state">
+          <p style="color:var(--red);">Error al cargar servicios</p>
+          <button onclick="loadServices()" class="btn-primary" style="margin-top:20px;">🔄 Reintentar</button>
+        </div>
+      `;
+    }
+  }
+
+  function handleSearch() {
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('searchClear');
+    
+    searchQuery = input.value.trim().toLowerCase();
+    
+    if (searchQuery) {
+      clearBtn.classList.add('visible');
+    } else {
+      clearBtn.classList.remove('visible');
+    }
+    
+    applyFiltersAndSort();
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    document.getElementById('searchResultsInfo').classList.remove('visible');
+    searchQuery = '';
+    applyFiltersAndSort();
+    document.getElementById('searchInput').focus();
+  }
+
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function renderServices() {
+    const grid = document.getElementById('servicesGrid');
+    
+    if (filteredServices.length === 0) {
+      if (searchQuery || currentBrandFilter !== 'all') {
+        const filterText = currentBrandFilter !== 'all' ? `de la marca <strong style="color:var(--emerald);">${currentBrandFilter}</strong>` : '';
+        const searchText = searchQuery ? `"<strong style="color:var(--emerald);">${searchQuery}</strong>"` : '';
+        
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <p style="color:var(--emerald);font-size:18px;margin-bottom:8px;">No se encontraron resultados</p>
+            <p style="color:var(--text-dim);">No hay servicios que coincidan ${filterText} ${searchText}</p>
+            <button onclick="clearAllFilters()" class="btn-primary" style="margin-top:20px;">🔄 Limpiar filtros</button>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            <p>No hay servicios de registros IMEI disponibles</p>
+          </div>
+        `;
+      }
+      return;
+    }
+    
+    const isAdmin = currentUser && (userProfile?.role === 'admin' || userProfile?.role === 'client');
+    
+    grid.innerHTML = filteredServices.map(service => {
+      // ✅ FIX: Usar parseTags en lugar del procesamiento anterior
+      const tags = parseTags(service.tags);
+      const brand = detectBrand(service);
+      const brandIcon = brand ? getBrandIcon(brand) : null;
+      const bestSeller = isBestSeller(service);
+      const newService = isNew(service);
+      
+      // Resaltar coincidencias
+      let highlightedName = service.name;
+      if (searchQuery) {
+        const regex = new RegExp(`(${escapeRegExp(searchQuery)})`, 'gi');
+        highlightedName = service.name.replace(regex, '<mark style="background:var(--emerald);color:var(--dark);padding:0 2px;border-radius:2px;">$1</mark>');
+      }
+      
+      // ✅ NUEVO: Cinta de "Más vendido" o "Nuevo"
+      let ribbonHTML = '';
+      if (bestSeller) {
+        ribbonHTML = '<div class="service-ribbon bestseller">🔥 Más Vendido</div>';
+      } else if (newService) {
+        ribbonHTML = '<div class="service-ribbon new">✨ Nuevo</div>';
+      }
+      
+      // ✅ NUEVO: Icono de marca
+      let brandIconHTML = '';
+      if (brandIcon) {
+        brandIconHTML = `<div class="brand-icon-badge" title="${brand || 'Marca'}">${brandIcon}</div>`;
+      }
+      
+      return `
+        <div class="service-card">
+          ${ribbonHTML}
+          ${brandIconHTML}
+          
+          ${isAdmin ? `
+            <div class="service-actions">
+              <button class="btn-edit" onclick="editService('${service.id}')">✏️</button>
+              <button class="btn-delete" onclick="deleteService('${service.id}')">🗑️</button>
+            </div>
+          ` : ''}
+          
+          <div class="service-category">Registro IMEI/SN</div>
+          <h3>${highlightedName}</h3>
+          <p>${service.description || 'Sin descripción'}</p>
+          
+          <div class="service-badges">
+            ${service.stock ? '<span class="badge stock">✓ En Stock</span>' : '<span class="badge out">Agotado</span>'}
+            ${service.autoServer ? '<span class="badge auto">⚡ Auto</span>' : ''}
+          </div>
+          
+          ${tags.length > 0 ? `
+            <div class="service-tags">
+              ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+          ` : ''}
+          
+          <div class="service-footer">
+            <div class="service-price">$${parseFloat(service.price || service.credits || 0).toFixed(2)} <span>créditos</span></div>
+            <button class="btn-select" onclick="selectService('${service.id}')">Comprar</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ✅ NUEVO: LIMPIAR TODOS LOS FILTROS
+  function clearAllFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    document.getElementById('searchResultsInfo').classList.remove('visible');
+    document.getElementById('sortSelect').value = 'recent';
+    searchQuery = '';
+    currentBrandFilter = 'all';
+    currentSort = 'recent';
+    renderBrandFilters();
+    applyFiltersAndSort();
+  }
+
+  function openAddModal() {
+    document.getElementById('modalTitle').textContent = '➕ Agregar Servicio';
+    document.getElementById('serviceForm').reset();
+    document.getElementById('serviceId').value = '';
+    document.getElementById('serviceModal').classList.add('open');
+  }
+
+  function closeServiceModal() {
+    document.getElementById('serviceModal').classList.remove('open');
+  }
+
+  async function editService(serviceId) {
+    const service = allServices.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    document.getElementById('modalTitle').textContent = '✏️ Editar Servicio';
+    document.getElementById('serviceId').value = service.id;
+    document.getElementById('serviceName').value = service.name || '';
+    document.getElementById('serviceDesc').value = service.description || '';
+    document.getElementById('servicePrice').value = service.price || service.credits || 0;
+    document.getElementById('serviceStock').value = service.stock !== false ? 'true' : 'false';
+    document.getElementById('serviceAuto').value = service.autoServer !== false ? 'true' : 'false';
+    // ✅ FIX: Mostrar tags correctamente (sin JSON crudo)
+    const tags = parseTags(service.tags);
+    document.getElementById('serviceTags').value = tags.join(', ');
+    document.getElementById('serviceProcessTime').value = service.processTime || '';
+    document.getElementById('serviceAdditionalInfo').value = service.additionalInfo || '';
+    document.getElementById('serviceIP').value = service.ip || '';
+    
+    document.getElementById('serviceModal').classList.add('open');
+  }
+
+  async function saveService(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('serviceId').value;
+    const tagsRaw = document.getElementById('serviceTags').value;
+    const tagsArray = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(t => t) : [];
+    
+    const serviceData = {
+      name: document.getElementById('serviceName').value,
+      description: document.getElementById('serviceDesc').value,
+      category: 'unlock',
+      price: parseFloat(document.getElementById('servicePrice').value),
+      credits: parseFloat(document.getElementById('servicePrice').value),
+      stock: document.getElementById('serviceStock').value === 'true',
+      autoServer: document.getElementById('serviceAuto').value === 'true',
+      tags: tagsArray,
+      processTime: document.getElementById('serviceProcessTime').value.trim(),
+      additionalInfo: document.getElementById('serviceAdditionalInfo').value.trim(),
+      ip: document.getElementById('serviceIP').value.trim(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    try {
+      if (id) {
+        await db.collection('services').doc(id).update(serviceData);
+        showToast('✅ Servicio actualizado', 'success');
+      } else {
+        serviceData.createdAt = new Date().toISOString();
+        serviceData.createdBy = currentUser.uid;
+        await db.collection('services').add(serviceData);
+        showToast('✅ Servicio agregado', 'success');
+      }
+      
+      closeServiceModal();
+      await loadServices();
+    } catch (error) {
+      showToast('❌ Error: ' + error.message, 'error');
+    }
+  }
+
+  async function deleteService(serviceId) {
+    if (!confirm('¿Eliminar este servicio? Esta acción no se puede deshacer.')) return;
+    
+    try {
+      await db.collection('services').doc(serviceId).delete();
+      showToast('🗑️ Servicio eliminado', 'success');
+      await loadServices();
+    } catch (error) {
+      showToast('❌ Error al eliminar: ' + error.message, 'error');
+    }
+  }
+
+  function selectService(serviceId) {
+    if (!currentUser) {
+      showToast('⚠️ Debes iniciar sesión para comprar', 'error');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+      return;
+    }
+    
+    const service = allServices.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    const price = service.price || service.credits || 0;
+    const balance = userProfile?.balance || 0;
+    
+    if (balance < price) {
+      showError('❌ No tienes suficiente saldo');
+      document.getElementById('orderModal').classList.add('open');
+      return;
+    }
+    
+    currentOrderService = service;
+    
+    document.getElementById('orderServiceName').textContent = service.name;
+    document.getElementById('orderPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('orderBalance').textContent = '$' + balance.toFixed(2);
+    
+    document.getElementById('infoPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('infoStatus').innerHTML = service.stock ? '<span style="color: var(--emerald);">✓ EN STOCK</span>' : '<span style="color: var(--red);">AGOTADO</span>';
+    
+    if (service.processTime) {
+      document.getElementById('infoProcessTime').textContent = service.processTime;
+      document.getElementById('infoTimeContainer').style.display = 'flex';
+    } else {
+      document.getElementById('infoTimeContainer').style.display = 'none';
+    }
+    
+    if (service.additionalInfo) {
+      document.getElementById('infoAdditional').textContent = service.additionalInfo;
+      document.getElementById('infoAdditionalContainer').style.display = 'block';
+    } else {
+      document.getElementById('infoAdditionalContainer').style.display = 'none';
+    }
+    
+    if (service.ip) {
+      document.getElementById('infoIP').textContent = service.ip;
+      document.getElementById('infoIPContainer').style.display = 'flex';
+    } else {
+      document.getElementById('infoIPContainer').style.display = 'none';
+    }
+    
+    generateDynamicFields('unlock');
+    hideError();
+    
+    document.getElementById('orderModal').classList.add('open');
+  }
+
+  function generateDynamicFields(category) {
+    const container = document.getElementById('dynamicFields');
+    let fieldsHTML = '';
+    
+    if (category === 'unlock' || category === 'remote') {
+      fieldsHTML = `
+        <div class="info-box">
+          <strong>ℹ️ Información requerida:</strong><br>
+          Para procesar este servicio, necesitamos el IMEI o número de serie del dispositivo.
+        </div>
+        
+        <div class="form-group">
+          <label>IMEI / Número de Serie *</label>
+          <input type="text" id="orderIMEI" required placeholder="123456789012345">
+          <small style="color:var(--text-dim);font-size:11px;margin-top:4px;display:block;">Marca *#06# en tu teléfono para ver el IMEI</small>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = fieldsHTML;
+  }
+
+  async function submitOrder(e) {
+    e.preventDefault();
+    
+    if (!currentOrderService || !currentUser) return;
+    
+    hideError();
+    
+    const price = currentOrderService.price || currentOrderService.credits || 0;
+    const balance = userProfile?.balance || 0;
+    
+    if (balance < price) {
+      showError('❌ No tienes suficiente saldo');
+      return;
+    }
+    
+    const orderData = {
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      userName: userProfile.name || 'Usuario',
+      serviceId: currentOrderService.id,
+      serviceName: currentOrderService.name,
+      servicePrice: price,
+      unitPrice: price,
+      quantity: 1,
+      category: 'unlock',
+      status: 'pending',
+      paymentMethod: 'balance',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    const imei = document.getElementById('orderIMEI')?.value.trim();
+    if (!imei) {
+      showError('⚠️ Por favor ingresa el IMEI/SN');
+      return;
+    }
+    
+    orderData.imei = imei;
+    orderData.inputData = `IMEI/SN: ${imei}`;
+    
+    const confirmPurchase = confirm(
+      `✅ Confirmar Compra\n\n` +
+      `Servicio: ${currentOrderService.name}\n` +
+      `Precio: $${price.toFixed(2)}\n` +
+      `IMEI: ${imei}\n\n` +
+      `¿Confirmas la compra?`
+    );
+    
+    if (!confirmPurchase) return;
+    
+    try {
+      await db.collection('orders').add(orderData);
+      await notifyNewOrder(orderData);
+      
+      const newBalance = balance - price;
+      await db.collection('profiles').doc(currentUser.uid).update({
+        balance: newBalance,
+        lastTransaction: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      await db.collection('transactions').add({
+        userId: currentUser.uid,
+        userEmail: currentUser.email,
+        userName: userProfile.name || 'Usuario',
+        type: 'purchase',
+        amount: -price,
+        description: `Compra: ${currentOrderService.name}`,
+        status: 'completed',
+        balanceBefore: balance,
+        balanceAfter: newBalance,
+        completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      userProfile.balance = newBalance;
+      
+      showToast('✅ ¡Pedido creado exitosamente!', 'success');
+      closeOrderModal();
+      
+      setTimeout(() => {
+        window.location.href = 'mis-pedidos.html';
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error creando pedido:', error);
+      showError('❌ Error al crear el pedido: ' + error.message);
+    }
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    document.getElementById('dynamicFields').innerHTML = '';
+    currentOrderService = null;
+    hideError();
+  }
+
+  function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+  }
+
+  function hideError() {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.classList.remove('show');
+  }
+
+  function showToast(message, type = 'success') {
+    let toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toastContainer';
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' ? '✅' : '⚠️';
+    toast.innerHTML = `<span>${icon}</span> ${message}`;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'fadeOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  document.getElementById('serviceModal').addEventListener('click', (e) => {
+    if (e.target.id === 'serviceModal') closeServiceModal();
+  });
+
+  document.getElementById('orderModal').addEventListener('click', (e) => {
+    if (e.target.id === 'orderModal') closeOrderModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+    if (e.key === 'Escape' && document.activeElement.id === 'searchInput') {
+      clearSearch();
+      document.getElementById('searchInput').blur();
+    }
+  });
+</script>
+
+</body>
+</html>
