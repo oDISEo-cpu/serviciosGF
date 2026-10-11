@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙️ Centro de Control - ServiciosGF</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .cc-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+  .cc-tab{padding:10px 18px;border:1px solid var(--border,#234);border-radius:8px;background:#0d1622;color:var(--text,#cfe);cursor:pointer}
+  .cc-tab.active{background:var(--accent,#00e5ff);color:#001318;font-weight:700}
+  .cc-panel{display:none;background:#0b1220;border:1px solid #1c2b3a;border-radius:12px;padding:20px}
+  .cc-panel.active{display:block}
+  .cc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .cc-grid label{font-size:12px;color:#8fb}
+  .cc-grid input,.cc-grid select{width:100%;padding:9px;border-radius:8px;border:1px solid #234;background:#081018;color:#e8f6ff}
+  .cc-btn{margin:6px 6px 0 0;padding:10px 16px;border:none;border-radius:8px;cursor:pointer;background:#00e5ff;color:#001318;font-weight:700}
+  .cc-btn.warn{background:#ffb020;color:#201400}
+  .cc-btn.danger{background:#ff4d6d;color:#200008}
+  .cc-out{margin-top:14px;padding:12px;border-radius:8px;background:#081018;border:1px solid #234;white-space:pre-wrap;font-family:monospace;font-size:12px}
+  table.cc{width:100%;border-collapse:collapse;font-size:12px}
+  table.cc th,table.cc td{border:1px solid #1c2b3a;padding:7px;text-align:left;vertical-align:top}
+  table.cc th{background:#0d1622}
+  pre.cc-xml{background:#081018;border:1px solid #234;border-radius:8px;padding:12px;overflow:auto;font-size:12px}
+  .badge{padding:2px 8px;border-radius:20px;font-size:11px;background:#12303a;color:#7ff}
+  .badge.wild{background:#3a2a12;color:#fc7}
+</style>
+<!-- ============ FIREBASE: deja estos placeholders en el repo; al desplegar pega tu firebaseConfig real ============ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyD4Ad7b3Jz6qV75RAnfRxYIYn1r1FR46mc",
+    authDomain: "nexagsm.firebaseapp.com",
+    projectId: "nexagsm",
+    storageBucket: "nexagsm.firebasestorage.app",
+    messagingSenderId: "1028229295947",
+    appId: "1:1028229295947:web:1578d271cacb6b163982ce",
+    measurementId: "G-7K4LP3MYL8"
+  };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+</script>
+</head>
+<body>
+<nav>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="admin-pedidos.html">Admin Pedidos</a></li>
+    <li><a href="admin-streaming.html">Admin Streaming</a></li>
+    <li><a href="admin-recargas.html">Admin Recargas</a></li>
+    <li><a href="admin-tasa.html">Admin Tasa</a></li>
+    <li><a href="admin-descuentos.html">Admin Descuentos</a></li>
+    <li><a href="admin-dhru.html">Admin DHru</a></li>
+    <li><a href="admin-config.html" class="active">⚙️ Centro de Control</a></li>
+  </ul>
+</nav>
+
+<header class="page-hero">
+  <h1>⚙️ Centro de <span class="hl">Control</span></h1>
+  <p>API JonartGSM, reglas de campos, catálogo en vivo y simulador XML</p>
+</header>
+
+<main style="max-width:1200px;margin:0 auto;padding:20px">
+  <div class="cc-tabs">
+    <button class="cc-tab active" data-tab="t1">🔑 Conexión JonartGSM</button>
+    <button class="cc-tab" data-tab="t2">📐 Reglas de campos</button>
+    <button class="cc-tab" data-tab="t3">📦 Catálogo en vivo</button>
+    <button class="cc-tab" data-tab="t4">🎁 Presets</button>
+  </div>
+
+  <!-- T1 CONEXIÓN -->
+  <section id="t1" class="cc-panel active">
+    <h3>Configuración actual</h3>
+    <div class="cc-out" id="cc-now">Cargando…</div>
+    <h3 style="margin-top:18px">Editar credenciales</h3>
+    <div class="cc-grid">
+      <div><label>URL API</label><input id="cc-url" placeholder="https://jonartgsm.com/api/index.php"></div>
+      <div><label>Usuario</label><input id="cc-user" placeholder="TU_USUARIO_DHRU"></div>
+      <div><label>API Key (vacío = no cambiar)</label><input id="cc-key" type="password" placeholder="Dejar vacío para conservar la actual"></div>
+    </div>
+    <button class="cc-btn" id="btn-test">🧪 Probar conexión</button>
+    <button class="cc-btn warn" id="btn-save">💾 Guardar</button>
+    <button class="cc-btn" id="btn-reload">🔄 Recargar</button>
+    <div class="cc-out" id="cc-out"></div>
+  </section>
+
+  <!-- T2 REGLAS -->
+  <section id="t2" class="cc-panel">
+    <button class="cc-btn" id="btn-new-rule">➕ Nueva regla</button>
+    <button class="cc-btn warn" id="btn-wild">🛡️ Asegurar regla comodín</button>
+    <div id="rule-form" style="display:none;margin-top:14px">
+      <input type="hidden" id="rf-id">
+      <div class="cc-grid">
+        <div><label>Patrón</label><input id="rf-pattern" placeholder="ECID / SERIAL / iBerry / *"></div>
+        <div><label>Tipo match</label><select id="rf-match"><option>exact</option><option>contains</option><option>regex</option></select></div>
+        <div><label>Aplica a</label><select id="rf-scope"><option value="fieldName">nombre de campo</option><option value="serviceName">nombre de servicio</option></select></div>
+        <div><label>Tipo input</label><select id="rf-type"><option>text</option><option>number</option><option>email</option><option>tel</option></select></div>
+        <div><label>Etiqueta</label><input id="rf-label"></div>
+        <div><label>Placeholder</label><input id="rf-ph"></div>
+        <div><label>Hint</label><input id="rf-hint" placeholder="Copialo desde la tool"></div>
+        <div><label>Min largo</label><input id="rf-min" type="number"></div>
+        <div><label>Max largo</label><input id="rf-max" type="number"></div>
+        <div><label>Regex validación</label><input id="rf-regex"></div>
+        <div><label>Override etiqueta XML</label><input id="rf-xml" placeholder="ECCID"></div>
+        <div><label>Prioridad</label><input id="rf-prio" type="number" value="10"></div>
+        <div><label>Activa</label><select id="rf-active"><option value="1">Sí</option><option value="0">No</option></select></div>
+      </div>
+      <button class="cc-btn" id="btn-rule-save">💾 Guardar regla</button>
+      <button class="cc-btn danger" id="btn-rule-cancel">Cancelar</button>
+    </div>
+    <div style="overflow:auto;margin-top:14px"><table class="cc" id="rules-table"><thead><tr><th>Patrón</th><th>Match</th><th>Scope</th><th>Label</th><th>Hint</th><th>XML</th><th>Prio</th><th>Activa</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <!-- T3 CATÁLOGO -->
+  <section id="t3" class="cc-panel">
+    <button class="cc-btn" id="btn-cat">🔄 Cargar servicios de JonartGSM</button>
+    <div style="overflow:auto;margin-top:14px"><table class="cc" id="cat-table"><thead><tr><th>ID</th><th>Servicio</th><th>Precio</th><th>Tipo detectado</th><th>Acciones</th></tr></thead><tbody></tbody></table></div>
+    <div id="sim-panel" style="display:none;margin-top:16px">
+      <h4 id="sim-title"></h4>
+      <div class="cc-grid" id="sim-inputs"></div>
+      <button class="cc-btn" id="btn-sim">⚡ Simular XML (dry-run)</button>
+      <div class="cc-out" id="sim-meta"></div>
+      <h4>Modal que vería el cliente:</h4><div class="cc-out" id="sim-modal"></div>
+      <h4>XML que se enviaría:</h4><pre class="cc-xml" id="sim-xml"></pre>
+    </div>
+  </section>
+
+  <!-- T4 PRESETS -->
+  <section id="t4" class="cc-panel">
+    <p>Aplican lotes de reglas listos para los casos ya conocidos. No borran reglas existentes.</p>
+    <button class="cc-btn" data-preset="ecid">🔑 ECID (iBerry/iHello)</button>
+    <button class="cc-btn" data-preset="serial">🔢 SERIAL NUMBER (FRPFILE)</button>
+    <button class="cc-btn" data-preset="moto">🧩 Motorola multi-campo</button>
+    <button class="cc-btn warn" data-preset="wild">🛡️ Regla comodín</button>
+    <div class="cc-out" id="preset-out"></div>
+  </section>
+</main>
+
+<script>
+let TOKEN = '', SERVICES = [], SIM_SVC = null;
+const $ = id => document.getElementById(id);
+const H = () => ({'Content-Type':'application/json','Authorization':'Bearer '+TOKEN});
+const api = async (p,o={}) => {
+  try {
+    const r = await fetch('api/'+p, Object.assign({headers:H()},o));
+    return await r.json();
+  } catch(e) {
+    return {success:false, error:'Sin backend PHP aquí. Esta pestaña funciona en XAMPP o el VPS.'};
+  }
+};
+
+document.querySelectorAll('.cc-tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.cc-tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.cc-panel').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); $(b.dataset.tab).classList.add('active');
+});
+
+auth.onAuthStateChanged(async u=>{
+  if(!u){ location.href='index.html'; return; }
+  TOKEN = await u.getIdToken(true);
+  loadConfig(); loadRules();
+});
+
+/* ---------- T1 CONEXIÓN ---------- */
+async function loadConfig(){
+  const d = await api('admin-config.php?action=get');
+  if(!d.success){ $('cc-now').textContent='❌ '+d.error; return; }
+  const c = d.config;
+  $('cc-now').textContent =
+    'URL: '+c.url+'\nUsuario: '+c.username+'\nAPI Key: '+(c.apiKeyMasked||'(sin configurar)')+
+    '\nConfig dinámica activa: '+(d.usingDynamicFile?'SÍ':'NO (usando constantes)')+
+    '\nÚltima actualización: '+(c.updatedAt||'—')+' por '+(c.updatedBy||'—');
+  $('cc-url').value = c.url||''; $('cc-user').value = c.username||''; $('cc-key').value='';
+}
+$('btn-reload').onclick = loadConfig;
+$('btn-test').onclick = async ()=>{
+  $('cc-out').textContent='⏳ Probando conexión…';
+  const d = await api('admin-config.php',{method:'POST',body:JSON.stringify({action:'test',url:$('cc-url').value,username:$('cc-user').value,apiKey:$('cc-key').value})});
+  $('cc-out').textContent = d.success ? '✅ Conexión OK — Saldo: '+d.balance : '❌ '+d.error+(d.hint?'\n💡 '+d.hint:'');
+};
+$('btn-save').onclick = async ()=>{
+  if(!confirm('¿Guardar esta configuración en el servidor?')) return;
+  const d = await api('admin-config.php',{method:'POST',body:JSON.stringify({url:$('cc-url').value,username:$('cc-user').value,apiKey:$('cc-key').value})});
+  $('cc-out').textContent = d.success ? '✅ Guardado. Key actual: '+d.config.apiKeyMasked : '❌ '+d.error;
+  loadConfig();
+};
+
+/* ---------- T2 REGLAS ---------- */
+async function loadRules(){
+  const snap = await db.collection('fieldRules').get();
+  const rows = []; snap.forEach(doc=>rows.push(Object.assign({_id:doc.id},doc.data())));
+  rows.sort((a,b)=>(b.priority||0)-(a.priority||0));
+  const tb = $('rules-table').querySelector('tbody'); tb.innerHTML='';
+  rows.forEach(r=>{
+    const wild = r.pattern==='*';
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+(wild?'<span class="badge wild">COMODÍN</span> ':'')+ (r.pattern||'')+'</td><td>'+(r.matchType||'')+'</td><td>'+(r.scope||'')+'</td><td>'+(r.label||'')+'</td><td>'+(r.hint||'')+'</td><td>'+(r.xmlTagOverride||'')+'</td><td>'+(r.priority??'')+'</td><td>'+(r.active===false?'NO':'SÍ')+'</td>'+
+      '<td><button class="cc-btn" data-edit="'+r._id+'">✏️</button>'+(wild?'':'<button class="cc-btn danger" data-del="'+r._id+'">🗑️</button>')+'</td>';
+    tr.querySelector('[data-edit]').onclick = ()=>fillRuleForm(r);
+    const del = tr.querySelector('[data-del]'); if(del) del.onclick = async ()=>{ if(confirm('¿Eliminar regla '+r.pattern+'?')){ await db.collection('fieldRules').doc(r._id).delete(); loadRules(); } };
+    tb.appendChild(tr);
+  });
+}
+function fillRuleForm(r){
+  $('rule-form').style.display='block';
+  $('rf-id').value=r?._id||''; $('rf-pattern').value=r?.pattern||''; $('rf-match').value=r?.matchType||'exact';
+  $('rf-scope').value=r?.scope||'fieldName'; $('rf-type').value=r?.inputType||'text'; $('rf-label').value=r?.label||'';
+  $('rf-ph').value=r?.placeholder||''; $('rf-hint').value=r?.hint||''; $('rf-min').value=r?.minLength||''; $('rf-max').value=r?.maxLength||'';
+  $('rf-regex').value=r?.regex||''; $('rf-xml').value=r?.xmlTagOverride||''; $('rf-prio').value=r?.priority??10; $('rf-active').value=(r?.active===false)?'0':'1';
+}
+$('btn-new-rule').onclick = ()=>fillRuleForm(null);
+$('btn-rule-cancel').onclick = ()=>{ $('rule-form').style.display='none'; };
+$('btn-rule-save').onclick = async ()=>{
+  const data = {
+    pattern: $('rf-pattern').value.trim(), matchType: $('rf-match').value, scope: $('rf-scope').value,
+    inputType: $('rf-type').value, label: $('rf-label').value, placeholder: $('rf-ph').value, hint: $('rf-hint').value,
+    minLength: parseInt($('rf-min').value)||0, maxLength: parseInt($('rf-max').value)||0, regex: $('rf-regex').value,
+    xmlTagOverride: $('rf-xml').value, priority: parseInt($('rf-prio').value)||0, active: $('rf-active').value==='1'
+  };
+  if(!data.pattern){ alert('El patrón es obligatorio'); return; }
+  const id = $('rf-id').value || db.collection('fieldRules').doc().id;
+  await db.collection('fieldRules').doc(id).set(data);
+  $('rule-form').style.display='none'; loadRules();
+};
+$('btn-wild').onclick = async ()=>{ await ensureWildcard(); };
+async function ensureWildcard(){
+  const snap = await db.collection('fieldRules').where('pattern','==','*').get();
+  if(!snap.empty) return snap.docs[0].id;
+  const ref = db.collection('fieldRules').doc();
+  await ref.set({pattern:'*',matchType:'exact',scope:'fieldName',inputType:'text',label:'',placeholder:'',hint:'',minLength:0,maxLength:0,regex:'',xmlTagOverride:'',priority:0,active:true});
+  return ref.id;
+}
+
+/* ---------- T3 CATÁLOGO ---------- */
+function svcType(s){
+  if(s.customInput && s.customInput.allow==='1') return '🔑 Custom: '+(s.customInput.customName||'?');
+  if((s.customFields||[]).length) return '🧩 Multi: '+s.customFields.map(f=>f.fieldname).join(', ');
+  return '📱 IMEI puro';
+}
+$('btn-cat').onclick = async ()=>{
+  const r = await fetch('api/dhru-services.php',{headers:H()}); const d = await r.json();
+  SERVICES = Array.isArray(d)? d : (d.services||d.data||d.list||[]);
+  const tb = $('cat-table').querySelector('tbody'); tb.innerHTML='';
+  SERVICES.forEach((s,i)=>{
+    const sid = s.dhruServiceId||s.id||s.serviceId;
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+sid+'</td><td>'+(s.name||s.service_name||'')+'</td><td>'+(s.price??s.credit??'')+'</td><td>'+svcType(s)+'</td><td><button class="cc-btn">⚡ Simular</button></td>';
+    tr.querySelector('button').onclick = ()=>openSim(s);
+    tb.appendChild(tr);
+  });
+};
+function openSim(s){
+  SIM_SVC = s; $('sim-panel').style.display='block';
+  $('sim-title').textContent = 'Simulando: '+(s.name||'')+' ('+(s.dhruServiceId||s.id||'')+')';
+  const box = $('sim-inputs'); box.innerHTML='';
+  const add = (id,label,ph)=>{ box.insertAdjacentHTML('beforeend','<div><label>'+label+'</label><input id="'+id+'" placeholder="'+ph+'"></div>'); };
+  if(s.customInput && s.customInput.allow==='1') add('sv-custom', s.customInput.customName||'Campo', s.customInput.customInfo||'');
+  else if((s.customFields||[]).length) s.customFields.forEach((f,i)=>add('sv-f'+i, f.fieldname, f.description||''));
+  else add('sv-imei','IMEI','123456789012345');
+  add('sv-email','Email (prueba)','test@serviciosgf.com');
+  $('sim-xml').textContent=''; $('sim-modal').textContent=''; $('sim-meta').textContent='';
+}
+$('btn-sim').onclick = async ()=>{
+  const s = SIM_SVC; if(!s) return;
+  const values = { email: $('sv-email').value||'test@serviciosgf.com', quantity:1, category: s.category||'imei' };
+  if(s.customInput && s.customInput.allow==='1'){ values.customField = $('sv-custom').value; values.customFieldName = s.customInput.customName||''; }
+  else if((s.customFields||[]).length){ values.fieldValues = {}; s.customFields.forEach((f,i)=>{ values.fieldValues[f.fieldname] = $('sv-f'+i).value; }); }
+  else { values.imei = $('sv-imei').value; }
+  const d = await api('simulate-order.php',{method:'POST',body:JSON.stringify({serviceId: s.dhruServiceId||s.id||s.serviceId, values: values, service: s})});
+  if(!d.success){ $('sim-meta').textContent='❌ '+d.error; return; }
+  $('sim-meta').textContent = 'Reglas aplicadas: '+(d.rulesApplied.join(', ')||'ninguna (automático)')+' | Fuente reglas: '+d.rulesSource+'\n'+JSON.stringify(d.notes);
+  $('sim-modal').innerHTML = d.modal.html;
+  $('sim-xml').textContent = d.xml;
+};
+
+/* ---------- T4 PRESETS ---------- */
+const PRESETS = {
+  ecid: [{pattern:'ECID',matchType:'exact',scope:'fieldName',inputType:'text',label:'ECID',placeholder:'Ingresa el ECID',hint:'Copialo desde la tool',minLength:0,maxLength:20,regex:'',xmlTagOverride:'ECCID',priority:20,active:true}],
+  serial: [{pattern:'SERIAL NUMBER',matchType:'exact',scope:'fieldName',inputType:'text',label:'SERIAL NUMBER',placeholder:'Coloca el SN',hint:'Copialo desde la tool',minLength:0,maxLength:20,regex:'',xmlTagOverride:'SERIAL_NUMBER',priority:20,active:true}],
+  moto: ['IMEI A PONER','IP','SN','MODELO'].map(n=>({pattern:n,matchType:'exact',scope:'fieldName',inputType:'text',label:n,placeholder:'Ingresa '+n,hint:'',minLength:0,maxLength:30,regex:'',xmlTagOverride:'',priority:15,active:true})),
+  wild: []
+};
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick = async ()=>{
+  const key = b.dataset.preset;
+  if(key==='wild'){ await ensureWildcard(); $('preset-out').textContent='✅ Regla comodín asegurada.'; loadRules(); return; }
+  let n=0;
+  for(const r of PRESETS[key]){ await db.collection('fieldRules').doc('preset_'+key+'_'+n).set(r); n++; }
+  $('preset-out').textContent = '✅ Preset "'+key+'" aplicado: '+n+' regla(s) creadas/actualizadas.';
+  loadRules();
+});
+</script>
+</body>
+</html>
